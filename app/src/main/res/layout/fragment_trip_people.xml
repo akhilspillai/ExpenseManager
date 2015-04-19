@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <TextView 
+        android:id="@+id/txt_no_people"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_people"
+        android:layout_margin="20dp"
+        android:textSize="15sp"
+        android:layout_centerInParent="true"/>
+    
+    <ListView 
+        android:id="@+id/li_people"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:dividerHeight="0dp"/>
+    
+    <ImageButton
+        android:id="@+id/btn_add_people"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/round_button"
+        android:elevation="10dp"
+        android:contentDescription="@string/app_name"
+        android:padding="13dp"
+        android:src="@drawable/ic_action_add_people" />
+
+</RelativeLayout>
