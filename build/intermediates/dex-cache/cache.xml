@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-jackson/1.19.0/ac155c556e9f758b4ae0fbe14c22a50a1bfdbfa0/google-http-client-jackson-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ac155c556e9f758b4ae0fbe14c22a50a1bfdbfa0">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/google-http-client-jackson-1.19.0-7e59b7660c1f923fa205d8775794df3089ab6f6c.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/me.dm7.barcodescanner/core/1.6.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="052c85fdfbfa5083ea80ee78ea2e1ba71612c4d6">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-4a2120e8f7f7973877247872fd2218b28cbc8205.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.1.3/f6c3aed1cdfa21b5c1737c915186ea93a95a58bd/jackson-core-2.1.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f6c3aed1cdfa21b5c1737c915186ea93a95a58bd">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/jackson-core-2.1.3-5841bdf480b055c6f83abad6a4ff72e68e3e642e.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-wallet/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a96b762bde4139de855735f175ec4d17dca55a6d">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-94033ad13f93e2c32f32fd3d8e5a020f91858450.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4e86306289ace4aa0cfec44a05ed2b410d36989d">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-77671ae28ebf0d6fd762be59d0da0e0e57360f8e.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-jackson2/1.19.0/81dbf9795d387d5e80e55346582d5f2fb81a42eb/google-http-client-jackson2-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81dbf9795d387d5e80e55346582d5f2fb81a42eb">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/google-http-client-jackson2-1.19.0-193c89f4b2b6e7b42bc68ef0e90b6c020ef207f0.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-location/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="73ccb92b70112f2e463e415ef8d7275de7da6516">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-163b296908a488e35e004bc0ae8d09de47d55f38.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e3d791b42eaa90416cd0b2d2e608092794a3baa4">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-96cff6322ecccdc5676d6835bde8a32662ed3431.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="9224bc4c54ba95147c7eabd874573763c07cb6be">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-de09ba49f71c8bb5b38ad6fd8980c34a010b2887.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client/1.19.0/cdca49ad0977c040f603478aa2e16b2775c8fec6/google-http-client-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="cdca49ad0977c040f603478aa2e16b2775c8fec6">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/google-http-client-1.19.0-29285e36c54ffd873b0a8741e058e3f3eda7373d.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-cast/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4cd0b093824b3228fffc21ea369b98d0b1db6566">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-ad893e04c65bb80a2f3838cbe11e9462b538fd93.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.0/5871fb60dc68d67da54a663c3fd636a10a532948/jsr305-3.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5871fb60dc68d67da54a663c3fd636a10a532948">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/jsr305-3.0.0-c7b913159d48dd22d39c7c066c711fa58a461069.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-drive/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="41b3870cbe5fa546d8095b5b89d42cb69f3dd175">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-3e708d32c01a6605bf00d8cc4a0973290d9efef9.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.oauth-client/google-oauth-client/1.19.0/d473a8962e14a707a3716637e4898bb2dd9643f2/google-oauth-client-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d473a8962e14a707a3716637e4898bb2dd9643f2">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/google-oauth-client-1.19.0-c10686860c5f5cd2ebe5b4690b069ab3a297e819.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-nearby/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ef5f051e7308febe289dc93c67c5f32785b4260a">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-1044099e38bf55ec95a6420129a30c8374ccd8c9.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.guava/guava-jdk5/13.0/381ae6c8add7c98e9bcddb1e0b898400cd6fc3f7/guava-jdk5-13.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="381ae6c8add7c98e9bcddb1e0b898400cd6fc3f7">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/guava-jdk5-13.0-5bfb3fa24da823d51fa19e8ef8e5e33e442dde93.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-identity/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="fb04b12526b0073c7fb1ebb70c5842d82ee95596">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-350ae8e12ddf5cc36657d6c869b0174f7dd933c2.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.0.0/libs/internal_impl-22.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="b5b92f469d515a13d778900f6d50c03d12f35504">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/internal_impl-22.0.0-8f6cc1d6c996e0e2e74792342e2dd037e2e2588f.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="0e8228b4bc69c6a2c8d7c18498a77e53417d2574">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-cc02dd567e3db14d47dce6be6acfa35d2924933e.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appindexing/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a08d65794b844d8e7540bf9a33859bf3b2482d7f">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-31e5b3e7f5f0ab775621cec45de3c7d1320a57a5.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client-android/1.19.0/ba2aafb867f6af469f936ae76426cf0a280094bd/google-api-client-android-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ba2aafb867f6af469f936ae76426cf0a280094bd">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/google-api-client-android-1.19.0-27bdd062df7ab7924824a62a03018230d9dd03ef.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/me.dm7.barcodescanner/zbar/1.6.3/libs/armeabi-v7a.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1d1c924a0f3fb116c770f07a992a1d9fff5365b9">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/armeabi-v7a-a18af033fd3805b17f599906825bbfc9a96a3078.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/me.dm7.barcodescanner/zbar/1.6.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="14d921f11ebcb374073cc13a63825556447fe339">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-d497dce2c69f5d21ef845b8f25317e04940e7f77.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-safetynet/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c976518693e89ad44fbfccfc654941eaec198d08">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-32ccd647f3898dceb9ced1bcef3ccbed20413c31.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4c93d99d454c975536bbe3b42283eee847f03ea3">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-6f7ca12920b7fb00443d97be885b4cc59797a2e5.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-android/1.19.0/e3f11020c2c812112803d252d1392872d3f619c8/google-http-client-android-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e3f11020c2c812112803d252d1392872d3f619c8">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/google-http-client-android-1.19.0-ecfdf947a70769b2a91641a106e0c105c7b7e3c5.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/org.achartengine/achartengine/1.2.0/75277dbcf10e93cc38648e48b353597fbb14069a/achartengine-1.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="75277dbcf10e93cc38648e48b353597fbb14069a">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/achartengine-1.2.0-df7e72c5afc404a9c9b1659c75ae843ecd9f8df1.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-gson/1.19.0/b3cdefb990d5212bb2a130525b20e2c44aeffc4c/google-http-client-gson-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="b3cdefb990d5212bb2a130525b20e2c44aeffc4c">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/google-http-client-gson-1.19.0-90c28bd0d28808e73817c5fb3768ad8e645a77b1.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/org.codehaus.jackson/jackson-core-asl/1.9.11/e32303ef8bd18a5c9272780d49b81c95e05ddf43/jackson-core-asl-1.9.11.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e32303ef8bd18a5c9272780d49b81c95e05ddf43">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/jackson-core-asl-1.9.11-34b81fb52ed865cf14aec85a3b4010aeed6e00f1.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client-xml/1.19.0/5acbdc3ceda2868928c216085fc57d0730fa44fa/google-api-client-xml-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5acbdc3ceda2868928c216085fc57d0730fa44fa">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/google-api-client-xml-1.19.0-a3c9dbe9b9375f740fb0e1a1cb76c5486752537d.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/me.dm7.barcodescanner/zbar/1.6.3/libs/x86.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4cec3c6e129913967ff2d71da18e2daf6bd1b565">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/x86-a41c58144d47895913ad131e9762377bfe7c23a8.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-analytics/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="29fd6d3794b71491c2789708cd8d03c71feb8954">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-65107a8c9e6726871c3b308892e7ec264f7b66c1.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.http-client/google-http-client-xml/1.19.0/e78e67919143dd1168e7d8e4383b6abbefaec93f/google-http-client-xml-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e78e67919143dd1168e7d8e4383b6abbefaec93f">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/google-http-client-xml-1.19.0-8570763b35d008ad25a2feb7f68a96544da761bd.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-games/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="055783146ba9654a725442563be78cad303aad1f">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-ba128d4b68ec60680f5afeb9be15bf41bd612f42.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/me.dm7.barcodescanner/zbar/1.6.3/libs/zbar.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="7bbdf7ba57a8a157c0cad51e455609c70887812e">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/zbar-89b020868a98869d3e5a4fcbe426089417f82523.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-panorama/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1c5a76debf0c2857ccad422c4a80ed785982f8df">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-f4d320cee741d6d5efda6e83356daa7433fe52e8.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="17f8750d5c0749e44dd7c54aa390d9c937803825">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-1cf6e7fff5d6f18c25c24fd6c236105484a87212.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3/5fc52c41ef0239d1093a1eb7c3697036183677ce/gson-2.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5fc52c41ef0239d1093a1eb7c3697036183677ce">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/gson-2.3-08bc97378cfbe2afb4430296cfde54e3a4474901.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.2.0/e019d15a13a9786f881141d2df6654b8510bce8b/core-3.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e019d15a13a9786f881141d2df6654b8510bce8b">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/core-3.2.0-55acfc714460f488206f996ab1fb2ea07c599f91.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-wearable/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3033cc3a2c68dff3e5b646d6d084bdbdf7d00b25">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-af39671415e70c638f6b140bc9e4de44e2828400.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-fitness/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3c0b099f9de16b265ecd6122fcb603e7d0d29f90">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-09040425fc2147dbed150ef53ee5787b8f5324a4.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/backend/build/libs/backend-android-endpoints.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="768d702d4daf01bc070d800c89f8339b035055ba">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/backend-android-endpoints-5a2bb150a77fffc0dd7ca8d9e2f48600e00bc07d.jar" />
+    </item>
+    <item
+        jar="/home/akhil/.gradle/caches/modules-2/files-2.1/com.google.api-client/google-api-client/1.19.0/6a21277d9bebe267b7ddee028b241eebc756c040/google-api-client-1.19.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="6a21277d9bebe267b7ddee028b241eebc756c040">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/google-api-client-1.19.0-a00f4153176637a077456b5e81586d842bdb328f.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/me.dm7.barcodescanner/zbar/1.6.3/libs/armeabi.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f9b796c889e398a8fd6b2f997b94c101e8a9dbcb">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/armeabi-631a98043ddcd4e4e90a14e35b8d18e591c41943.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d84409890828e07d344a3b9b1da545dba9897b51">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-b6dfd52e4e859be0a53ed840d4714b7ab4f87b50.jar" />
+    </item>
+    <item
+        jar="/home/akhil/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/22.0.0/support-annotations-22.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="685d0b2c590447e85284ed84712cb363ba04eff8">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/support-annotations-22.0.0-261a4822051f38010329747a9bdaf5434e607c89.jar" />
+    </item>
+    <item
+        jar="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appstate/7.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="7ff613bf78ab057293892fdbd4169eda899c89b9">
+        <dex dex="/home/akhil/AndroidStudioProjects/TripExpenseManager/app/build/intermediates/pre-dexed/debug/classes-5f9edd8892da02a08f635351c96ab7d930140aa2.jar" />
+    </item>
+
+</items>

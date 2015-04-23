@@ -40,8 +40,8 @@ import com.trip.expensemanager.ProcessingActivity;
 import com.trip.expensemanager.R;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
-import com.trip.expensemanager.loginendpoint.Loginendpoint;
-import com.trip.expensemanager.loginendpoint.model.CollectionResponseLogIn;
+import com.trip.expensemanager.backend.loginendpoint.Loginendpoint;
+import com.trip.expensemanager.backend.loginendpoint.model.CollectionResponseLogIn;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
 
