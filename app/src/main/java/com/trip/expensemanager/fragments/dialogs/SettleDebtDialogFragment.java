@@ -22,14 +22,11 @@ public class SettleDebtDialogFragment extends DialogFragment {
 	private String strText;
 	private String strAmount;
 
-	public SettleDebtDialogFragment(ConfirmDialogListener listener) {
-		this.mListener=listener;
-	}
-
 	public static SettleDebtDialogFragment newInstance(String strText, String strAmount, ConfirmDialogListener listener) {
 		SettleDebtDialogFragment fragment=null;
 		try {
-			fragment=new SettleDebtDialogFragment(listener);
+			fragment=new SettleDebtDialogFragment();
+            fragment.mListener=listener;
 			Bundle bundle=new Bundle();
 			bundle.putString(Constants.STR_AMOUNT, strAmount);
 			bundle.putString(Constants.STR_TEXT, strText);

@@ -22,15 +22,12 @@ public class AddTripDialogFragment extends DialogFragment {
 	private CharSequence strAction;
 	private String strText;
 
-	public AddTripDialogFragment(ConfirmDialogListener listener) {
-		this.mListener=listener;
-	}
-
 	public static AddTripDialogFragment newInstance(String strAction, String strText, ConfirmDialogListener listener) {
 		AddTripDialogFragment fragment=null;
 		try {
-			fragment=new AddTripDialogFragment(listener);
+			fragment=new AddTripDialogFragment();
 			Bundle bundle=new Bundle();
+            fragment.mListener=listener;
 			bundle.putString(Constants.STR_ACTION, strAction);
 			bundle.putString(Constants.STR_TEXT, strText);
 			fragment.setArguments(bundle);

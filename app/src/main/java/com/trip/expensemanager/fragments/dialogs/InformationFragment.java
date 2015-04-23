@@ -20,14 +20,11 @@ public class InformationFragment extends DialogFragment {
 	private String strTitle, strContent, strAction;
 	private int iLayout;
 
-	public InformationFragment(InfoDialogListener listener) {
-		this.mListener=listener;
-	}
-
 	public static InformationFragment newInstance(String strTitle, String strContent, String strAction, int iLayoutId, InfoDialogListener listener) {
 		InformationFragment fragment=null;
 		try {
-			fragment=new InformationFragment(listener);
+			fragment=new InformationFragment();
+            fragment.mListener=listener;
 			Bundle bundle=new Bundle();
 			bundle.putString(Constants.STR_TITLE, strTitle);
 			bundle.putString(Constants.STR_CONTENT, strContent);

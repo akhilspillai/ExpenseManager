@@ -20,15 +20,12 @@ public class ConfirmationFragment extends DialogFragment {
 	private String strTitle, strContent, strAction;
 	private int iLayout;
 
-	public ConfirmationFragment(ConfirmDialogListener listener) {
-		this.mListener=listener;
-	}
-
 	public static ConfirmationFragment newInstance(String strTitle, String strContent,
 			String strAction, int iLayoutId, ConfirmDialogListener listener) {
 		ConfirmationFragment fragment=null;
 		try {
-			fragment=new ConfirmationFragment(listener);
+			fragment=new ConfirmationFragment();
+            fragment.mListener=listener;
 			Bundle bundle=new Bundle();
 			bundle.putString(Constants.STR_TITLE, strTitle);
 			bundle.putString(Constants.STR_CONTENT, strContent);

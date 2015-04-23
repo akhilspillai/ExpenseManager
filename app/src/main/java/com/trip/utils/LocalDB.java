@@ -13,11 +13,20 @@ public class LocalDB{
 	private Context context=null;
 	Cursor cursor=null;
 	private SQLiteHelper dbHelper;
-//	private final String[] COLUMNS_LOGIN = {SQLiteHelper.COLUMN_USER_ID, SQLiteHelper.COLUMN_USERNAME, SQLiteHelper.COLUMN_PREFFERED_NAME, SQLiteHelper.COLUMN_PASSWORD};
-	private final String[] COLUMNS_TRIP = {SQLiteHelper.COLUMN_TRIP_ID, SQLiteHelper.COLUMN_TRIP_NAME, SQLiteHelper.COLUMN_ADMIN, SQLiteHelper.COLUMN_USERS, SQLiteHelper.COLUMN_CREATION_TIME, SQLiteHelper.COLUMN_TRIP_STATUS, SQLiteHelper.COLUMN_IS_SYNCHED, SQLiteHelper.ROW_ID};
-	private final String[] COLUMNS_EXPENSE = {SQLiteHelper.COLUMN_EXPENSE_ID, SQLiteHelper.COLUMN_EXPENSE_NAME, SQLiteHelper.COLUMN_EXPENSE_DESC, SQLiteHelper.COLUMN_EXPENSE_AMOUNT, SQLiteHelper.COLUMN_EXPENSE_CURRENCY, SQLiteHelper.COLUMN_TRIP_ID, SQLiteHelper.COLUMN_USER_ID, SQLiteHelper.COLUMN_USERS, SQLiteHelper.COLUMN_AMOUNTS, SQLiteHelper.COLUMN_EXPENSE_CREATION_TIME, SQLiteHelper.COLUMN_IS_SYNCHED, SQLiteHelper.ROW_ID};
-	private final String[] COLUMNS_TO_SYNC = {SQLiteHelper.ROW_ID, SQLiteHelper.COLUMN_ACTION, SQLiteHelper.COLUMN_UPDATE, SQLiteHelper.COLUMN_ITEM_ID};
-	private final String[] COLUMNS_DISTRIBUTION = {SQLiteHelper.COLUMN_DISTRIBUTION_ID, SQLiteHelper.COLUMN_FROM_ID, SQLiteHelper.COLUMN_TO_ID, SQLiteHelper.COLUMN_EXPENSE_AMOUNT, SQLiteHelper.COLUMN_TRIP_ID, SQLiteHelper.COLUMN_PAID, SQLiteHelper.COLUMN_CREATION_TIME};
+	private final String[] COLUMNS_TRIP = {SQLiteHelper.COLUMN_TRIP_ID, SQLiteHelper.COLUMN_TRIP_NAME,
+            SQLiteHelper.COLUMN_ADMIN, SQLiteHelper.COLUMN_USERS, SQLiteHelper.COLUMN_CREATION_TIME,
+            SQLiteHelper.COLUMN_TRIP_STATUS, SQLiteHelper.COLUMN_IS_SYNCHED, SQLiteHelper.ROW_ID};
+	private final String[] COLUMNS_EXPENSE = {SQLiteHelper.COLUMN_EXPENSE_ID,
+            SQLiteHelper.COLUMN_EXPENSE_NAME, SQLiteHelper.COLUMN_EXPENSE_DESC,
+            SQLiteHelper.COLUMN_EXPENSE_AMOUNT, SQLiteHelper.COLUMN_EXPENSE_CURRENCY,
+            SQLiteHelper.COLUMN_TRIP_ID, SQLiteHelper.COLUMN_USER_ID, SQLiteHelper.COLUMN_USERS,
+            SQLiteHelper.COLUMN_AMOUNTS, SQLiteHelper.COLUMN_EXPENSE_CREATION_TIME,
+            SQLiteHelper.COLUMN_IS_SYNCHED, SQLiteHelper.ROW_ID};
+	private final String[] COLUMNS_TO_SYNC = {SQLiteHelper.ROW_ID, SQLiteHelper.COLUMN_ACTION,
+            SQLiteHelper.COLUMN_UPDATE, SQLiteHelper.COLUMN_ITEM_ID};
+	private final String[] COLUMNS_DISTRIBUTION = {SQLiteHelper.COLUMN_DISTRIBUTION_ID,
+            SQLiteHelper.COLUMN_FROM_ID, SQLiteHelper.COLUMN_TO_ID, SQLiteHelper.COLUMN_EXPENSE_AMOUNT,
+            SQLiteHelper.COLUMN_TRIP_ID, SQLiteHelper.COLUMN_PAID, SQLiteHelper.COLUMN_CREATION_TIME};
 
 	public LocalDB(Context context) {
 		try {
@@ -33,7 +42,7 @@ public class LocalDB{
 			dbHelper = new SQLiteHelper(context);
 			database = dbHelper.getWritableDatabase();
 		} catch (Exception e) {
-
+            Log.d("DB", e.toString());
 		}
 		return database;
 	}
@@ -47,11 +56,13 @@ public class LocalDB{
 		}
 	}
 
-	public boolean insert(long lngUserId, String strUsername, String strPassword, String strPrefferedName, long lngDeviceId) {
+	public boolean insert(long lngUserId, String strUsername, String strPassword,
+                          String strPrefferedName, long lngDeviceId) {
 		boolean done = false;
 		try{
 			SQLiteDatabase database=open();
-			cursor=database.query(SQLiteHelper.TABLE_LOGIN, new String[]{SQLiteHelper.COLUMN_USER_ID}, null, null, null, null, null);
+			cursor=database.query(SQLiteHelper.TABLE_LOGIN, new String[]{
+                    SQLiteHelper.COLUMN_USER_ID}, null, null, null, null, null);
 			if(!cursor.moveToFirst()){
 				ContentValues values = new ContentValues();
 				values.put(SQLiteHelper.COLUMN_USER_ID, lngUserId);
@@ -112,7 +123,8 @@ public class LocalDB{
 	public String[] getPurchaseId() {
 		String[] strArrPurchase=null;
 		SQLiteDatabase database=open(); 
-		cursor = database.query(SQLiteHelper.TABLE_LOGIN, new String[]{SQLiteHelper.COLUMN_PURCHASE_ID, SQLiteHelper.COLUMN_IS_SYNCHED}, null, null, null, null, null);
+		cursor = database.query(SQLiteHelper.TABLE_LOGIN, new String[]{SQLiteHelper.COLUMN_PURCHASE_ID,
+                SQLiteHelper.COLUMN_IS_SYNCHED}, null, null, null, null, null);
 		if (cursor.moveToFirst()) {
 			strArrPurchase=new String[2];
 			strArrPurchase[0]=cursor.getString(1);
@@ -121,7 +133,8 @@ public class LocalDB{
 		return strArrPurchase;
 	}
 
-	public long insertDistribution(long lngFromId, long lngToId, String strAmount, long lngTripId, String strPaidStatus, String strDate) {
+	public long insertDistribution(long lngFromId, long lngToId, String strAmount, long lngTripId,
+                                   String strPaidStatus, String strDate) {
 		long id=0L;
 		try{
 			SQLiteDatabase database=open();
@@ -149,7 +162,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_DISTRIBUTION_ID, lngDistributionId);
-			database.update(SQLiteHelper.TABLE_DISTRIBUTION, args, SQLiteHelper.ROW_ID+"=?", new String[]{String.valueOf(lngRowId)});
+			database.update(SQLiteHelper.TABLE_DISTRIBUTION, args, SQLiteHelper.ROW_ID+"=?",
+                    new String[]{String.valueOf(lngRowId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -166,7 +180,9 @@ public class LocalDB{
 		DistributionBean1 distributionBean=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_DISTRIBUTION, COLUMNS_DISTRIBUTION, SQLiteHelper.COLUMN_TRIP_ID+"=? AND "+SQLiteHelper.COLUMN_PAID+"=?", new String[]{String.valueOf(lngTripId), Constants.STR_NO},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_DISTRIBUTION, COLUMNS_DISTRIBUTION,
+                    SQLiteHelper.COLUMN_TRIP_ID+"=? AND "+SQLiteHelper.COLUMN_PAID+"=?",
+                    new String[]{String.valueOf(lngTripId), Constants.STR_NO},null, null, null);
 			if (cursor.moveToFirst()) {
 				do {
 					distributionBean=new DistributionBean1();
@@ -195,7 +211,9 @@ public class LocalDB{
 		DistributionBean1 distributionBean=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_DISTRIBUTION, COLUMNS_DISTRIBUTION, SQLiteHelper.COLUMN_TRIP_ID+"=? AND "+ SQLiteHelper.COLUMN_PAID+"!=?", new String[]{String.valueOf(lngTripId), Constants.STR_NO},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_DISTRIBUTION, COLUMNS_DISTRIBUTION,
+                    SQLiteHelper.COLUMN_TRIP_ID+"=? AND "+ SQLiteHelper.COLUMN_PAID+"!=?",
+                    new String[]{String.valueOf(lngTripId), Constants.STR_NO},null, null, null);
 			if (cursor.moveToFirst()) {
 				do {
 					distributionBean=new DistributionBean1();
@@ -225,7 +243,8 @@ public class LocalDB{
 		DistributionBean1 distributionBean=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_DISTRIBUTION, COLUMNS_DISTRIBUTION, SQLiteHelper.COLUMN_PAID+"=?", new String[]{Constants.STR_UNSYNCED},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_DISTRIBUTION, COLUMNS_DISTRIBUTION,
+                    SQLiteHelper.COLUMN_PAID+"=?", new String[]{Constants.STR_UNSYNCED},null, null, null);
 			if (cursor.moveToFirst()) {
 				do {
 					distributionBean=new DistributionBean1();
@@ -255,7 +274,11 @@ public class LocalDB{
 		DistributionBean1 distributionBean=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_DISTRIBUTION, COLUMNS_DISTRIBUTION, "("+SQLiteHelper.COLUMN_FROM_ID+"=? OR "+SQLiteHelper.COLUMN_TO_ID+"=?) AND "+SQLiteHelper.COLUMN_TRIP_ID+"=? AND "+ SQLiteHelper.COLUMN_PAID+"!=?", new String[]{String.valueOf(lngUserId), String.valueOf(lngUserId), String.valueOf(lngTripId), Constants.STR_NO},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_DISTRIBUTION, COLUMNS_DISTRIBUTION, "("
+                    +SQLiteHelper.COLUMN_FROM_ID+"=? OR "+SQLiteHelper.COLUMN_TO_ID+"=?) AND "
+                    +SQLiteHelper.COLUMN_TRIP_ID+"=? AND "+ SQLiteHelper.COLUMN_PAID+"!=?",
+                    new String[]{String.valueOf(lngUserId), String.valueOf(lngUserId),
+                            String.valueOf(lngTripId), Constants.STR_NO},null, null, null);
 			
 			if (cursor.moveToFirst()) {
 				do{
@@ -286,7 +309,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_EXPENSE_AMOUNT, strAmount);
-			database.update(SQLiteHelper.TABLE_DISTRIBUTION, args, SQLiteHelper.COLUMN_DISTRIBUTION_ID+"=?", new String[]{String.valueOf(distributionId)});
+			database.update(SQLiteHelper.TABLE_DISTRIBUTION, args, SQLiteHelper.COLUMN_DISTRIBUTION_ID+"=?",
+                    new String[]{String.valueOf(distributionId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -302,7 +326,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_PAID, strPaidStatus);
-			database.update(SQLiteHelper.TABLE_DISTRIBUTION, args, SQLiteHelper.COLUMN_DISTRIBUTION_ID+"=?", new String[]{String.valueOf(lngDistributionId)});
+			database.update(SQLiteHelper.TABLE_DISTRIBUTION, args, SQLiteHelper.COLUMN_DISTRIBUTION_ID+"=?",
+                    new String[]{String.valueOf(lngDistributionId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -316,7 +341,8 @@ public class LocalDB{
 	public boolean deleteDistributionofTrip(long lngTripId) {
 		try {
 			SQLiteDatabase database=open();
-			database.delete(SQLiteHelper.TABLE_DISTRIBUTION, SQLiteHelper.COLUMN_TRIP_ID+"=?",new String[]{String.valueOf(lngTripId)});
+			database.delete(SQLiteHelper.TABLE_DISTRIBUTION, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(lngTripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -347,7 +373,8 @@ public class LocalDB{
 		String strPrefferedName=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_LOGIN,new String[]{SQLiteHelper.COLUMN_PREFFERED_NAME}, null, null,null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_LOGIN,new String[]{SQLiteHelper.COLUMN_PREFFERED_NAME},
+                    null, null,null, null, null);
 			if(cursor.moveToFirst()){
 				strPrefferedName=cursor.getString(0);
 			}
@@ -366,7 +393,8 @@ public class LocalDB{
 		String strUsername=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_USERS,new String[]{SQLiteHelper.COLUMN_USERNAME}, SQLiteHelper.COLUMN_USER_ID+"=?",new String[]{String.valueOf(lngUserId)}, null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_USERS,new String[]{SQLiteHelper.COLUMN_USERNAME},
+                    SQLiteHelper.COLUMN_USER_ID+"=?",new String[]{String.valueOf(lngUserId)}, null, null, null);
 			if(cursor.moveToFirst()){
 				strUsername=cursor.getString(0);
 			}
@@ -385,7 +413,8 @@ public class LocalDB{
 		String strPrefferedName=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_USERS,new String[]{SQLiteHelper.COLUMN_PREFFERED_NAME}, SQLiteHelper.COLUMN_USER_ID+"=?",new String[]{String.valueOf(lngUserId)}, null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_USERS,new String[]{SQLiteHelper.COLUMN_PREFFERED_NAME},
+                    SQLiteHelper.COLUMN_USER_ID+"=?",new String[]{String.valueOf(lngUserId)}, null, null, null);
 			if(cursor.moveToFirst()){
 				strPrefferedName=cursor.getString(0);
 			}
@@ -406,11 +435,12 @@ public class LocalDB{
 			SQLiteDatabase database=open(); 
 			//			String selectQuery = "SELECT  * FROM " +SQLiteHelper.TABLE_LOGIN ;
 			//			cursor = database.rawQuery(selectQuery, null);
-			cursor=database.query(SQLiteHelper.TABLE_LOGIN,new String[]{SQLiteHelper.COLUMN_USER_ID}, null, null,null, null, null);
+			cursor=database.query(SQLiteHelper.TABLE_LOGIN,new String[]{SQLiteHelper.COLUMN_USER_ID},
+                    null, null,null, null, null);
 			cursor.moveToFirst();
 			lngUserId = cursor.getLong(0);
 		} catch (Exception e) {
-			e.printStackTrace();
+            Log.d("DB", e.toString());
 		}finally{
 			if(cursor!=null){
 				cursor.close();
@@ -424,7 +454,8 @@ public class LocalDB{
 		long lngDevId=0L;
 		try {
 			SQLiteDatabase database=open();
-			cursor=database.query(SQLiteHelper.TABLE_LOGIN,new String[]{SQLiteHelper.COLUMN_DEVICE_ID}, null, null,null, null, null);
+			cursor=database.query(SQLiteHelper.TABLE_LOGIN,new String[]{SQLiteHelper.COLUMN_DEVICE_ID},
+                    null, null,null, null, null);
 			cursor.moveToFirst();
 			lngDevId = cursor.getLong(0);
 		} catch (Exception e) {
@@ -443,7 +474,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_USERNAME, strUsername); 
-			database.update(SQLiteHelper.TABLE_LOGIN, args, SQLiteHelper.COLUMN_USER_ID+"=?", new String[]{String.valueOf(lngUserId)});
+			database.update(SQLiteHelper.TABLE_LOGIN, args, SQLiteHelper.COLUMN_USER_ID+"=?",
+                    new String[]{String.valueOf(lngUserId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -459,7 +491,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_USERNAME, strNewUsername); 
-			database.update(SQLiteHelper.TABLE_USERS, args, SQLiteHelper.COLUMN_USER_ID+"=?", new String[]{String.valueOf(lngUserId)});
+			database.update(SQLiteHelper.TABLE_USERS, args, SQLiteHelper.COLUMN_USER_ID+"=?",
+                    new String[]{String.valueOf(lngUserId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -487,11 +520,11 @@ public class LocalDB{
 		String strUsername=null;
 		SQLiteDatabase database=open();
 		try {
-			cursor = database.query(SQLiteHelper.TABLE_LOGIN,new String[]{SQLiteHelper.COLUMN_USERNAME}, null, null,null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_LOGIN,new String[]{SQLiteHelper.COLUMN_USERNAME},
+                    null, null,null, null, null);
 			cursor.moveToFirst();
 			strUsername = cursor.getString(0);
 		} catch (Exception e) {
-			e.printStackTrace();
 		} finally{
 			cursor.close();
 			close();
@@ -499,11 +532,14 @@ public class LocalDB{
 		return strUsername;
 	}
 
-	public long insertTrip(String strTripName, long lngTripId, String strCreationTime, String strUsers, long lngAdminId, String strSyncStatus) {
+	public long insertTrip(String strTripName, long lngTripId, String strCreationTime, String strUsers,
+                           long lngAdminId, String strSyncStatus) {
 		long id=-1L;
 		try{
 			SQLiteDatabase database=open();
-			cursor=database.query(SQLiteHelper.TABLE_TRIP, new String[]{SQLiteHelper.COLUMN_TRIP_ID}, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)}, null, null, null);
+			cursor=database.query(SQLiteHelper.TABLE_TRIP, new String[]{SQLiteHelper.COLUMN_TRIP_ID},
+                    SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)}, null,
+                    null, null);
 			if(!cursor.moveToFirst()){
 				ContentValues values = new ContentValues();
 				values.put(SQLiteHelper.COLUMN_TRIP_ID, lngTripId);
@@ -584,7 +620,8 @@ public class LocalDB{
 		TripBean trip=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_TRIP, COLUMNS_TRIP, SQLiteHelper.COLUMN_IS_SYNCHED+"!=?", new String[]{"S"},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_TRIP, COLUMNS_TRIP, SQLiteHelper.COLUMN_IS_SYNCHED
+                    +"!=?", new String[]{"S"},null, null, null);
 			cursor.moveToFirst();
 			//			Date date=null;
 			String strDate=null;
@@ -639,7 +676,9 @@ public class LocalDB{
 		boolean isTripPresent=false;
 		try {
 			SQLiteDatabase database=open();
-			cursor = database.query(SQLiteHelper.TABLE_TRIP,new String[]{SQLiteHelper.COLUMN_TRIP_NAME}, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_TRIP,new String[]{SQLiteHelper.COLUMN_TRIP_NAME},
+                    SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)},null, null,
+                    null);
 			isTripPresent=cursor.moveToFirst();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -660,9 +699,11 @@ public class LocalDB{
 		int i=0;
 		try {
 			SQLiteDatabase database=open();
-			cursor = database.query(SQLiteHelper.TABLE_TRIP,COLUMNS_TRIP, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_TRIP,COLUMNS_TRIP, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(lngTripId)},null, null, null);
 			if (!cursor.moveToFirst()) {
-				cursor = database.query(SQLiteHelper.TABLE_TRIP,COLUMNS_TRIP, SQLiteHelper.ROW_ID+"=?", new String[]{String.valueOf(lngTripId)},null, null, null);
+				cursor = database.query(SQLiteHelper.TABLE_TRIP,COLUMNS_TRIP, SQLiteHelper.ROW_ID+"=?",
+                        new String[]{String.valueOf(lngTripId)},null, null, null);
 			}
 			if(cursor.moveToFirst()){
 				trip=new TripBean();
@@ -713,7 +754,9 @@ public class LocalDB{
 		ExpenseBean expense=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_EXPENSE, COLUMNS_EXPENSE, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_EXPENSE, COLUMNS_EXPENSE,
+                    SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)},
+                    null, null, null);
 			if (cursor.moveToFirst()) {
 				do {
 					expense=new ExpenseBean();
@@ -747,7 +790,9 @@ public class LocalDB{
 		ExpenseBean expense = null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_EXPENSE, COLUMNS_EXPENSE, SQLiteHelper.COLUMN_EXPENSE_ID+"=?", new String[]{String.valueOf(lngExpenseId)},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_EXPENSE, COLUMNS_EXPENSE,
+                    SQLiteHelper.COLUMN_EXPENSE_ID+"=?", new String[]{String.valueOf(lngExpenseId)},
+                    null, null, null);
 			if (cursor.moveToFirst()) {
 				expense=new ExpenseBean();
 				expense.setId(cursor.getLong(0));
@@ -775,11 +820,15 @@ public class LocalDB{
 	}
 
 
-	public long insertExpense(String strExpenseName, long lngExpenseId, String strCreationTime, String strCurrency, String strAmount, String strDesc, long lngTripId, long lngUserId, String strUsers, String strAmounts, String strSyncStatus) {
+	public long insertExpense(String strExpenseName, long lngExpenseId, String strCreationTime,
+                              String strCurrency, String strAmount, String strDesc, long lngTripId,
+                              long lngUserId, String strUsers, String strAmounts, String strSyncStatus) {
 		long id=0L;
 		try{
 			SQLiteDatabase database=open();
-			cursor=database.query(SQLiteHelper.TABLE_EXPENSE, new String[]{SQLiteHelper.COLUMN_EXPENSE_ID}, SQLiteHelper.COLUMN_EXPENSE_ID+"=?", new String[]{String.valueOf(lngExpenseId)}, null, null, null);
+			cursor=database.query(SQLiteHelper.TABLE_EXPENSE, new String[]{SQLiteHelper.COLUMN_EXPENSE_ID},
+                    SQLiteHelper.COLUMN_EXPENSE_ID+"=?", new String[]{String.valueOf(lngExpenseId)}, null,
+                    null, null);
 			if(!cursor.moveToFirst()){
 				ContentValues values = new ContentValues();
 				values.put(SQLiteHelper.COLUMN_EXPENSE_ID, lngExpenseId);
@@ -815,7 +864,8 @@ public class LocalDB{
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_USERS, strUsernames);
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, Constants.STR_SYNCHED);  
-			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)});
+			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(lngTripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -830,7 +880,9 @@ public class LocalDB{
 		boolean done = false;
 		try{
 			SQLiteDatabase database=open();
-			cursor=database.query(SQLiteHelper.TABLE_USERS, new String[]{SQLiteHelper.COLUMN_USER_ID}, SQLiteHelper.COLUMN_USER_ID+"=?", new String[]{String.valueOf(lngUserId)}, null, null, null);
+			cursor=database.query(SQLiteHelper.TABLE_USERS, new String[]{SQLiteHelper.COLUMN_USER_ID},
+                    SQLiteHelper.COLUMN_USER_ID+"=?", new String[]{String.valueOf(lngUserId)}, null,
+                    null, null);
 			if(!cursor.moveToFirst()){
 				ContentValues values = new ContentValues();
 				values.put(SQLiteHelper.COLUMN_USER_ID, lngUserId);
@@ -857,7 +909,8 @@ public class LocalDB{
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_TRIP_ID, lngNewTripId);
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, Constants.STR_SYNCHED);
-			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngOldTripId)});
+			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(lngOldTripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -873,7 +926,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, strStatus);
-			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngOldTripId)});
+			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(lngOldTripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -889,7 +943,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, Constants.STR_SYNCHED);
-			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)});
+			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(lngTripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -906,7 +961,8 @@ public class LocalDB{
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_EXPENSE_ID, lngExpenseId);
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, Constants.STR_SYNCHED);
-			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?", new String[]{String.valueOf(lngOldExpenseId)});
+			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?",
+                    new String[]{String.valueOf(lngOldExpenseId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -922,7 +978,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, strStatus);
-			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?", new String[]{String.valueOf(lngOldExpenseId)});
+			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?",
+                    new String[]{String.valueOf(lngOldExpenseId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -939,7 +996,8 @@ public class LocalDB{
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_EXPENSE_ID, lngExpenseId);
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, Constants.STR_SYNCHED);
-			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?", new String[]{String.valueOf(lngExpenseId)});
+			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?",
+                    new String[]{String.valueOf(lngExpenseId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -975,7 +1033,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_STATUS, Constants.STR_STATUS_READ);
-			database.update(SQLiteHelper.TABLE_TO_SYNC, args, SQLiteHelper.ROW_ID+"=?", new String[]{String.valueOf(lngRowId)});
+			database.update(SQLiteHelper.TABLE_TO_SYNC, args, SQLiteHelper.ROW_ID+"=?",
+                    new String[]{String.valueOf(lngRowId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -992,7 +1051,8 @@ public class LocalDB{
 		UpdateBean update=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_TO_SYNC, COLUMNS_TO_SYNC, null, null,null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_TO_SYNC, COLUMNS_TO_SYNC, null, null,null,
+                    null, null);
 			if (cursor.moveToFirst()) {
 				do {
 					update=new UpdateBean();
@@ -1019,7 +1079,9 @@ public class LocalDB{
 		UpdateBean update=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_TO_SYNC, COLUMNS_TO_SYNC, SQLiteHelper.COLUMN_STATUS+"=?", new String[]{Constants.STR_STATUS_UNREAD},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_TO_SYNC, COLUMNS_TO_SYNC,
+                    SQLiteHelper.COLUMN_STATUS+"=?", new String[]{Constants.STR_STATUS_UNREAD},
+                    null, null, null);
 			if (cursor.moveToFirst()) {
 				do {
 					update=new UpdateBean();
@@ -1044,7 +1106,8 @@ public class LocalDB{
 	public boolean deleteToSync(long lngRowId){
 		try {
 			SQLiteDatabase database=open();
-			database.delete(SQLiteHelper.TABLE_TO_SYNC, SQLiteHelper.ROW_ID+"=?", new String[]{String.valueOf(lngRowId)});
+			database.delete(SQLiteHelper.TABLE_TO_SYNC, SQLiteHelper.ROW_ID+"=?",
+                    new String[]{String.valueOf(lngRowId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1072,7 +1135,8 @@ public class LocalDB{
 	public boolean deleteTrips(int iColmnId) {
 		try {
 			SQLiteDatabase database=open();
-			database.delete(SQLiteHelper.TABLE_TRIP, SQLiteHelper.ROW_ID+"=?",new String[]{String.valueOf(iColmnId)});
+			database.delete(SQLiteHelper.TABLE_TRIP, SQLiteHelper.ROW_ID+"=?",
+                    new String[]{String.valueOf(iColmnId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1088,7 +1152,8 @@ public class LocalDB{
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_TRIP_NAME, strTripName);
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, strStatus);
-			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)});
+			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(lngTripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1099,7 +1164,8 @@ public class LocalDB{
 		return false;
 	}
 
-	public boolean updateExpense(String strExpenseName, String strExpenseAmount, String strExpenseDetail, String strUsers, String strAmounts, String strUpdated, long lngExpenseId) {
+	public boolean updateExpense(String strExpenseName, String strExpenseAmount, String strExpenseDetail,
+                                 String strUsers, String strAmounts, String strUpdated, long lngExpenseId) {
 		try {
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
@@ -1110,7 +1176,8 @@ public class LocalDB{
 			args.put(SQLiteHelper.COLUMN_AMOUNTS, strAmounts);
 
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, strUpdated);
-			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?", new String[]{String.valueOf(lngExpenseId)});
+			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?",
+                    new String[]{String.valueOf(lngExpenseId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1128,7 +1195,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_TRIP_ID, lngTripId);
-			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.ROW_ID+"=?", new String[]{String.valueOf(lngRowId)});
+			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.ROW_ID+"=?",
+                    new String[]{String.valueOf(lngRowId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1146,7 +1214,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_EXPENSE_ID, lngExpenseId);
-			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.ROW_ID+"=?", new String[]{String.valueOf(lngRowId)});
+			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.ROW_ID+"=?",
+                    new String[]{String.valueOf(lngRowId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1164,7 +1233,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_EXPENSE_ID, lngNewId);
-			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?", new String[]{String.valueOf(lngOldId)});
+			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?",
+                    new String[]{String.valueOf(lngOldId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1181,7 +1251,8 @@ public class LocalDB{
 		ExpenseBean expense=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_EXPENSE, COLUMNS_EXPENSE, SQLiteHelper.COLUMN_IS_SYNCHED+"!=?", new String[]{"S"},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_EXPENSE, COLUMNS_EXPENSE,
+                    SQLiteHelper.COLUMN_IS_SYNCHED+"!=?", new String[]{"S"},null, null, null);
 			if (cursor.moveToFirst()) {
 				do {
 					expense=new ExpenseBean();
@@ -1215,7 +1286,8 @@ public class LocalDB{
 		long lngUserId=0L;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_USERS,new String[]{SQLiteHelper.COLUMN_USER_ID}, SQLiteHelper.COLUMN_USERNAME+"=?",new String[]{person}, null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_USERS,new String[]{SQLiteHelper.COLUMN_USER_ID},
+                    SQLiteHelper.COLUMN_USERNAME+"=?",new String[]{person}, null, null, null);
 			if(cursor.moveToFirst()){
 				lngUserId=cursor.getLong(0);
 			}
@@ -1233,9 +1305,12 @@ public class LocalDB{
 	public boolean isTripSynced(long lngTripId) {
 		try {
 			SQLiteDatabase database=open();
-			cursor = database.query(SQLiteHelper.TABLE_TRIP,new String[]{SQLiteHelper.COLUMN_IS_SYNCHED}, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_TRIP,new String[]{SQLiteHelper.COLUMN_IS_SYNCHED},
+                    SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)},null,
+                    null, null);
 			if(cursor.moveToFirst()){
-				if(!cursor.getString(0).equals(Constants.STR_NOT_SYNCHED) && !cursor.getString(0).equals(Constants.STR_QR_ADDED)){
+				if(!cursor.getString(0).equals(Constants.STR_NOT_SYNCHED) && !cursor.getString(0).equals(
+                        Constants.STR_QR_ADDED)){
 					return true;
 				}
 			}
@@ -1253,7 +1328,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, Constants.STR_DELETED);
-			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(tripId)});
+			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(tripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1270,7 +1346,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, Constants.STR_EXITED);
-			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(tripId)});
+			database.update(SQLiteHelper.TABLE_TRIP, args, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(tripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1285,7 +1362,8 @@ public class LocalDB{
 	public boolean deleteTrip(long lngTripId) {
 		try {
 			SQLiteDatabase database=open();
-			database.delete(SQLiteHelper.TABLE_TRIP, SQLiteHelper.COLUMN_TRIP_ID+"=?",new String[]{String.valueOf(lngTripId)});
+			database.delete(SQLiteHelper.TABLE_TRIP, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(lngTripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1298,7 +1376,8 @@ public class LocalDB{
 	public boolean deleteExpense(long lngExpenseId) {
 		try {
 			SQLiteDatabase database=open();
-			database.delete(SQLiteHelper.TABLE_EXPENSE, SQLiteHelper.COLUMN_EXPENSE_ID+"=?",new String[]{String.valueOf(lngExpenseId)});
+			database.delete(SQLiteHelper.TABLE_EXPENSE, SQLiteHelper.COLUMN_EXPENSE_ID+"=?",
+                    new String[]{String.valueOf(lngExpenseId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1314,7 +1393,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_IS_SYNCHED, Constants.STR_DELETED);
-			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?", new String[]{String.valueOf(expenseId)});
+			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_EXPENSE_ID+"=?",
+                    new String[]{String.valueOf(expenseId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1332,7 +1412,8 @@ public class LocalDB{
 			SQLiteDatabase database=open();
 			ContentValues args = new ContentValues();
 			args.put(SQLiteHelper.COLUMN_TRIP_ID, lngNewTripId);
-			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_TRIP_ID+"=?", new String[]{String.valueOf(lngTripId)});
+			database.update(SQLiteHelper.TABLE_EXPENSE, args, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(lngTripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1350,7 +1431,9 @@ public class LocalDB{
 		ExpenseBean expense=null;
 		try {
 			SQLiteDatabase database=open(); 
-			cursor = database.query(SQLiteHelper.TABLE_EXPENSE, COLUMNS_EXPENSE, SQLiteHelper.COLUMN_TRIP_ID+"=? AND "+SQLiteHelper.COLUMN_USER_ID+"=?", new String[]{String.valueOf(lngTripId), String.valueOf(lngExpUserId)},null, null, null);
+			cursor = database.query(SQLiteHelper.TABLE_EXPENSE, COLUMNS_EXPENSE,
+                    SQLiteHelper.COLUMN_TRIP_ID+"=? AND "+SQLiteHelper.COLUMN_USER_ID+"=?",
+                    new String[]{String.valueOf(lngTripId), String.valueOf(lngExpUserId)},null, null, null);
 			if (cursor.moveToFirst()) {
 				do {
 					expense=new ExpenseBean();
@@ -1383,7 +1466,8 @@ public class LocalDB{
 	public boolean deleteExpenseofTrip(long lngTripId) {
 		try {
 			SQLiteDatabase database=open();
-			database.delete(SQLiteHelper.TABLE_EXPENSE, SQLiteHelper.COLUMN_TRIP_ID+"=?",new String[]{String.valueOf(lngTripId)});
+			database.delete(SQLiteHelper.TABLE_EXPENSE, SQLiteHelper.COLUMN_TRIP_ID+"=?",
+                    new String[]{String.valueOf(lngTripId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1396,7 +1480,9 @@ public class LocalDB{
 	public boolean deleteExpenseOfTripnUser(long lngTripId, long lngUserId) {
 		try {
 			SQLiteDatabase database=open();
-			database.delete(SQLiteHelper.TABLE_EXPENSE, SQLiteHelper.COLUMN_TRIP_ID+"=? and "+SQLiteHelper.COLUMN_USER_ID+"=?",new String[]{String.valueOf(lngTripId), String.valueOf(lngUserId)});
+			database.delete(SQLiteHelper.TABLE_EXPENSE, SQLiteHelper.COLUMN_TRIP_ID+"=? and "
+                    +SQLiteHelper.COLUMN_USER_ID+"=?",new String[]{String.valueOf(lngTripId),
+                    String.valueOf(lngUserId)});
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

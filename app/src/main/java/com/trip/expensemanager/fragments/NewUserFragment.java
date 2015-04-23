@@ -203,7 +203,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 				dialog.dismiss();
 			}
 		};
-		ConfirmationFragment.newInstance("Error", strMessage, "Try Again", R.layout.fragment_dialog_info, listener).show(getActivity().getSupportFragmentManager(), "dialog");
+		ConfirmationFragment.newInstance("Error", strMessage, "Try Again", R.layout.fragment_dialog_confirm, listener).show(getActivity().getSupportFragmentManager(), "dialog");
 	}
 
 	private void showDetailsForApproval(String strName) {

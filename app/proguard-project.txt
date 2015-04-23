@@ -40,3 +40,4 @@
 
 -dontwarn javax.jdo.**
 -dontwarn com.google.api.client.googleapis.extensions.android.gms.**
+-dontwarn com.google.common.**

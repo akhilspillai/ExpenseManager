@@ -408,7 +408,6 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
 				// Instantiating a render for the slice
 				SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
 				seriesRenderer.setColor(arrColors.get(i));
-				seriesRenderer.setDisplayChartValues(true);
 				// Adding the renderer of a slice to the renderer of the pie chart
 				defaultRenderer.addSeriesRenderer(seriesRenderer);
 			}

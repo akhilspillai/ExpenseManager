@@ -19,14 +19,11 @@ public class ThreeButtonFragment extends DialogFragment {
 	ThreeButtonDialogListener mListener;
 	private String strContent;
 
-	public ThreeButtonFragment(ThreeButtonDialogListener listener) {
-		this.mListener=listener;
-	}
-
 	public static ThreeButtonFragment newInstance(String strContent, ThreeButtonDialogListener listener) {
 		ThreeButtonFragment fragment=null;
 		try {
-			fragment=new ThreeButtonFragment(listener);
+			fragment=new ThreeButtonFragment();
+            fragment.mListener=listener;
 			Bundle bundle=new Bundle();
 			bundle.putString(Constants.STR_CONTENT, strContent);
 			fragment.setArguments(bundle);
