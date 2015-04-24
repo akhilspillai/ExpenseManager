@@ -29,10 +29,6 @@ android {
 }
 
 dependencies {
-    compile 'me.dm7.barcodescanner:zbar:1.6.3'
-    compile 'com.google.code.findbugs:jsr305:3.0.0'
-    compile 'com.google.zxing:core:3.2.0'
-    compile 'org.achartengine:achartengine:1.2.0'
     compile('com.google.api-client:google-api-client-xml:1.19.0') {
         exclude group: 'com.google.android.google-play-services'
         exclude(group: 'org.apache.httpcomponents', module: 'httpclient')
@@ -66,8 +62,13 @@ dependencies {
         exclude(group: 'com.google.android', module: 'android')
         exclude(group: 'org.apache.httpcomponents', module: 'httpclient')
     }
+    compile 'me.dm7.barcodescanner:zbar:1.6.3'
+    compile 'com.google.code.findbugs:jsr305:3.0.0'
+    compile 'com.google.zxing:core:3.2.0'
+    compile 'org.achartengine:achartengine:1.2.0'
     compile 'com.android.support:support-v4:22.0.0'
     compile 'com.google.android.gms:play-services:7.0.0'
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.android.support:appcompat-v7:22.0.0'
+    compile project(path: ':backend', configuration: 'android-endpoints')
 }

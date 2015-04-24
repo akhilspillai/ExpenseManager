@@ -1,5 +1,6 @@
 package com.trip.expensemanager.backend;
 
+//import com.trip.expensemanager.backend.EMF;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -14,11 +15,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-@Api(name = "loginendpoint", namespace = @ApiNamespace(ownerDomain = "trip.com", ownerName = "trip.com", packagePath = "expensemanager"))
+@Api(name = "loginendpoint", namespace = @ApiNamespace(ownerDomain = "backend.expensemanager.trip.com", ownerName = "backend.expensemanager.trip.com", packagePath = ""))
 public class LogInEndpoint {
 
 	/**

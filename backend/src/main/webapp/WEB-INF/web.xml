@@ -5,8 +5,13 @@
         <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
         <init-param>
             <param-name>services</param-name>
-            <param-value>com.trip.expensemanager.backend.DeviceInfoEndpoint,com.trip.expensemanager.backend.DistributionEndpoint,com.trip.expensemanager.backend.ExpenseEndpoint,com.trip.expensemanager.backend.LogInEndpoint,com.trip.expensemanager.backend.MessageEndpoint,com.trip.expensemanager.backend.ToSyncEndpoint,com.trip.expensemanager.backend.TripEndpoint,
-                com.trip.expensemanager.backend.DeviceInfoEndpointEndpoint</param-value>
+            <param-value>com.trip.expensemanager.backend.DeviceInfoEndpoint,
+                com.trip.expensemanager.backend.DistributionEndpoint,
+                com.trip.expensemanager.backend.ExpenseEndpoint,
+                com.trip.expensemanager.backend.LogInEndpoint,
+                com.trip.expensemanager.backend.ToSyncEndpoint,
+                com.trip.expensemanager.backend.TripEndpoint,
+                com.trip.expensemanager.backend.MessageDataEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
