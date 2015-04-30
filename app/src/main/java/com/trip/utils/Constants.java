@@ -28,6 +28,7 @@ public class Constants {
 	public static final String STR_ERROR = "error";
 	public static final String DATABASE = "expense.db";
 	public static final String STR_SUCCESS = "success";
+    public static final String STR_TOKEN_INVALID= "invalid_token";
 	public static final String STR_INVALIDATE ="invalidate";
 	public static final String STR_FAILURE ="failure";
 	public static final String STR_AUTH ="auth";

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
+
 import net.sourceforge.zbar.Config;
 import net.sourceforge.zbar.Image;
 import net.sourceforge.zbar.ImageScanner;

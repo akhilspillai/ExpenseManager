@@ -1,17 +1,16 @@
 package com.trip.expensemanager;
 
-import java.io.IOException;
+import android.content.Context;
+import android.os.AsyncTask;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.trip.expensemanager.backend.loginendpoint.Loginendpoint;
-import com.trip.expensemanager.backend.loginendpoint.model.LogIn;
-import com.trip.expensemanager.backend.loginendpoint.model.LogIn;
+import com.trip.expensemanager.loginendpoint.Loginendpoint;
+import com.trip.expensemanager.loginendpoint.model.LogIn;
 import com.trip.utils.Constants;
 import com.trip.utils.LocalDB;
 
-import android.content.Context;
-import android.os.AsyncTask;
+import java.io.IOException;
 
 public class UpdateLoginTask extends AsyncTask<Void, Void, Void>{
 

@@ -1,9 +1,5 @@
 package com.trip.expensemanager.fragments;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +29,10 @@ import com.trip.utils.ExpenseBean;
 import com.trip.utils.Global;
 import com.trip.utils.LocalDB;
 import com.trip.utils.TripBean;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TripPeopleFragment extends CustomFragment implements OnItemClickListener, OnClickListener {
 

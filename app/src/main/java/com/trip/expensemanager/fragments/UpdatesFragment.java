@@ -1,8 +1,5 @@
 package com.trip.expensemanager.fragments;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +20,9 @@ import com.trip.utils.Constants;
 import com.trip.utils.LocalDB;
 import com.trip.utils.TripBean;
 import com.trip.utils.UpdateBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UpdatesFragment extends CustomFragment implements OnItemClickListener {
 

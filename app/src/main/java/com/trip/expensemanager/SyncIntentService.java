@@ -1,13 +1,5 @@
 package com.trip.expensemanager;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -26,21 +18,21 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
-import com.trip.expensemanager.backend.deviceinfoendpoint.Deviceinfoendpoint;
-import com.trip.expensemanager.backend.deviceinfoendpoint.model.DeviceInfo;
-import com.trip.expensemanager.backend.distributionendpoint.Distributionendpoint;
-import com.trip.expensemanager.backend.distributionendpoint.model.CollectionResponseDistribution;
-import com.trip.expensemanager.backend.distributionendpoint.model.Distribution;
-import com.trip.expensemanager.backend.expenseendpoint.Expenseendpoint;
-import com.trip.expensemanager.backend.expenseendpoint.model.CollectionResponseExpense;
-import com.trip.expensemanager.backend.expenseendpoint.model.Expense;
-import com.trip.expensemanager.backend.loginendpoint.Loginendpoint;
-import com.trip.expensemanager.backend.loginendpoint.model.LogIn;
-import com.trip.expensemanager.backend.tosyncendpoint.Tosyncendpoint;
-import com.trip.expensemanager.backend.tosyncendpoint.model.CollectionResponseToSync;
-import com.trip.expensemanager.backend.tosyncendpoint.model.ToSync;
-import com.trip.expensemanager.backend.tripendpoint.Tripendpoint;
-import com.trip.expensemanager.backend.tripendpoint.model.Trip;
+import com.trip.expensemanager.deviceinfoendpoint.Deviceinfoendpoint;
+import com.trip.expensemanager.deviceinfoendpoint.model.DeviceInfo;
+import com.trip.expensemanager.distributionendpoint.Distributionendpoint;
+import com.trip.expensemanager.distributionendpoint.model.CollectionResponseDistribution;
+import com.trip.expensemanager.distributionendpoint.model.Distribution;
+import com.trip.expensemanager.expenseendpoint.Expenseendpoint;
+import com.trip.expensemanager.expenseendpoint.model.CollectionResponseExpense;
+import com.trip.expensemanager.expenseendpoint.model.Expense;
+import com.trip.expensemanager.loginendpoint.Loginendpoint;
+import com.trip.expensemanager.loginendpoint.model.LogIn;
+import com.trip.expensemanager.tosyncendpoint.Tosyncendpoint;
+import com.trip.expensemanager.tosyncendpoint.model.CollectionResponseToSync;
+import com.trip.expensemanager.tosyncendpoint.model.ToSync;
+import com.trip.expensemanager.tripendpoint.Tripendpoint;
+import com.trip.expensemanager.tripendpoint.model.Trip;
 import com.trip.utils.Constants;
 import com.trip.utils.DistributionBean1;
 import com.trip.utils.ExpenseBean;
@@ -51,6 +43,14 @@ import com.trip.utils.UpdateBean;
 import com.trip.utils.billing.IabHelper;
 import com.trip.utils.billing.IabResult;
 import com.trip.utils.billing.Inventory;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class SyncIntentService extends IntentService{
 

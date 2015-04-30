@@ -1,7 +1,5 @@
 package com.trip.expensemanager.adapters;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.trip.expensemanager.R;
+
+import java.util.List;
 
 public class CustomTripListAdapter extends ArrayAdapter<String> {
 

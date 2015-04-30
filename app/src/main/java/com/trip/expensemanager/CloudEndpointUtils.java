@@ -1,14 +1,14 @@
 package com.trip.expensemanager;
 
+import android.app.Activity;
+import android.util.Log;
+import android.widget.Toast;
+
 import com.google.api.client.googleapis.json.GoogleJsonError;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.googleapis.services.AbstractGoogleClient;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
-
-import android.app.Activity;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -37,7 +37,7 @@ public class CloudEndpointUtils {
    * The root URL of where your DevAppServer is running (if you're running the
    * DevAppServer locally).
    */
-  protected static final String LOCAL_APP_ENGINE_SERVER_URL = "http://localhost:8888/";
+  protected static final String LOCAL_APP_ENGINE_SERVER_URL = "http://localhost:8080/";
 
   /*
    * The root URL of where your DevAppServer is running when it's being
@@ -47,7 +47,7 @@ public class CloudEndpointUtils {
    * http://developer.android.com/tools/devices/emulator.html#networkaddresses
    * for more information.
    */
-  protected static final String LOCAL_APP_ENGINE_SERVER_URL_FOR_ANDROID = "http://10.0.2.2:8888";
+  protected static final String LOCAL_APP_ENGINE_SERVER_URL_FOR_ANDROID = "http://10.0.2.2:8080";
 
   /**
    * Updates the Google client builder to connect the appropriate server based

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar_start"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <com.trip.expensemanager.views.LineAnimatedView
         android:id="@+id/anim_line"
@@ -12,14 +11,14 @@
         android:layout_height="5dp"
         custom:color1="@android:color/black"
         custom:color2="@android:color/white"
-        custom:color3="@android:color/black" />
+        custom:color3="@android:color/black"
+        android:visibility="invisible"  />
 
     <ScrollView
         android:id="@+id/sc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/anim_line"
-        android:visibility="invisible" >
+        android:layout_below="@+id/anim_line">
 
         <RelativeLayout
             android:id="@+id/rl"
@@ -27,44 +26,87 @@
             android:layout_height="wrap_content" >
 
             <TextView
-                android:id="@+id/txt_email"
+                android:id="@+id/txt_mob_no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="@string/email"
+                android:text="@string/mob_no"
                 android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/etxt_email"
-                android:layout_width="300dp"
+            <LinearLayout
+                android:id="@+id/ll"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_email"
-                android:layout_margin="5dp"
-                android:enabled="false"
-                android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                android:textColor="@drawable/disable_color"
-                android:textSize="15sp" />
+                android:orientation="horizontal"
+                android:layout_below="@+id/txt_mob_no"
+                android:gravity="center_vertical"
+                android:layout_marginTop="5dp"
+                android:weightSum="16">
+
+                <AutoCompleteTextView
+                    android:id="@+id/etxt_country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/country_code"
+                    android:layout_weight="2"
+                    android:completionThreshold="1"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@drawable/disable_color"
+                    android:inputType="phone"/>
+
+                <EditText
+                    android:id="@+id/etxt_mob_no"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="11"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:hint="@string/mob_no"
+                    android:inputType="phone"
+                    android:textColor="@drawable/disable_color" />
+
+                <Button
+                    android:id="@+id/btn_verify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/custom_button_settled"
+                    android:text="Verify"/>
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/txt_name"
+                android:id="@+id/txt_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/etxt_email"
-                android:layout_margin="5dp"
-                android:text="@string/your_name"
-                android:textSize="15sp" />
+                android:text="@string/verification_info"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/ll"/>
+
+            <TextView
+                android:id="@+id/txt_token"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/verification_token"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/txt_info"/>
 
             <EditText
-                android:id="@+id/etxt_name"
-                android:layout_width="300dp"
+                android:id="@+id/etxt_token"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_name"
-                android:layout_margin="5dp"
-                android:hint="@string/screen_name"
-                android:inputType="textCapWords"
-                android:textColor="@drawable/disable_color"
-                android:textSize="15sp" />
+                android:ems="10"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/txt_token"
+                android:inputType="number"
+                android:hint="@string/token"
+                android:textColor="@drawable/disable_color"/>
+
         </RelativeLayout>
     </ScrollView>
 
@@ -73,8 +115,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/app_color"
-        android:visibility="invisible" >
+        android:background="@color/app_color">
 
         <LinearLayout
             android:id="@+id/ll_exit"

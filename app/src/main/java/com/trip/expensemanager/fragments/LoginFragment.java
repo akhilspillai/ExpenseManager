@@ -1,7 +1,5 @@
 package com.trip.expensemanager.fragments;
 
-import java.io.IOException;
-
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,10 +38,12 @@ import com.trip.expensemanager.ProcessingActivity;
 import com.trip.expensemanager.R;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
-import com.trip.expensemanager.backend.loginendpoint.Loginendpoint;
-import com.trip.expensemanager.backend.loginendpoint.model.CollectionResponseLogIn;
+import com.trip.expensemanager.loginendpoint.Loginendpoint;
+import com.trip.expensemanager.loginendpoint.model.CollectionResponseLogIn;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
+
+import java.io.IOException;
 
 public class LoginFragment extends CustomFragment implements OnClickListener, AnimationListener {
 

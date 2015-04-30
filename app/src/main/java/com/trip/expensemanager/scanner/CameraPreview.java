@@ -1,4 +1,5 @@
 package com.trip.expensemanager.scanner;
+
 import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
@@ -9,6 +10,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+
 import java.io.IOException;
 import java.util.List;
 

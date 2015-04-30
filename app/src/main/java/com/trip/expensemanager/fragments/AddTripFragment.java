@@ -1,13 +1,5 @@
 package com.trip.expensemanager.fragments;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import net.sourceforge.zbar.Symbol;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -47,25 +39,34 @@ import com.trip.expensemanager.R;
 import com.trip.expensemanager.SyncIntentService;
 import com.trip.expensemanager.TripDetailsActivity;
 import com.trip.expensemanager.adapters.CustomTripListAdapter;
-import com.trip.expensemanager.backend.distributionendpoint.Distributionendpoint;
-import com.trip.expensemanager.backend.distributionendpoint.model.CollectionResponseDistribution;
-import com.trip.expensemanager.backend.distributionendpoint.model.Distribution;
-import com.trip.expensemanager.backend.expenseendpoint.Expenseendpoint;
-import com.trip.expensemanager.backend.expenseendpoint.model.CollectionResponseExpense;
-import com.trip.expensemanager.backend.expenseendpoint.model.Expense;
+import com.trip.expensemanager.distributionendpoint.Distributionendpoint;
+import com.trip.expensemanager.distributionendpoint.model.CollectionResponseDistribution;
+import com.trip.expensemanager.distributionendpoint.model.Distribution;
+import com.trip.expensemanager.expenseendpoint.Expenseendpoint;
+import com.trip.expensemanager.expenseendpoint.model.CollectionResponseExpense;
+import com.trip.expensemanager.expenseendpoint.model.Expense;
 import com.trip.expensemanager.fragments.dialogs.AddTripDialogFragment;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
-import com.trip.expensemanager.backend.loginendpoint.Loginendpoint;
-import com.trip.expensemanager.backend.loginendpoint.model.LogIn;
+import com.trip.expensemanager.loginendpoint.Loginendpoint;
+import com.trip.expensemanager.loginendpoint.model.LogIn;
 import com.trip.expensemanager.scanner.ZBarConstants;
 import com.trip.expensemanager.scanner.ZBarScannerActivity;
-import com.trip.expensemanager.backend.tripendpoint.Tripendpoint;
-import com.trip.expensemanager.backend.tripendpoint.model.Trip;
+import com.trip.expensemanager.tripendpoint.Tripendpoint;
+import com.trip.expensemanager.tripendpoint.model.Trip;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
 import com.trip.utils.LocalDB;
 import com.trip.utils.TripBean;
+
+import net.sourceforge.zbar.Symbol;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class AddTripFragment extends CustomFragment implements OnItemClickListener, OnClickListener {
 

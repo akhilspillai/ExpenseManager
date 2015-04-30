@@ -1,10 +1,5 @@
 package com.trip.expensemanager.fragments;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -43,6 +38,11 @@ import com.trip.utils.ExpenseBean;
 import com.trip.utils.Global;
 import com.trip.utils.LocalDB;
 import com.trip.utils.TripBean;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TripExpenseFragment extends CustomFragment implements OnItemClickListener, OnClickListener {
 

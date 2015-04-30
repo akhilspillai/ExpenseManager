@@ -14,7 +14,7 @@ public final class R {
 	}
 	public static final class id {
 		public static final int camera_preview = 0x7f0a0054;
-		public static final int view_finder_view = 0x7f0a00c7;
+		public static final int view_finder_view = 0x7f0a00ca;
 	}
 	public static final class integer {
 		public static final int viewfinder_border_length = 0x7f0b0004;

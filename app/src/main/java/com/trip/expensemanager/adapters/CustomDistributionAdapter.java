@@ -1,7 +1,5 @@
 package com.trip.expensemanager.adapters;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +10,8 @@ import android.widget.TextView;
 
 import com.trip.expensemanager.R;
 import com.trip.expensemanager.fragments.TripDetailsFragment;
+
+import java.util.List;
 
 public class CustomDistributionAdapter extends ArrayAdapter<String> {
 

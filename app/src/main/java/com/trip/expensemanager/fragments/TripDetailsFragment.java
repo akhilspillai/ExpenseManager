@@ -1,17 +1,5 @@
 package com.trip.expensemanager.fragments;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.achartengine.ChartFactory;
-import org.achartengine.GraphicalView;
-import org.achartengine.model.CategorySeries;
-import org.achartengine.renderer.DefaultRenderer;
-import org.achartengine.renderer.SimpleSeriesRenderer;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -54,6 +42,18 @@ import com.trip.utils.Global;
 import com.trip.utils.Heap;
 import com.trip.utils.LocalDB;
 import com.trip.utils.TripBean;
+
+import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
+import org.achartengine.model.CategorySeries;
+import org.achartengine.renderer.DefaultRenderer;
+import org.achartengine.renderer.SimpleSeriesRenderer;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class TripDetailsFragment extends CustomFragment implements OnClickListener, OnCheckedChangeListener {
 

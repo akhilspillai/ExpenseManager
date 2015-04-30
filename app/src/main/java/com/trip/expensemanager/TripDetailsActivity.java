@@ -1,7 +1,5 @@
 package com.trip.expensemanager;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -34,6 +32,8 @@ import com.trip.utils.ExpenseBean;
 import com.trip.utils.Global;
 import com.trip.utils.LocalDB;
 import com.trip.utils.TripBean;
+
+import java.util.List;
 
 public class TripDetailsActivity extends ActionBarActivity {
 

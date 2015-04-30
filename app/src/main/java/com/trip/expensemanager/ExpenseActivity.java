@@ -1,7 +1,5 @@
 package com.trip.expensemanager;
 
-import java.util.regex.Pattern;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +19,8 @@ import com.trip.expensemanager.fragments.AddTripFragment;
 import com.trip.expensemanager.fragments.NewUserFragment;
 import com.trip.utils.Constants;
 import com.trip.utils.LocalDB;
+
+import java.util.regex.Pattern;
 
 public class ExpenseActivity extends ActionBarActivity {
 

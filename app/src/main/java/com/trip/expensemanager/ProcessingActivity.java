@@ -1,21 +1,5 @@
 package com.trip.expensemanager;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -38,23 +22,39 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.trip.expensemanager.backend.deviceinfoendpoint.Deviceinfoendpoint;
-import com.trip.expensemanager.backend.deviceinfoendpoint.model.CollectionResponseDeviceInfo;
-import com.trip.expensemanager.backend.deviceinfoendpoint.model.DeviceInfo;
-import com.trip.expensemanager.backend.distributionendpoint.Distributionendpoint;
-import com.trip.expensemanager.backend.distributionendpoint.model.CollectionResponseDistribution;
-import com.trip.expensemanager.backend.distributionendpoint.model.Distribution;
-import com.trip.expensemanager.backend.expenseendpoint.Expenseendpoint;
-import com.trip.expensemanager.backend.expenseendpoint.model.CollectionResponseExpense;
-import com.trip.expensemanager.backend.expenseendpoint.model.Expense;
-import com.trip.expensemanager.backend.loginendpoint.Loginendpoint;
-import com.trip.expensemanager.backend.loginendpoint.model.CollectionResponseLogIn;
-import com.trip.expensemanager.backend.loginendpoint.model.LogIn;
-import com.trip.expensemanager.backend.tripendpoint.Tripendpoint;
-import com.trip.expensemanager.backend.tripendpoint.model.Trip;
+import com.trip.expensemanager.deviceinfoendpoint.Deviceinfoendpoint;
+import com.trip.expensemanager.deviceinfoendpoint.model.CollectionResponseDeviceInfo;
+import com.trip.expensemanager.deviceinfoendpoint.model.DeviceInfo;
+import com.trip.expensemanager.distributionendpoint.Distributionendpoint;
+import com.trip.expensemanager.distributionendpoint.model.CollectionResponseDistribution;
+import com.trip.expensemanager.distributionendpoint.model.Distribution;
+import com.trip.expensemanager.expenseendpoint.Expenseendpoint;
+import com.trip.expensemanager.expenseendpoint.model.CollectionResponseExpense;
+import com.trip.expensemanager.expenseendpoint.model.Expense;
+import com.trip.expensemanager.loginendpoint.Loginendpoint;
+import com.trip.expensemanager.loginendpoint.model.CollectionResponseLogIn;
+import com.trip.expensemanager.loginendpoint.model.LogIn;
+import com.trip.expensemanager.tripendpoint.Tripendpoint;
+import com.trip.expensemanager.tripendpoint.model.Trip;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
 import com.trip.utils.LocalDB;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 public class ProcessingActivity extends Activity{

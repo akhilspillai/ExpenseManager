@@ -1,7 +1,5 @@
 package com.trip.expensemanager.adapters;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +13,8 @@ import android.widget.EditText;
 
 import com.trip.expensemanager.R;
 import com.trip.expensemanager.fragments.AddExpenseFragment;
+
+import java.util.List;
 
 public class CustomAddExpenseAdapter extends ArrayAdapter<String> {
 

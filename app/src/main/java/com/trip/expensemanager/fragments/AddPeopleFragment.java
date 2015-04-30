@@ -1,8 +1,5 @@
 package com.trip.expensemanager.fragments;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +17,9 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.trip.expensemanager.R;
 import com.trip.utils.Constants;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class AddPeopleFragment extends CustomFragment {
 

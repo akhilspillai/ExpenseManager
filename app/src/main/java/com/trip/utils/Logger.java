@@ -1,12 +1,12 @@
 package com.trip.utils;
 
+import android.os.Environment;
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import android.os.Environment;
-import android.util.Log;
 
 public class Logger {
 	private static final boolean LOG = true;

@@ -1,15 +1,5 @@
 package com.trip.utils;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -22,6 +12,16 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.trip.expensemanager.R;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 
 public class Global {
@@ -41,16 +41,11 @@ public class Global {
 		String strError=null;
 		try {
 			for(int i=0;i<views.length;i++){
-				if(views[i] instanceof EditText){
+                if(views[i] instanceof EditText){
 					EditText et = (EditText) views[i];
 					if(et.getText()==null||et.getText().toString().trim().equals("")){
 						strError="Cannot be empty!!";
 						showError(et, strError);
-						return false;
-					}
-					else if((et.getHint().toString().equals("MPIN") || et.getHint().toString().equals("New MPIN") || et.getHint().toString().equals("Confirm MPIN")) && et.getText().toString().length()!=4){
-						Toast toast = Toast.makeText(et.getContext(), "MPIN should be of 4 digits", Toast.LENGTH_SHORT);
-						toast.show();
 						return false;
 					}
 				}
