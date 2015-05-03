@@ -30,7 +30,7 @@
         <item name="android:windowEnterAnimation">@anim/up_n_show</item>
         <item name="android:windowExitAnimation">@anim/down_n_go</item>
     </style>
-    
+
     <style name="ToolbarTheme">
         <item name="colorControlNormal">@android:color/white</item>
     </style>

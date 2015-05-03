@@ -3,20 +3,20 @@
     android:id="@+id/rl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingEnd="20dp"
     android:paddingLeft="20dp"
-    android:paddingStart="20dp"
     android:paddingRight="20dp"
-    android:paddingEnd="20dp" >
+    android:paddingStart="20dp">
 
     <ImageView
         android:id="@+id/iv_distribution"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_expense_owed"
-        android:contentDescription="@string/app_name" />
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_expense_owed" />
 
     <TextView
         android:id="@+id/tv_distribution"
@@ -25,24 +25,24 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
-        android:textSize="15sp"
-        android:layout_toRightOf="@+id/iv_distribution"
         android:layout_toEndOf="@+id/iv_distribution"
         android:layout_toLeftOf="@+id/btn_settle"
-        android:layout_toStartOf="@+id/btn_settle"/>
-    
+        android:layout_toRightOf="@+id/iv_distribution"
+        android:layout_toStartOf="@+id/btn_settle"
+        android:textSize="15sp" />
+
     <Button
         android:id="@+id/btn_settle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="2dp"
         android:layout_marginStart="2dp"
         android:background="@drawable/custom_button_settled"
-        android:textColor="@drawable/custom_text_settled"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:text="@string/settle_expenses"
-        android:textSize="15sp"/>
+        android:textColor="@drawable/custom_text_settled"
+        android:textSize="15sp" />
 
 </RelativeLayout>

@@ -35,13 +35,13 @@ import com.trip.expensemanager.fragments.dialogs.AddTripDialogFragment;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.SettleDebtDialogFragment;
 import com.trip.utils.Constants;
-import com.trip.utils.DistributionBean;
-import com.trip.utils.DistributionBean1;
-import com.trip.utils.ExpenseBean;
+import com.trip.expensemanager.beans.DistributionBean;
+import com.trip.expensemanager.beans.DistributionBean1;
+import com.trip.expensemanager.beans.ExpenseBean;
 import com.trip.utils.Global;
 import com.trip.utils.Heap;
-import com.trip.utils.LocalDB;
-import com.trip.utils.TripBean;
+import com.trip.expensemanager.database.LocalDB;
+import com.trip.expensemanager.beans.TripBean;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -57,320 +57,317 @@ import java.util.List;
 
 public class TripDetailsFragment extends CustomFragment implements OnClickListener, OnCheckedChangeListener {
 
-	public static TripDetailsFragment newInstance(String strTrip, long lngUserId, long lngTripId) {
-		TripDetailsFragment fragment=null;
-		try {
-			fragment=new TripDetailsFragment();
-			Bundle bundle=new Bundle();
-			bundle.putString(Constants.STR_TRIP_NAME, strTrip);
-			bundle.putLong(Constants.STR_USER_ID, lngUserId);
-			bundle.putLong(Constants.STR_TRIP_ID, lngTripId);
-			fragment.setArguments(bundle);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return fragment;
-	}
-	protected AlertDialog alert;
-	private long lngUserId;
-	private ArrayList<ExpenseBean> arrExpenses;
-	private long lngTripId;
-	private String strTripName;
-	private TextView txtTripName;
-	private ImageView ivEdit;
-	private LinearLayout llChartContainer;
-	//	private String[] code;
-	private GraphicalView mChart;
-	private TextView txtNoExpenses;
-	private LongSparseArray<DistributionBean> expenseSparseArr=new LongSparseArray<DistributionBean>();
-	private LongSparseArray<String> toGetSparseArr=new LongSparseArray<String>();
-	private String strTotalSpent="0";
-	private List<String> arrDistribution=new ArrayList<String>();
-	private List<Boolean> arrPossibletoSettle=new ArrayList<Boolean>();
-	private ArrayList<Long> arrFromUsrIds=new ArrayList<Long>();
-	private ArrayList<String> arrAmountToPay=new ArrayList<String>();
-	private ListView lvDistributionList;
-	private ArrayAdapter<String> listAdapter;
-	private TextView txtDistribution;
-	private TextView txtTripAmount;
-	private RadioButton btnUnsettled;
-	private RadioGroup rgDist;
+    protected AlertDialog alert;
+    private long lngUserId;
+    private ArrayList<ExpenseBean> arrExpenses;
+    private long lngTripId;
+    private String strTripName;
+    private TextView txtTripName;
+    private ImageView ivEdit;
+    private LinearLayout llChartContainer;
+    //	private String[] code;
+    private GraphicalView mChart;
+    private TextView txtNoExpenses;
+    private LongSparseArray<DistributionBean> expenseSparseArr = new LongSparseArray<DistributionBean>();
+    private LongSparseArray<String> toGetSparseArr = new LongSparseArray<String>();
+    private String strTotalSpent = "0";
+    private List<String> arrDistribution = new ArrayList<String>();
+    private List<Boolean> arrPossibletoSettle = new ArrayList<Boolean>();
+    private ArrayList<Long> arrFromUsrIds = new ArrayList<Long>();
+    private ArrayList<String> arrAmountToPay = new ArrayList<String>();
+    private ListView lvDistributionList;
+    private ArrayAdapter<String> listAdapter;
+    private TextView txtDistribution;
+    private TextView txtTripAmount;
+    private RadioButton btnUnsettled;
+    private RadioGroup rgDist;
 
+    public static TripDetailsFragment newInstance(String strTrip, long lngUserId, long lngTripId) {
+        TripDetailsFragment fragment = null;
+        try {
+            fragment = new TripDetailsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.STR_TRIP_NAME, strTrip);
+            bundle.putLong(Constants.STR_USER_ID, lngUserId);
+            bundle.putLong(Constants.STR_TRIP_ID, lngTripId);
+            fragment.setArguments(bundle);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fragment;
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,	Bundle savedInstanceState) {
-		View rootView=null;
-		try{
-			rootView=inflater.inflate(R.layout.fragment_distribution_list, container, false);
-			Bundle bundle=getArguments();
-			lngUserId=bundle.getLong(Constants.STR_USER_ID);
-			lngTripId=bundle.getLong(Constants.STR_TRIP_ID);
-			TripBean trip = new LocalDB(getActivity()).retrieveTripDetails(lngTripId);
-			if(trip==null){
-				getActivity().finish();
-				return null;
-			}
-			lngTripId=trip.getId();
-			strTripName=trip.getName();
-			lvDistributionList=(ListView) rootView.findViewById(R.id.lv_distribution);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = null;
+        try {
+            rootView = inflater.inflate(R.layout.fragment_distribution_list, container, false);
+            Bundle bundle = getArguments();
+            lngUserId = bundle.getLong(Constants.STR_USER_ID);
+            lngTripId = bundle.getLong(Constants.STR_TRIP_ID);
+            TripBean trip = new LocalDB(getActivity()).retrieveTripDetails(lngTripId);
+            if (trip == null) {
+                getActivity().finish();
+                return null;
+            }
+            lngTripId = trip.getId();
+            strTripName = trip.getName();
+            lvDistributionList = (ListView) rootView.findViewById(R.id.lv_distribution);
 
-			View header = View.inflate(getActivity(), R.layout.fragment_trip_details, null); 
+            View header = View.inflate(getActivity(), R.layout.fragment_trip_details, null);
 
-			lvDistributionList.addHeaderView(header);
-			listAdapter = new CustomDistributionAdapter(getActivity(), arrDistribution, arrPossibletoSettle, this);
-			lvDistributionList.setAdapter(listAdapter);
-			txtTripName=(TextView)rootView.findViewById(R.id.txt_trip_name);
-			ivEdit=(ImageView)rootView.findViewById(R.id.iv_edit_trip);
-			txtNoExpenses=(TextView)rootView.findViewById(R.id.tv_no_expenses);
-			txtDistribution=(TextView)rootView.findViewById(R.id.txt_distribution);
+            lvDistributionList.addHeaderView(header);
+            listAdapter = new CustomDistributionAdapter(getActivity(), arrDistribution, arrPossibletoSettle, this);
+            lvDistributionList.setAdapter(listAdapter);
+            txtTripName = (TextView) rootView.findViewById(R.id.txt_trip_name);
+            ivEdit = (ImageView) rootView.findViewById(R.id.iv_edit_trip);
+            txtNoExpenses = (TextView) rootView.findViewById(R.id.tv_no_expenses);
+            txtDistribution = (TextView) rootView.findViewById(R.id.txt_distribution);
 
-			rgDist=(RadioGroup)rootView.findViewById(R.id.rg);
+            rgDist = (RadioGroup) rootView.findViewById(R.id.rg);
 
-			btnUnsettled=(RadioButton)rootView.findViewById(R.id.btn_unsettled);
+            btnUnsettled = (RadioButton) rootView.findViewById(R.id.btn_unsettled);
 //			btnSettled=(RadioButton)rootView.findViewById(R.id.btn_settled);
-			llChartContainer=(LinearLayout)rootView.findViewById(R.id.ll_chart_container);
-			txtTripAmount=(TextView)rootView.findViewById(R.id.txt_trip_amount);
+            llChartContainer = (LinearLayout) rootView.findViewById(R.id.ll_chart_container);
+            txtTripAmount = (TextView) rootView.findViewById(R.id.txt_trip_amount);
 
-			txtTripName.setText(strTripName);
-			ivEdit.setOnClickListener(this);
-			lvDistributionList.setDivider(null);
-			loadData(trip);
-			setHasOptionsMenu(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return rootView;
-	}
+            txtTripName.setText(strTripName);
+            ivEdit.setOnClickListener(this);
+            lvDistributionList.setDivider(null);
+            loadData(trip);
+            setHasOptionsMenu(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rootView;
+    }
 
-	private void loadData(TripBean trip) {
-		LocalDB localDb=new LocalDB(getActivity());
-		try{
+    private void loadData(TripBean trip) {
+        LocalDB localDb = new LocalDB(getActivity());
+        try {
 //			lngAdminId=trip.getAdminId();
-			arrExpenses = localDb.retrieveExpenses(lngTripId);
+            arrExpenses = localDb.retrieveExpenses(lngTripId);
 
-			if(trip.getSyncStatus().equals(Constants.STR_QR_ADDED)){
-				ivEdit.setVisibility(View.INVISIBLE);
-			}
+            if (trip.getSyncStatus().equals(Constants.STR_QR_ADDED)) {
+                ivEdit.setVisibility(View.INVISIBLE);
+            }
 
-			if(arrExpenses.size()==0){
-				txtNoExpenses.setVisibility(View.VISIBLE);
-				txtTripAmount.setText("Total amount spent:0");
-			} else{
-				txtNoExpenses.setVisibility(View.INVISIBLE);
-				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) txtDistribution.getLayoutParams();
-				params.addRule(RelativeLayout.BELOW, R.id.ll_chart_container);
+            if (arrExpenses.size() == 0) {
+                txtNoExpenses.setVisibility(View.VISIBLE);
+                txtTripAmount.setText("Total amount spent:0");
+            } else {
+                txtNoExpenses.setVisibility(View.INVISIBLE);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) txtDistribution.getLayoutParams();
+                params.addRule(RelativeLayout.BELOW, R.id.ll_chart_container);
 
-				long userId=0L;
-				DistributionBean dbTemp=null;
-				int indexOfExpense;
-				String spentAmount="0";
-				for(ExpenseBean expense:arrExpenses){
-					if(!Constants.STR_DELETED.equals(expense.getSyncStatus()) && !Constants.STR_ERROR_STATUS.equals(expense.getSyncStatus())){
-						strTotalSpent=Global.add(strTotalSpent, expense.getAmount());
-						userId=expense.getUserId();
-						long[] tripUserIds=trip.getUserIds();
-						Long[] arrTripUserIds=new Long[tripUserIds.length];
-						for(int i=0;i<tripUserIds.length;i++){
-							arrTripUserIds[i]=tripUserIds[i];
-						}
-						List<Long> lstTripUsers=Arrays.asList(arrTripUserIds);
-						if(lstTripUsers.contains(userId)){
-							indexOfExpense= expenseSparseArr.indexOfKey(userId);
-							if(indexOfExpense>=0){
-								dbTemp=expenseSparseArr.get(userId);
-								spentAmount=dbTemp.getAmount();
-							} else{
-								spentAmount="0";
-								dbTemp=new DistributionBean();
-								dbTemp.setUserId(userId);
-							}
-							spentAmount=Global.add(spentAmount, expense.getAmount());
-							dbTemp.setAmount(spentAmount);
-							expenseSparseArr.put(userId, dbTemp);
-						}
-					}
-				}
-				txtTripAmount.setText("Total amount spent:"+strTotalSpent);
+                long userId = 0L;
+                DistributionBean dbTemp = null;
+                int indexOfExpense;
+                String spentAmount = "0";
+                for (ExpenseBean expense : arrExpenses) {
+                    if (!Constants.STR_DELETED.equals(expense.getSyncStatus()) && !Constants.STR_ERROR_STATUS.equals(expense.getSyncStatus())) {
+                        strTotalSpent = Global.add(strTotalSpent, expense.getAmount());
+                        userId = expense.getUserId();
 
-				openChart();
-			}
-			rgDist.setOnCheckedChangeListener(this);
-			if(btnUnsettled.isChecked()){
-				showUnsettledDistribution();
-			} else{
-				showSettledDistribution();
-			}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
+                        List<Long> lstTripUsers = Global.longToList(trip.getUserIds());
 
-	}
+                        if (lstTripUsers.contains(userId)) {
+                            indexOfExpense = expenseSparseArr.indexOfKey(userId);
+                            if (indexOfExpense >= 0) {
+                                dbTemp = expenseSparseArr.get(userId);
+                                spentAmount = dbTemp.getAmount();
+                            } else {
+                                spentAmount = "0";
+                                dbTemp = new DistributionBean();
+                                dbTemp.setUserId(userId);
+                            }
+                            spentAmount = Global.add(spentAmount, expense.getAmount());
+                            dbTemp.setAmount(spentAmount);
+                            expenseSparseArr.put(userId, dbTemp);
+                        }
+                    }
+                }
+                txtTripAmount.setText("Total amount spent:" + strTotalSpent);
 
-	private void buildDistribution() {
-		LocalDB localDb=new LocalDB(getActivity());
-		arrDistribution.removeAll(arrDistribution);
-		arrPossibletoSettle.removeAll(arrPossibletoSettle);
-		arrFromUsrIds.removeAll(arrFromUsrIds);
-		toGetSparseArr.clear();
-		//		TripBean trip=localDb.retrieveTripDetails(lngTripId);
-		List<Long> expUserIds;
-		List<String> expAmounts;
-		long userId=0L;
-		int indexOfExpense;
-		String strOwnExpense="0";
-		//		long[] tripUserIds=trip.getUserIds();
-		//		for(long tripUserId:tripUserIds){
-		//			toGetSparseArr.put(tripUserId, "0");
-		//		}
-		String strAmtToGet;
-		int i;
-		float fOwed=0f;
-		for(ExpenseBean expense:arrExpenses){
-			if(!Constants.STR_DELETED.equals(expense.getSyncStatus()) && !Constants.STR_ERROR_STATUS.equals(expense.getSyncStatus())){
-				userId=expense.getUserId();
-				expUserIds=Global.longToList(expense.getUserIds());
-				expAmounts=Global.stringToList(expense.getAmounts());
-				i=0;
-				indexOfExpense= toGetSparseArr.indexOfKey(userId);
-				if(indexOfExpense>=0){
-					strAmtToGet=toGetSparseArr.get(userId);
-				} else{
-					strAmtToGet="0";
-				}
-				strAmtToGet=Global.add(strAmtToGet, expense.getAmount());
-				toGetSparseArr.put(userId, strAmtToGet);
+                openChart();
+            }
+            rgDist.setOnCheckedChangeListener(this);
+            if (btnUnsettled.isChecked()) {
+                showUnsettledDistribution();
+            } else {
+                showSettledDistribution();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-				for(long expUserId:expUserIds){
-					indexOfExpense= toGetSparseArr.indexOfKey(expUserId);
-					if(indexOfExpense>=0){
-						strAmtToGet=toGetSparseArr.get(expUserId);
-					} else{
-						strAmtToGet="0";
-					}
-					strAmtToGet=Global.subtract(strAmtToGet,expAmounts.get(i));
-					toGetSparseArr.put(expUserId, strAmtToGet);
-					if(expUserId==userId){
-						if(lngUserId==userId){
-							strOwnExpense=Global.add(strOwnExpense, expAmounts.get(i));
-						}
-					}
-					i++;
-				}
-			}
-		}
+    }
 
-		List<DistributionBean1> lstPaidDist=localDb.retrieveSettledDistributionForTrip(lngTripId);
-		String strPaidAmount;
-		for(DistributionBean1 distPaid:lstPaidDist){
-			strPaidAmount=distPaid.getAmount();
-			userId=distPaid.getFromId();
-			indexOfExpense= toGetSparseArr.indexOfKey(userId);
-			if(indexOfExpense>=0){
-				strAmtToGet=toGetSparseArr.get(userId);
-				strAmtToGet=Global.add(strAmtToGet, strPaidAmount);
-				toGetSparseArr.put(userId, strAmtToGet);
-			}
-			userId=distPaid.getToId();
-			indexOfExpense= toGetSparseArr.indexOfKey(userId);
-			if(indexOfExpense>=0){
-				strAmtToGet=toGetSparseArr.get(userId);
-				strAmtToGet=Global.subtract(strAmtToGet, strPaidAmount);
-				toGetSparseArr.put(userId, strAmtToGet);
-			}
-		}
+    private void buildDistribution() {
+        LocalDB localDb = new LocalDB(getActivity());
+        arrDistribution.removeAll(arrDistribution);
+        arrPossibletoSettle.removeAll(arrPossibletoSettle);
+        arrFromUsrIds.removeAll(arrFromUsrIds);
+        toGetSparseArr.clear();
+        //		TripBean trip=localDb.retrieveTripDetails(lngTripId);
+        List<Long> expUserIds;
+        List<String> expAmounts;
+        long userId = 0L;
+        int indexOfExpense;
+        String strOwnExpense = "0";
+        //		long[] tripUserIds=trip.getUserIds();
+        //		for(long tripUserId:tripUserIds){
+        //			toGetSparseArr.put(tripUserId, "0");
+        //		}
+        String strAmtToGet;
+        int i;
+        float fOwed = 0f;
+        for (ExpenseBean expense : arrExpenses) {
+            if (!Constants.STR_DELETED.equals(expense.getSyncStatus()) && !Constants.STR_ERROR_STATUS.equals(expense.getSyncStatus())) {
+                userId = expense.getUserId();
+                expUserIds = Global.longToList(expense.getUserIds());
+                expAmounts = Global.stringToList(expense.getAmounts());
+                i = 0;
+                indexOfExpense = toGetSparseArr.indexOfKey(userId);
+                if (indexOfExpense >= 0) {
+                    strAmtToGet = toGetSparseArr.get(userId);
+                } else {
+                    strAmtToGet = "0";
+                }
+                strAmtToGet = Global.add(strAmtToGet, expense.getAmount());
+                toGetSparseArr.put(userId, strAmtToGet);
 
-		List<DistributionBean> lstToPay=new ArrayList<DistributionBean>();
-		List<DistributionBean> lstToGet=new ArrayList<DistributionBean>();
-		List<DistributionBean> lstNotOwed=new ArrayList<DistributionBean>();
+                for (long expUserId : expUserIds) {
+                    indexOfExpense = toGetSparseArr.indexOfKey(expUserId);
+                    if (indexOfExpense >= 0) {
+                        strAmtToGet = toGetSparseArr.get(expUserId);
+                    } else {
+                        strAmtToGet = "0";
+                    }
+                    strAmtToGet = Global.subtract(strAmtToGet, expAmounts.get(i));
+                    toGetSparseArr.put(expUserId, strAmtToGet);
+                    if (expUserId == userId) {
+                        if (lngUserId == userId) {
+                            strOwnExpense = Global.add(strOwnExpense, expAmounts.get(i));
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
 
-		DistributionBean distributionBeanTemp;
-		String strOwed="0";
+        List<DistributionBean1> lstPaidDist = localDb.retrieveSettledDistributionForTrip(lngTripId);
+        String strPaidAmount;
+        for (DistributionBean1 distPaid : lstPaidDist) {
+            strPaidAmount = distPaid.getAmount();
+            userId = distPaid.getFromId();
+            indexOfExpense = toGetSparseArr.indexOfKey(userId);
+            if (indexOfExpense >= 0) {
+                strAmtToGet = toGetSparseArr.get(userId);
+                strAmtToGet = Global.add(strAmtToGet, strPaidAmount);
+                toGetSparseArr.put(userId, strAmtToGet);
+            }
+            userId = distPaid.getToId();
+            indexOfExpense = toGetSparseArr.indexOfKey(userId);
+            if (indexOfExpense >= 0) {
+                strAmtToGet = toGetSparseArr.get(userId);
+                strAmtToGet = Global.subtract(strAmtToGet, strPaidAmount);
+                toGetSparseArr.put(userId, strAmtToGet);
+            }
+        }
 
-		int size=toGetSparseArr.size();
+        List<DistributionBean> lstToPay = new ArrayList<DistributionBean>();
+        List<DistributionBean> lstToGet = new ArrayList<DistributionBean>();
+        List<DistributionBean> lstNotOwed = new ArrayList<DistributionBean>();
 
-		for(i=0;i<size;i++){
-			distributionBeanTemp=new DistributionBean();
-			userId=toGetSparseArr.keyAt(i);
-			distributionBeanTemp.setUserId(userId);
-			strOwed=toGetSparseArr.get(userId);
-			fOwed=Float.parseFloat(strOwed);
-			if(fOwed<0){
-				distributionBeanTemp.setAmount(strOwed.substring(1));
-				lstToPay.add(distributionBeanTemp);
-			} else if(fOwed==0) {
-				distributionBeanTemp.setAmount(strOwed);
-				lstNotOwed.add(distributionBeanTemp);
-			} else{
-				distributionBeanTemp.setAmount(strOwed);
-				lstToGet.add(distributionBeanTemp);
-			}
-		}
+        DistributionBean distributionBeanTemp;
+        String strOwed = "0";
 
-		arrDistribution.add("Own expense: "+strOwnExpense);
-		arrPossibletoSettle.add(false);
-		arrFromUsrIds.add(lngUserId);
-		arrAmountToPay.add(strOwnExpense);
+        int size = toGetSparseArr.size();
 
-		DistributionBean[] adArrToGet=new DistributionBean[lstToGet.size()];
-		DistributionBean[] adArrToPay=new DistributionBean[lstToPay.size()];
-		DistributionBean[] adArrNotOwed=new DistributionBean[lstNotOwed.size()];
+        for (i = 0; i < size; i++) {
+            distributionBeanTemp = new DistributionBean();
+            userId = toGetSparseArr.keyAt(i);
+            distributionBeanTemp.setUserId(userId);
+            strOwed = toGetSparseArr.get(userId);
+            fOwed = Float.parseFloat(strOwed);
+            if (fOwed < 0) {
+                distributionBeanTemp.setAmount(strOwed.substring(1));
+                lstToPay.add(distributionBeanTemp);
+            } else if (fOwed == 0) {
+                distributionBeanTemp.setAmount(strOwed);
+                lstNotOwed.add(distributionBeanTemp);
+            } else {
+                distributionBeanTemp.setAmount(strOwed);
+                lstToGet.add(distributionBeanTemp);
+            }
+        }
 
-		adArrToGet=lstToGet.toArray(adArrToGet);
-		adArrToPay=lstToPay.toArray(adArrToPay);
-		adArrNotOwed=lstNotOwed.toArray(adArrNotOwed);
+        arrDistribution.add("Own expense: " + strOwnExpense);
+        arrPossibletoSettle.add(false);
+        arrFromUsrIds.add(lngUserId);
+        arrAmountToPay.add(strOwnExpense);
 
-		splitExpense(adArrToGet, adArrToPay, adArrNotOwed);
-	}
+        DistributionBean[] adArrToGet = new DistributionBean[lstToGet.size()];
+        DistributionBean[] adArrToPay = new DistributionBean[lstToPay.size()];
+        DistributionBean[] adArrNotOwed = new DistributionBean[lstNotOwed.size()];
 
-	private void splitExpense(DistributionBean[] adArrToGet, DistributionBean[] adArrToPay, DistributionBean[] adArrNotOwed) {
-		DistributionBean dbTempToGet=null;
-		DistributionBean dbTempToPay=null;
-		Heap heapToGet=new Heap(adArrToGet);
-		Heap heapToPay=new Heap(adArrToPay);
-		LocalDB localDb=new LocalDB(getActivity());
-		try {
-			heapToGet.buildMaxHeap();
-			heapToPay.buildMaxHeap();
-			String userTo, userFrom;
-			while(heapToGet.getArray().length!=0 && heapToPay.getArray().length!=0){
-				dbTempToGet=heapToGet.removeMax();
-				dbTempToPay=heapToPay.removeMax();
-				arrFromUsrIds.add(dbTempToPay.getUserId());
-				userFrom=localDb.retrievePrefferedName(dbTempToPay.getUserId());
-				userTo=localDb.retrievePrefferedName(dbTempToGet.getUserId());
-				String strBalance=Global.subtract(dbTempToPay.getAmount(), dbTempToGet.getAmount());
-				float fBalance=Float.parseFloat(strBalance);
-				if(fBalance==0){
-					if(userFrom.equalsIgnoreCase(Constants.STR_YOU)){
-						arrDistribution.add(userFrom+" owe "+userTo+" an amount of "+dbTempToPay.getAmount()+"!");
-					} else{
-						arrDistribution.add(userFrom+" owes "+userTo+" an amount of "+dbTempToPay.getAmount()+"!");
-					}
-				} else if(fBalance<0){
-					dbTempToGet.setAmount(strBalance.substring(1));
-					heapToGet.putValue(dbTempToGet);
-					if(userFrom.equalsIgnoreCase(Constants.STR_YOU)){
-						arrDistribution.add(userFrom+" owe "+userTo+" an amount of "+dbTempToPay.getAmount()+"!");
-					} else{
-						arrDistribution.add(userFrom+" owes "+userTo+" an amount of "+dbTempToPay.getAmount()+"!");
-					}
-				} else{
-					dbTempToPay.setAmount(strBalance);
-					heapToPay.putValue(dbTempToPay);
-					if(userFrom.equalsIgnoreCase(Constants.STR_YOU)){
-						arrDistribution.add(userFrom+" owe "+userTo+" an amount of "+dbTempToGet.getAmount()+"!");
-					} else{
-						arrDistribution.add(userFrom+" owes "+userTo+" an amount of "+dbTempToGet.getAmount()+"!");
-					}
-				}
-				arrAmountToPay.add(dbTempToPay.getAmount());
-				if(userTo.equalsIgnoreCase(Constants.STR_YOU)){
-					arrPossibletoSettle.add(true);
-				} else{
-					arrPossibletoSettle.add(false);
-				}
-			}
-			/*TripBean trip=localDb.retrieveTripDetails(lngTripId);
+        adArrToGet = lstToGet.toArray(adArrToGet);
+        adArrToPay = lstToPay.toArray(adArrToPay);
+        adArrNotOwed = lstNotOwed.toArray(adArrNotOwed);
+
+        splitExpense(adArrToGet, adArrToPay, adArrNotOwed);
+    }
+
+    private void splitExpense(DistributionBean[] adArrToGet, DistributionBean[] adArrToPay, DistributionBean[] adArrNotOwed) {
+        DistributionBean dbTempToGet = null;
+        DistributionBean dbTempToPay = null;
+        Heap heapToGet = new Heap(adArrToGet);
+        Heap heapToPay = new Heap(adArrToPay);
+        LocalDB localDb = new LocalDB(getActivity());
+        try {
+            heapToGet.buildMaxHeap();
+            heapToPay.buildMaxHeap();
+            String userTo, userFrom;
+            while (heapToGet.getArray().length != 0 && heapToPay.getArray().length != 0) {
+                dbTempToGet = heapToGet.removeMax();
+                dbTempToPay = heapToPay.removeMax();
+                arrFromUsrIds.add(dbTempToPay.getUserId());
+                userFrom = localDb.retrievePrefferedName(dbTempToPay.getUserId());
+                userTo = localDb.retrievePrefferedName(dbTempToGet.getUserId());
+                String strBalance = Global.subtract(dbTempToPay.getAmount(), dbTempToGet.getAmount());
+                float fBalance = Float.parseFloat(strBalance);
+                if (fBalance == 0) {
+                    if (userFrom.equalsIgnoreCase(Constants.STR_YOU)) {
+                        arrDistribution.add(userFrom + " owe " + userTo + " an amount of " + dbTempToPay.getAmount() + "!");
+                    } else {
+                        arrDistribution.add(userFrom + " owes " + userTo + " an amount of " + dbTempToPay.getAmount() + "!");
+                    }
+                } else if (fBalance < 0) {
+                    dbTempToGet.setAmount(strBalance.substring(1));
+                    heapToGet.putValue(dbTempToGet);
+                    if (userFrom.equalsIgnoreCase(Constants.STR_YOU)) {
+                        arrDistribution.add(userFrom + " owe " + userTo + " an amount of " + dbTempToPay.getAmount() + "!");
+                    } else {
+                        arrDistribution.add(userFrom + " owes " + userTo + " an amount of " + dbTempToPay.getAmount() + "!");
+                    }
+                } else {
+                    dbTempToPay.setAmount(strBalance);
+                    heapToPay.putValue(dbTempToPay);
+                    if (userFrom.equalsIgnoreCase(Constants.STR_YOU)) {
+                        arrDistribution.add(userFrom + " owe " + userTo + " an amount of " + dbTempToGet.getAmount() + "!");
+                    } else {
+                        arrDistribution.add(userFrom + " owes " + userTo + " an amount of " + dbTempToGet.getAmount() + "!");
+                    }
+                }
+                arrAmountToPay.add(dbTempToPay.getAmount());
+                if (userTo.equalsIgnoreCase(Constants.STR_YOU)) {
+                    arrPossibletoSettle.add(true);
+                } else {
+                    arrPossibletoSettle.add(false);
+                }
+            }
+            /*TripBean trip=localDb.retrieveTripDetails(lngTripId);
 			for(DistributionBean tempBean:adArrNotOwed){
 				userFrom=localDb.retrievePrefferedName(tempBean.getUserId());
 				arrDistribution.add(userFrom+" doesn't owe anybody anything!");
@@ -378,56 +375,56 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
 				arrPossibletoSettle.add(false);
 				arrAmountToPay.add(tempBean.getAmount());
 			}*/
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
-	private void openChart(){
-		int size=expenseSparseArr.size();
-		long lngUserId=0L;
-		String strExpUser;
-		LocalDB localDb=new LocalDB(getActivity());
-		try {
-			CategorySeries distributionSeries = new CategorySeries("Expense distribution of "+strTripName.toLowerCase()+" by users");
-			for(int i=0 ;i < size;i++){
-				lngUserId=expenseSparseArr.keyAt(i);
-				strExpUser=localDb.retrievePrefferedName(expenseSparseArr.get(lngUserId).getUserId());
-				distributionSeries.add(strExpUser, Float.parseFloat(expenseSparseArr.get(lngUserId).getAmount()));
-			}
+    private void openChart() {
+        int size = expenseSparseArr.size();
+        long lngUserId = 0L;
+        String strExpUser;
+        LocalDB localDb = new LocalDB(getActivity());
+        try {
+            CategorySeries distributionSeries = new CategorySeries("Expense distribution of " + strTripName.toLowerCase() + " by users");
+            for (int i = 0; i < size; i++) {
+                lngUserId = expenseSparseArr.keyAt(i);
+                strExpUser = localDb.retrievePrefferedName(expenseSparseArr.get(lngUserId).getUserId());
+                distributionSeries.add(strExpUser, Float.parseFloat(expenseSparseArr.get(lngUserId).getAmount()));
+            }
 
-			// Instantiating a renderer for the Pie Chart
-			DefaultRenderer defaultRenderer  = new DefaultRenderer();
-			ArrayList<Integer> arrColors=Global.generateColor(size);
-			DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
-			float val = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 15, metrics);
-			for(int i = 0 ;i<size;i++){
+            // Instantiating a renderer for the Pie Chart
+            DefaultRenderer defaultRenderer = new DefaultRenderer();
+            ArrayList<Integer> arrColors = Global.generateColor(size);
+            DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
+            float val = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 15, metrics);
+            for (int i = 0; i < size; i++) {
 
-				// Instantiating a render for the slice
-				SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
-				seriesRenderer.setColor(arrColors.get(i));
-				// Adding the renderer of a slice to the renderer of the pie chart
-				defaultRenderer.addSeriesRenderer(seriesRenderer);
-			}
+                // Instantiating a render for the slice
+                SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
+                seriesRenderer.setColor(arrColors.get(i));
+                // Adding the renderer of a slice to the renderer of the pie chart
+                defaultRenderer.addSeriesRenderer(seriesRenderer);
+            }
 
-			defaultRenderer.setLabelsColor(Color.BLACK);
-			defaultRenderer.setLegendTextSize(val);
-			defaultRenderer.setLabelsTextSize(val);
-			defaultRenderer.setZoomButtonsVisible(false);
-			defaultRenderer.setZoomEnabled(false);
+            defaultRenderer.setLabelsColor(Color.BLACK);
+            defaultRenderer.setLegendTextSize(val);
+            defaultRenderer.setLabelsTextSize(val);
+            defaultRenderer.setZoomButtonsVisible(false);
+            defaultRenderer.setZoomEnabled(false);
 
-			// Getting a reference to view group linear layout chart_container
+            // Getting a reference to view group linear layout chart_container
 
-			// Getting PieChartView to add to the custom layout
-			mChart = ChartFactory.getPieChartView(getActivity(), distributionSeries, defaultRenderer);
+            // Getting PieChartView to add to the custom layout
+            mChart = ChartFactory.getPieChartView(getActivity(), distributionSeries, defaultRenderer);
 
-			//			defaultRenderer.setClickEnabled(true);//
-			defaultRenderer.setSelectableBuffer(10);
-			defaultRenderer.setPanEnabled(false);
-			defaultRenderer.setFitLegend(true);
+            //			defaultRenderer.setClickEnabled(true);//
+            defaultRenderer.setSelectableBuffer(10);
+            defaultRenderer.setPanEnabled(false);
+            defaultRenderer.setFitLegend(true);
 
-			defaultRenderer.setInScroll(true);
+            defaultRenderer.setInScroll(true);
 			/*mChart.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -445,16 +442,16 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
 					}
 				}
 			});*/
-			
-			int sizeOfChart=Integer.parseInt(getActivity().getResources().getString(R.string.chart_size));
-			llChartContainer.setVisibility(View.VISIBLE);
-			LayoutParams lp=new LayoutParams(sizeOfChart, sizeOfChart);
-			lp.gravity= Gravity.CENTER_HORIZONTAL;
-			llChartContainer.addView(mChart, lp);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
+            int sizeOfChart = Integer.parseInt(getActivity().getResources().getString(R.string.chart_size));
+            llChartContainer.setVisibility(View.VISIBLE);
+            LayoutParams lp = new LayoutParams(sizeOfChart, sizeOfChart);
+            lp.gravity = Gravity.CENTER_HORIZONTAL;
+            llChartContainer.addView(mChart, lp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 	/*@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -528,47 +525,47 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
 		}
 	}*/
 
-	@Override
-	public void onClick(View v) {
-		if(v.equals(ivEdit)){
-			showUpdateTripNameDialog(strTripName);
-		} else{
-			int position = (int) v.getTag();
-			showSettleDeptDialog(position);
-		}
-	}
+    @Override
+    public void onClick(View v) {
+        if (v.equals(ivEdit)) {
+            showUpdateTripNameDialog(strTripName);
+        } else {
+            int position = (int) v.getTag();
+            showSettleDeptDialog(position);
+        }
+    }
 
-	
-	private void showSettleDeptDialog(final int position) {
-		ConfirmDialogListener listener=new ConfirmDialogListener() {
 
-			@Override
-			public void onDialogPositiveClick(DialogFragment dialog) {
-				EditText et=(EditText)dialog.getDialog().findViewById(R.id.et_amount);
-				String strAmount=et.getText().toString();
-				markDistributionAsSettled(strAmount, position);
-				dialog.dismiss();
-			}
+    private void showSettleDeptDialog(final int position) {
+        ConfirmDialogListener listener = new ConfirmDialogListener() {
 
-			@Override
-			public void onDialogNegativeClick(DialogFragment dialog) {
-				dialog.dismiss();
-			}
-		};
-		Context context=getActivity();
-		LocalDB localDb=new LocalDB(context);
-		String user=localDb.retrievePrefferedName(arrFromUsrIds.get(position));
-		String strAmount=arrAmountToPay.get(position);
-		if(strAmount.startsWith("-")){
-			strAmount=strAmount.substring(1);
-		}
-		SettleDebtDialogFragment.newInstance("Do you want to mark "+user+"'s debt as settled?", strAmount, listener).show(getActivity().getSupportFragmentManager(), "dialog");
+            @Override
+            public void onDialogPositiveClick(DialogFragment dialog) {
+                EditText et = (EditText) dialog.getDialog().findViewById(R.id.et_amount);
+                String strAmount = et.getText().toString();
+                markDistributionAsSettled(strAmount, position);
+                dialog.dismiss();
+            }
 
-	}
+            @Override
+            public void onDialogNegativeClick(DialogFragment dialog) {
+                dialog.dismiss();
+            }
+        };
+        Context context = getActivity();
+        LocalDB localDb = new LocalDB(context);
+        String user = localDb.retrievePrefferedName(arrFromUsrIds.get(position));
+        String strAmount = arrAmountToPay.get(position);
+        if (strAmount.startsWith("-")) {
+            strAmount = strAmount.substring(1);
+        }
+        SettleDebtDialogFragment.newInstance("Do you want to mark " + user + "'s debt as settled?", strAmount, listener).show(getActivity().getSupportFragmentManager(), "dialog");
 
-	protected void markDistributionAsSettled(String strAmount, int position) {
-		long userId=arrFromUsrIds.get(position);
-		String strSettledAmount=strAmount;
+    }
+
+    protected void markDistributionAsSettled(String strAmount, int position) {
+        long userId = arrFromUsrIds.get(position);
+        String strSettledAmount = strAmount;
 //		String strAmountToPay=arrAmountToPay.get(position);
 		/*if(strAmountToPay.equals(strSettledAmount)){
 			arrDistribution.remove(position);
@@ -585,122 +582,122 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
 			}
 			arrAmountToPay.remove(position);
 		}*/
-		Context context=getActivity();
-		LocalDB localDb=new LocalDB(context);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		String date = sdf.format(new Date());
-		long rowId=localDb.insertDistribution(userId, lngUserId, strSettledAmount, lngTripId, Constants.STR_UNSYNCED, date);
-		localDb.updateDistributionId(rowId, rowId);
-		//		buildDistribution();
-		//		listAdapter.notifyDataSetChanged();
-		((TripDetailsActivity)context).updateViews();
-		context.startService(new Intent(context, SyncIntentService.class));
-	}
+        Context context = getActivity();
+        LocalDB localDb = new LocalDB(context);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        String date = sdf.format(new Date());
+        long rowId = localDb.insertDistribution(userId, lngUserId, strSettledAmount, lngTripId, Constants.STR_NOT_SYNCHED, date);
+        localDb.updateDistributionId(rowId, rowId);
+        //		buildDistribution();
+        //		listAdapter.notifyDataSetChanged();
+        ((TripDetailsActivity) context).updateViews();
+        context.startService(new Intent(context, SyncIntentService.class));
+    }
 
-	
-	private void showUpdateTripNameDialog(String tripName) {
-		ConfirmDialogListener listener=new ConfirmDialogListener() {
 
-			@Override
-			public void onDialogPositiveClick(DialogFragment dialog) {
-				strTripName=((EditText)dialog.getDialog().findViewById(R.id.etxt_trip_name)).getText().toString();
-				updateTrip(lngTripId, strTripName);
-				dialog.dismiss();
-			}
+    private void showUpdateTripNameDialog(String tripName) {
+        ConfirmDialogListener listener = new ConfirmDialogListener() {
 
-			@Override
-			public void onDialogNegativeClick(DialogFragment dialog) {
-				dialog.dismiss();
-			}
-		};
-		AddTripDialogFragment.newInstance(getActivity().getResources().getString(R.string.update), tripName, listener).show(getActivity().getSupportFragmentManager(), "dialog");
-	}
+            @Override
+            public void onDialogPositiveClick(DialogFragment dialog) {
+                strTripName = ((EditText) dialog.getDialog().findViewById(R.id.etxt_trip_name)).getText().toString();
+                updateTrip(lngTripId, strTripName);
+                dialog.dismiss();
+            }
 
-	protected void updateTrip(long lngTripIdToChange, String strTripNameToChange) {
-		LocalDB localDb=new LocalDB(getActivity());
-		try{
-			TripBean trip=localDb.retrieveTripDetails(lngTripIdToChange);
-			Context context=getActivity();
-			if(Constants.STR_NOT_SYNCHED.equals(trip.getSyncStatus()) || Constants.STR_QR_ADDED.equals(trip.getSyncStatus())){
-				localDb.updateTrip(lngTripIdToChange, strTripNameToChange, trip.getSyncStatus());
-			} else{
-				localDb.updateTrip(lngTripIdToChange, strTripNameToChange, Constants.STR_UPDATED);
-			}
-			((ActionBarActivity)context).getSupportActionBar().setTitle(strTripNameToChange);
-			context.startService(new Intent(context, SyncIntentService.class));	
-			((TripDetailsActivity)context).updateViews();
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-	}
+            @Override
+            public void onDialogNegativeClick(DialogFragment dialog) {
+                dialog.dismiss();
+            }
+        };
+        AddTripDialogFragment.newInstance(getActivity().getResources().getString(R.string.update), tripName, listener).show(getActivity().getSupportFragmentManager(), "dialog");
+    }
 
-	@Override
-	public void onCheckedChanged(RadioGroup group, int checkedId) {
-		reBuildDistribution();
-	}
+    protected void updateTrip(long lngTripIdToChange, String strTripNameToChange) {
+        LocalDB localDb = new LocalDB(getActivity());
+        try {
+            TripBean trip = localDb.retrieveTripDetails(lngTripIdToChange);
+            Context context = getActivity();
+            if (Constants.STR_NOT_SYNCHED.equals(trip.getSyncStatus()) || Constants.STR_QR_ADDED.equals(trip.getSyncStatus())) {
+                localDb.updateTrip(lngTripIdToChange, strTripNameToChange, trip.getSyncStatus());
+            } else {
+                localDb.updateTrip(lngTripIdToChange, strTripNameToChange, Constants.STR_UPDATED);
+            }
+            ((ActionBarActivity) context).getSupportActionBar().setTitle(strTripNameToChange);
+            context.startService(new Intent(context, SyncIntentService.class));
+            ((TripDetailsActivity) context).updateViews();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	private void reBuildDistribution() {
-		if(btnUnsettled.isChecked()){
-			showUnsettledDistribution();
-		} else{
-			showSettledDistribution();
-		}
-	}
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        reBuildDistribution();
+    }
 
-	private void showSettledDistribution() {
-		LocalDB localDb=new LocalDB(getActivity());
-		arrDistribution.removeAll(arrDistribution);
-		arrPossibletoSettle.removeAll(arrPossibletoSettle);
-		arrFromUsrIds.removeAll(arrFromUsrIds);
-		List<DistributionBean1> arrDistfromDB = localDb.retrieveSettledDistributionForTrip(lngTripId);
-		long fromId, toId;
-		String toUser, fromUser, strAmount, tempUser;
-		float fAmount;
-		if(arrDistfromDB.size()==0){
-			arrDistribution.add("No settled debts!!");
-			arrPossibletoSettle.add(false);
-		} else{
-			for(DistributionBean1 dist:arrDistfromDB){
-				fromId=dist.getFromId();
-				toId=dist.getToId();
-				fromUser=localDb.retrievePrefferedName(fromId);
+    private void reBuildDistribution() {
+        if (btnUnsettled.isChecked()) {
+            showUnsettledDistribution();
+        } else {
+            showSettledDistribution();
+        }
+    }
 
-				toUser=localDb.retrievePrefferedName(toId);
-				strAmount=dist.getAmount();
-				fAmount=Float.parseFloat(strAmount);
-				long tempId;
-				if(fAmount<0){
-					tempUser=fromUser;
-					fromUser=toUser;
-					toUser=tempUser;
-					strAmount=strAmount.substring(1);
-					tempId=fromId;
-					fromId=toId;
-					toId=tempId;
-				}
-				if(toUser.equalsIgnoreCase(Constants.STR_YOU)){
-					toUser="you";
-				}
-				if(fromId!=toId && fAmount!=0){
-					arrDistribution.add(fromUser+" paid "+toUser+" back an amount of "+strAmount);
-				}
-				arrPossibletoSettle.add(false);
-			}
-		}
+    private void showSettledDistribution() {
+        LocalDB localDb = new LocalDB(getActivity());
+        arrDistribution.removeAll(arrDistribution);
+        arrPossibletoSettle.removeAll(arrPossibletoSettle);
+        arrFromUsrIds.removeAll(arrFromUsrIds);
+        List<DistributionBean1> arrDistfromDB = localDb.retrieveSettledDistributionForTrip(lngTripId);
+        long fromId, toId;
+        String toUser, fromUser, strAmount, tempUser;
+        float fAmount;
+        if (arrDistfromDB.size() == 0) {
+            arrDistribution.add("No settled debts!!");
+            arrPossibletoSettle.add(false);
+        } else {
+            for (DistributionBean1 dist : arrDistfromDB) {
+                fromId = dist.getFromId();
+                toId = dist.getToId();
+                fromUser = localDb.retrievePrefferedName(fromId);
 
-		tempUser=null;
-		if(arrDistribution.size()==0){
-			arrDistribution.add("Nobody owes anybody anything!!");
-		}
-		listAdapter.notifyDataSetChanged();
-	}
+                toUser = localDb.retrievePrefferedName(toId);
+                strAmount = dist.getAmount();
+                fAmount = Float.parseFloat(strAmount);
+                long tempId;
+                if (fAmount < 0) {
+                    tempUser = fromUser;
+                    fromUser = toUser;
+                    toUser = tempUser;
+                    strAmount = strAmount.substring(1);
+                    tempId = fromId;
+                    fromId = toId;
+                    toId = tempId;
+                }
+                if (toUser.equalsIgnoreCase(Constants.STR_YOU)) {
+                    toUser = "you";
+                }
+                if (fromId != toId && fAmount != 0) {
+                    arrDistribution.add(fromUser + " paid " + toUser + " back an amount of " + strAmount);
+                }
+                arrPossibletoSettle.add(false);
+            }
+        }
 
-	private void showUnsettledDistribution() {
-		buildDistribution();
-		if(arrDistribution.size()==0){
-			arrDistribution.add("Nobody owes anybody anything!!");
-			arrPossibletoSettle.add(false);
-		}
-		listAdapter.notifyDataSetChanged();
-	}
+        tempUser = null;
+        if (arrDistribution.size() == 0) {
+            arrDistribution.add("Nobody owes anybody anything!!");
+        }
+        listAdapter.notifyDataSetChanged();
+    }
+
+    private void showUnsettledDistribution() {
+        buildDistribution();
+        if (arrDistribution.size() == 0) {
+            arrDistribution.add("Nobody owes anybody anything!!");
+            arrPossibletoSettle.add(false);
+        }
+        listAdapter.notifyDataSetChanged();
+    }
 }

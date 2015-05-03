@@ -6,13 +6,13 @@
     android:layout_gravity="center"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    tools:context=".ProcessingActivity" >
+    tools:context=".ProcessingActivity">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/custom_bg_transparant" >
+        android:background="@drawable/custom_bg_transparant">
 
         <ImageView
             android:id="@+id/pb"

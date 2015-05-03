@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
     android:background="@android:color/white"
-    android:padding="20dp" >
+    android:padding="20dp">
 
     <TextView
         android:id="@+id/tv_title"
@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/etxt_trip_name"
-        android:layout_marginTop="15dp" >
+        android:layout_marginTop="15dp">
 
         <Button
             android:id="@+id/btn_ok"

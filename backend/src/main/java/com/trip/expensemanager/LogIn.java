@@ -14,7 +14,7 @@ public class LogIn {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String username;
-	private String password;
+	private String countryCode;
 	private List<Long> tripIDs;
 	private List<Long> deviceIDs;
 	private String prefferedName;
@@ -24,12 +24,12 @@ public class LogIn {
 		return id;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getCountryCode() {
+		return countryCode;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
 	}
 
 	public String getUsername() {

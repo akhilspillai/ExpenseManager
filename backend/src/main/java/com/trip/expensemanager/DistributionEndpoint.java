@@ -43,7 +43,8 @@ public class DistributionEndpoint {
 			mgr = getEntityManager();
 			Query query;
 			if(tripId!=null){
-				query = mgr.createQuery("select from Distribution D where D.tripId=:tripId_fk order by D.creationDate");
+				query = mgr.createQuery("select from Distribution D where D.tripId=" +
+						":tripId_fk order by D.creationDate");
 				query.setParameter("tripId_fk", tripId);
 			} else{
 				query = mgr.createQuery("select from Distribution as Distribution");

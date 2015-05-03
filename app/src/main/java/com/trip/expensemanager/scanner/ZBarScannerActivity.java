@@ -33,7 +33,7 @@ public class ZBarScannerActivity extends Activity implements Camera.PreviewCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(!isCameraAvailable()) {
+        if (!isCameraAvailable()) {
             // Cancel request if there is no rear-facing camera.
             cancelRequest();
             return;
@@ -74,7 +74,7 @@ public class ZBarScannerActivity extends Activity implements Camera.PreviewCallb
 
         // Open the default i.e. the first rear facing camera.
         mCamera = Camera.open();
-        if(mCamera == null) {
+        if (mCamera == null) {
             // Cancel request if mCamera is null.
             cancelRequest();
             return;
@@ -149,9 +149,13 @@ public class ZBarScannerActivity extends Activity implements Camera.PreviewCallb
             }
         }
     }
-    private Runnable doAutoFocus = new Runnable() {
+
+    @Override
+    public void onBackPressed() {
+        cancelRequest();
+    }    private Runnable doAutoFocus = new Runnable() {
         public void run() {
-            if(mCamera != null && mPreviewing) {
+            if (mCamera != null && mPreviewing) {
                 mCamera.autoFocus(autoFocusCB);
             }
         }
@@ -163,9 +167,6 @@ public class ZBarScannerActivity extends Activity implements Camera.PreviewCallb
             mAutoFocusHandler.postDelayed(doAutoFocus, 1000);
         }
     };
-    
-    @Override
-    public void onBackPressed() {
-    	cancelRequest();
-    }
+
+
 }

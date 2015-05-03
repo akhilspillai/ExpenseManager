@@ -1,36 +1,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    
-    <TextView 
+    android:layout_height="match_parent">
+
+    <TextView
         android:id="@+id/txt_no_expense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_expense"
+        android:layout_centerInParent="true"
         android:layout_margin="20dp"
-        android:textSize="15sp"
-        android:layout_centerInParent="true"/>
-    
-    <ListView 
+        android:text="@string/no_expense"
+        android:textSize="15sp" />
+
+    <ListView
         android:id="@+id/li_expense"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
-        android:dividerHeight="0dp"/>
-        
+        android:dividerHeight="0dp"
+        android:visibility="invisible" />
+
     <ImageButton
         android:id="@+id/btn_add_expense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/round_button"
-        android:elevation="10dp"
         android:contentDescription="@string/app_name"
+        android:elevation="10dp"
         android:padding="13dp"
         android:src="@drawable/ic_action_add" />
 

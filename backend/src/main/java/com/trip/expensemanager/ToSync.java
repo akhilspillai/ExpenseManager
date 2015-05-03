@@ -1,6 +1,8 @@
 package com.trip.expensemanager;
 
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +18,7 @@ public class ToSync {
 	private Long changerId;
 	private Long syncItemId;
 	private String syncType;
+	private Date creationDate;
 
 	public Long getId() {
 		return id;
@@ -53,6 +56,12 @@ public class ToSync {
 		this.changerId = changerId;
 	}
 
-	
-	
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
 }

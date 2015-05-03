@@ -10,4 +10,8 @@
 		<property name="tripId" direction="asc" />
 		<property name="creationDate" direction="asc" />
 	</datastore-index>
+	<datastore-index kind="ToSync" ancestor="false"
+		source="manual">
+		<property name="creationDate" direction="asc" />
+	</datastore-index>
 </datastore-indexes>

@@ -5,30 +5,30 @@
     android:layout_height="match_parent"
     android:layout_margin="8dp"
     android:gravity="center"
-    android:weightSum="2"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:weightSum="2">
 
     <RadioButton
         android:id="@+id/btn_unsettled"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
+        android:layout_weight="1"
         android:background="@drawable/custom_button_tab"
         android:button="@null"
         android:checked="true"
         android:gravity="center"
-        android:text="@string/unsettled"
-        android:layout_weight="1" />
+        android:text="@string/unsettled" />
 
     <RadioButton
         android:id="@+id/btn_settled"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
+        android:layout_weight="1"
         android:background="@drawable/custom_button_tab"
         android:button="@null"
         android:gravity="center"
-        android:text="@string/settled"
-        android:layout_weight="1" />
+        android:text="@string/settled" />
 
 </RadioGroup>

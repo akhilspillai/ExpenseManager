@@ -44,6 +44,7 @@
     <string name="add_expense_name">Type expense name</string>
     <string name="add_expense_detail">Type expense detail</string>
     <string name="add_expense_amount">Type expense amount</string>
+    <string name="select_user">Select a user</string>
     <string name="action_add_expense">Add Expense</string>
     <string name="action_exit_eg">Exit EG</string>
     <string name="action_delete_trips">Delete EGs</string>
@@ -64,7 +65,7 @@
     <string name="expense_detail">Expense Detail</string>
     <string name="group_detail">Group Detail</string>
     <string name="spent_amount">Spent Amount</string>
-    <string name="expense_admin">Admin</string>
+    <string name="expense_admin">Spent by</string>
     <string name="expense_creation_date">Created On</string>
     <string name="action_save_expense">Save Expense</string>
     <string name="action_delete_expense">Delete Expense</string>
@@ -86,7 +87,7 @@
     <string name="upgrade_features">If you upgrade to premium you will have the following features:\n 1. No ads!\n 2. Add unlimited EGs!\n 3. Add unlimited number of people to your EGs!\n 4. Access across all your devices.</string>
     <string name="setup">Just a Sec&#8230;</string>
     <string name="done">Almost Done&#8230;</string>
-    <string-array name="country_codes" >
+    <string-array name="country_codes">
         <item>+93</item>
         <item>+355</item>
         <item>+213</item>
@@ -503,5 +504,5 @@
         <item>ZM</item>
         <item>ZW</item>
     </string-array>
-	
+
 </resources>

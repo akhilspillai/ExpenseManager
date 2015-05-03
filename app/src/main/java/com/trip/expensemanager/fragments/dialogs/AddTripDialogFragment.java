@@ -18,81 +18,81 @@ import com.trip.utils.Constants;
 
 public class AddTripDialogFragment extends DialogFragment {
 
-	ConfirmDialogListener mListener;
-	private CharSequence strAction;
-	private String strText;
+    ConfirmDialogListener mListener;
+    private CharSequence strAction;
+    private String strText;
 
-	public static AddTripDialogFragment newInstance(String strAction, String strText, ConfirmDialogListener listener) {
-		AddTripDialogFragment fragment=null;
-		try {
-			fragment=new AddTripDialogFragment();
-			Bundle bundle=new Bundle();
-            fragment.mListener=listener;
-			bundle.putString(Constants.STR_ACTION, strAction);
-			bundle.putString(Constants.STR_TEXT, strText);
-			fragment.setArguments(bundle);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return fragment;
-	}
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		this.strAction=getArguments().getString(Constants.STR_ACTION);
-		this.strText=getArguments().getString(Constants.STR_TEXT);
-	}
+    public static AddTripDialogFragment newInstance(String strAction, String strText, ConfirmDialogListener listener) {
+        AddTripDialogFragment fragment = null;
+        try {
+            fragment = new AddTripDialogFragment();
+            Bundle bundle = new Bundle();
+            fragment.mListener = listener;
+            bundle.putString(Constants.STR_ACTION, strAction);
+            bundle.putString(Constants.STR_TEXT, strText);
+            fragment.setArguments(bundle);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fragment;
+    }
 
-	@SuppressLint("InflateParams")
-	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		LayoutInflater inflator = getActivity().getLayoutInflater();
-		View view = inflator.inflate(R.layout.add_trip_dialog, null);
-		AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
-		builder.setView(view);
-		
-		EditText eTxtTripName = (EditText)view.findViewById(R.id.etxt_trip_name);
-		final Button btnOk = (Button) view.findViewById(R.id.btn_ok);
-		Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-		btnOk.setText(strAction);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.strAction = getArguments().getString(Constants.STR_ACTION);
+        this.strText = getArguments().getString(Constants.STR_TEXT);
+    }
+
+    @SuppressLint("InflateParams")
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        LayoutInflater inflator = getActivity().getLayoutInflater();
+        View view = inflator.inflate(R.layout.add_trip_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(view);
+
+        EditText eTxtTripName = (EditText) view.findViewById(R.id.etxt_trip_name);
+        final Button btnOk = (Button) view.findViewById(R.id.btn_ok);
+        Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+        btnOk.setText(strAction);
         eTxtTripName.setText(strText);
-		eTxtTripName.addTextChangedListener(new TextWatcher() {
+        eTxtTripName.addTextChangedListener(new TextWatcher() {
 
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				btnOk.setEnabled(false);
-			}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                btnOk.setEnabled(false);
+            }
 
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-			}
+            }
 
-			@Override
-			public void afterTextChanged(Editable s) {
-				if(s.length()!=0){
-					btnOk.setEnabled(true);
-				}
-			}
-		});
-		btnOk.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				mListener.onDialogPositiveClick(AddTripDialogFragment.this);
-			}
-		});
-		btnCancel.setOnClickListener(new OnClickListener() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() != 0) {
+                    btnOk.setEnabled(true);
+                }
+            }
+        });
+        btnOk.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				mListener.onDialogNegativeClick(AddTripDialogFragment.this);
-			}
-		});
-		return builder.create();
-	}
-	
+            @Override
+            public void onClick(View v) {
+                mListener.onDialogPositiveClick(AddTripDialogFragment.this);
+            }
+        });
+        btnCancel.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                mListener.onDialogNegativeClick(AddTripDialogFragment.this);
+            }
+        });
+        return builder.create();
+    }
+
 	/*@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

@@ -9,21 +9,22 @@
         android:id="@+id/anim_line"
         android:layout_width="match_parent"
         android:layout_height="5dp"
+        android:visibility="invisible"
         custom:color1="@android:color/black"
         custom:color2="@android:color/white"
-        custom:color3="@android:color/black"
-        android:visibility="invisible"  />
+        custom:color3="@android:color/black" />
 
     <ScrollView
         android:id="@+id/sc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/anim_line">
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_above="@+id/footer">
 
         <RelativeLayout
             android:id="@+id/rl"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/txt_mob_no"
@@ -37,33 +38,33 @@
                 android:id="@+id/ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_below="@+id/txt_mob_no"
-                android:gravity="center_vertical"
                 android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:weightSum="16">
 
                 <AutoCompleteTextView
                     android:id="@+id/etxt_country"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/country_code"
-                    android:layout_weight="2"
-                    android:completionThreshold="1"
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
-                    android:textColor="@drawable/disable_color"
-                    android:inputType="phone"/>
+                    android:layout_weight="2"
+                    android:completionThreshold="1"
+                    android:hint="@string/country_code"
+                    android:inputType="phone"
+                    android:textColor="@drawable/disable_color" />
 
                 <EditText
                     android:id="@+id/etxt_mob_no"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="11"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginEnd="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="11"
                     android:hint="@string/mob_no"
                     android:inputType="phone"
                     android:textColor="@drawable/disable_color" />
@@ -72,11 +73,11 @@
                     android:id="@+id/btn_verify"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:layout_marginRight="5dp"
                     android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="3"
                     android:background="@drawable/custom_button_settled"
-                    android:text="Verify"/>
+                    android:text="Verify" />
 
             </LinearLayout>
 
@@ -84,28 +85,28 @@
                 android:id="@+id/txt_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/verification_info"
+                android:layout_below="@+id/ll"
                 android:layout_marginTop="10dp"
-                android:layout_below="@+id/ll"/>
+                android:text="@string/verification_info" />
 
             <TextView
                 android:id="@+id/txt_token"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/verification_token"
+                android:layout_below="@+id/txt_info"
                 android:layout_marginTop="10dp"
-                android:layout_below="@+id/txt_info"/>
+                android:text="@string/verification_token" />
 
             <EditText
                 android:id="@+id/etxt_token"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:layout_marginTop="5dp"
                 android:layout_below="@+id/txt_token"
-                android:inputType="number"
+                android:layout_marginTop="5dp"
+                android:ems="10"
                 android:hint="@string/token"
-                android:textColor="@drawable/disable_color"/>
+                android:inputType="number"
+                android:textColor="@drawable/disable_color" />
 
         </RelativeLayout>
     </ScrollView>
@@ -124,7 +125,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:orientation="horizontal"
-            android:padding="10dp" >
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/iv_back"
@@ -148,7 +149,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:orientation="horizontal"
-            android:padding="10dp" >
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"

@@ -20,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -55,7 +54,7 @@ import com.trip.expensemanager.messageDataApi.MessageDataApi;
 import com.trip.expensemanager.messageDataApi.model.MessageData;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
-import com.trip.utils.LocalDB;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.utils.billing.IabHelper;
 import com.trip.utils.billing.IabResult;
 import com.trip.utils.billing.Purchase;
@@ -70,23 +69,9 @@ import java.util.Locale;
 
 public class NewUserFragment extends CustomFragment implements OnClickListener {
 
-    public static NewUserFragment newInstance() {
-        NewUserFragment fragment=null;
-        try {
-            fragment=new NewUserFragment();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return fragment;
-    }
-
-    protected Animation bounceImage;
-    protected Animation exitAnim;
-    protected Animation enterAnim;
-    protected boolean pwdChecked=false;
-    protected boolean usernameChecked=false;
-    protected boolean prefferedNameChecked;
-    protected String strPrefferedName;
+    public String strRegId;
+    public String strDeviceName;
+    IntentFilter filter;
     private String strMobNo, strCountryCode, strToken;
     private EditText etxtMobNo, etxtToken;
     private AutoCompleteTextView etxtCountryCode;
@@ -96,25 +81,30 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
     private LinearLayout llNext;
     private View anim;
     private IabHelper mHelper;
-    private boolean isPurchaseReady=false;
+    private boolean isPurchaseReady = false;
     private String strUniqueString;
-    public String strRegId;
-    public String strDeviceName;
     private Button btnVerify;
     private BroadcastReceiver smsReceiver;
     private RegisterTask registerTask;
     private SendSMSTask sendSMSTask;
-    IntentFilter filter;
-
     private List<String> lstCountryCodes;
-
     private HashMap<String, String> hmCountries = new HashMap<>();
 
+    public static NewUserFragment newInstance() {
+        NewUserFragment fragment = null;
+        try {
+            fragment = new NewUserFragment();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fragment;
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        View rootView=null;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        rootView= inflater.inflate(R.layout.fragment_new_user,container, false);
+        View rootView;
+        rootView = inflater.inflate(R.layout.fragment_new_user, container, false);
 
         anim = rootView.findViewById(R.id.anim_line);
         sc = (ScrollView) rootView.findViewById(R.id.sc);
@@ -128,7 +118,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
         lstCountryCodes = Arrays.asList(getResources().getStringArray(R.array.country_codes));
 
-        ArrayAdapter<String> autocompletetextAdapter = new ArrayAdapter<String>(getActivity(),
+        ArrayAdapter<String> autocompletetextAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_dropdown_item_1line, lstCountryCodes);
 
         etxtCountryCode.setAdapter(autocompletetextAdapter);
@@ -144,13 +134,13 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
 
     private void showErrorDialog(String strMessage) {
-        InfoDialogListener listener=new InfoDialogListener() {
+        InfoDialogListener listener = new InfoDialogListener() {
 
             @Override
             public void onDialogButtonClick(DialogFragment dialog) {
-                anim.setVisibility(View.VISIBLE);
-                rl.setVisibility(View.INVISIBLE);
-                sc.setVisibility(View.INVISIBLE);
+                anim.setVisibility(View.INVISIBLE);
+                rl.setVisibility(View.VISIBLE);
+                sc.setVisibility(View.VISIBLE);
                 enableVerification();
                 dialog.dismiss();
             }
@@ -159,26 +149,25 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
     }
 
 
-
     @Override
     public void onClick(View v) {
-        if(v.equals(llExit)){
+        if (v.equals(llExit)) {
             getActivity().finish();
-        } else if(v.equals(llNext)) {
+        } else if (v.equals(llNext)) {
             if (Global.validate(etxtToken)) {
                 strCountryCode = etxtCountryCode.getText().toString();
                 strMobNo = etxtMobNo.getText().toString();
                 strToken = etxtToken.getText().toString();
 
-                strMobNo = strCountryCode+strMobNo;
+                strMobNo = strCountryCode + strMobNo;
 
                 startRegistration();
             }
-        } else if(v.equals(btnVerify)) {
+        } else if (v.equals(btnVerify)) {
             if (Global.validate(etxtCountryCode, etxtMobNo)) {
                 strCountryCode = etxtCountryCode.getText().toString();
                 strMobNo = etxtMobNo.getText().toString();
-                if(lstCountryCodes.contains(strCountryCode)) {
+                if (lstCountryCodes.contains(strCountryCode)) {
                     smsReceiver = new BroadcastReceiver() {
                         @Override
                         public void onReceive(Context context, Intent intent) {
@@ -187,16 +176,17 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                             if (extras != null) {
                                 Object[] smsextras = (Object[]) extras.get("pdus");
 
-                                for (int i = 0; i < smsextras.length; i++) {
-                                    SmsMessage smsmsg = SmsMessage.createFromPdu((byte[]) smsextras[i]);
+                                for (Object smsExtra:smsextras) {
+                                    SmsMessage smsmsg = SmsMessage.createFromPdu((byte[]) smsExtra);
 
-                                    String strMsgBody = smsmsg.getMessageBody().toString();
+                                    String strMsgBody = smsmsg.getMessageBody();
 
                                     int index = strMsgBody.indexOf("Your verification code is ");
                                     if (index != -1) {
                                         index = index + 26;
                                         etxtToken.setText(strMsgBody.substring(index));
-                                        getActivity().unregisterReceiver(this);
+                                        getActivity().unregisterReceiver(smsReceiver);
+                                        smsReceiver = null;
                                         llNext.performClick();
                                     }
                                 }
@@ -208,7 +198,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                     getActivity().registerReceiver(smsReceiver, filter);
                     verifyMobNo();
                 } else {
-                    Toast.makeText(getActivity(), "Please enter a valid country code", Toast.LENGTH_LONG);
+                    Toast.makeText(getActivity(), "Please enter a valid country code", Toast.LENGTH_LONG).show();
                     etxtCountryCode.setText("");
                 }
             }
@@ -228,7 +218,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         }, 180 * 1000);
 
 
-        if(Global.isConnected(getActivity())) {
+        if (Global.isConnected(getActivity())) {
 
             if (sendSMSTask != null && !sendSMSTask.isCancelled()) {
                 sendSMSTask.cancel(true);
@@ -237,13 +227,12 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
             sendSMSTask = new SendSMSTask(strCountryCode, strMobNo);
             sendSMSTask.execute();
-        } else{
+        } else {
             showErrorDialog("Please connect to internet to continue.");
-            return;
         }
     }
 
-    private void enableVerification(){
+    private void enableVerification() {
         btnVerify.setEnabled(true);
         etxtMobNo.setEnabled(true);
         etxtCountryCode.setEnabled(true);
@@ -253,7 +242,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
     public void onResume() {
         super.onResume();
 
-        if(smsReceiver != null && filter != null) {
+        if (smsReceiver != null && filter != null) {
             getActivity().registerReceiver(smsReceiver, filter);
         }
     }
@@ -261,11 +250,14 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().unregisterReceiver(smsReceiver);
+        if (smsReceiver != null) {
+            getActivity().unregisterReceiver(smsReceiver);
+            smsReceiver = null;
+        }
     }
 
-    private void startRegistration(){
-        if(Global.isConnected(getActivity())) {
+    private void startRegistration() {
+        if (Global.isConnected(getActivity())) {
             if (registerTask != null && !registerTask.isCancelled()) {
                 registerTask.cancel(true);
                 registerTask = null;
@@ -278,6 +270,105 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         }
     }
 
+    private void showPurchaseOrNotDialog(String strMessage) {
+        ThreeButtonDialogListener listener = new ThreeButtonDialogListener() {
+
+            @Override
+            public void onDialogFirstButtonClick(DialogFragment dialog) {
+                purchaseItem();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onDialogSecondButtonClick(DialogFragment dialog) {
+                new PurchaseLoginTask(strMobNo).execute(false);
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onDialogThirdButtonClick(DialogFragment dialog) {
+                getActivity().finish();
+                dialog.dismiss();
+            }
+
+        };
+        ThreeButtonFragment.newInstance(strMessage, listener).show(getActivity().getSupportFragmentManager(), "dialog");
+    }
+
+    protected void purchaseItem() {
+        if (!isPurchaseReady) {
+            String base64EncodedPublicKey = Constants.STR_LICENSE_1 +
+                    Constants.STR_LICENSE_2 + Constants.STR_LICENSE_3 +
+                    Constants.STR_LICENSE_4 + Constants.STR_LICENSE_5 +
+                    Constants.STR_LICENSE_6 + Constants.STR_LICENSE_7;
+
+            mHelper = new IabHelper(getActivity(), base64EncodedPublicKey);
+            mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+                public void onIabSetupFinished(IabResult result) {
+                    if (!result.isSuccess()) {
+                        Log.d("Akhil", "Problem setting up In-app Billing: " + result);
+                        return;
+                    }
+                    isPurchaseReady = true;
+                    continuePurchase();
+                }
+            });
+        } else {
+            continuePurchase();
+        }
+    }
+
+    private void continuePurchase() {
+        IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
+                = new IabHelper.OnIabPurchaseFinishedListener() {
+            public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+                if (result.isFailure()) {
+                    Log.d("Akhil", "Error purchasing: " + result);
+                    showMessage("There was an error in purchasing! Please try again.");
+                } else if (purchase.getSku().equals(Constants.STR_SKU_PREMIUM)) {
+                    String strUniqueReturn = purchase.getDeveloperPayload();
+                    if (strUniqueReturn != null && strUniqueReturn.equals(strUniqueString)) {
+                        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.STR_PREFERENCE, Activity.MODE_PRIVATE);
+                        prefs.edit().putBoolean(Constants.STR_PURCHASED, true).apply();
+                        if (Global.isConnected(getActivity())) {
+                            new PurchaseLoginTask(strMobNo).execute(true);
+                        }
+                    } else {
+                        showMessage("There was an error in purchasing! Please try again.");
+                    }
+                }
+            }
+        };
+        strUniqueString = Global.randomString(25);
+        if (mHelper != null) {
+            mHelper.flagEndAsync();
+            mHelper.launchPurchaseFlow(getActivity(), Constants.STR_SKU_PREMIUM, Constants.ORDER_ID,
+                    mPurchaseFinishedListener, strUniqueString);
+        }
+    }
+
+    private void showRegistrationError(String strMessage) {
+        ConfirmDialogListener listener = new ConfirmDialogListener() {
+
+            @Override
+            public void onDialogPositiveClick(DialogFragment dialog) {
+                startRegistration();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onDialogNegativeClick(DialogFragment dialog) {
+                anim.setVisibility(View.VISIBLE);
+                rl.setVisibility(View.INVISIBLE);
+                sc.setVisibility(View.INVISIBLE);
+                etxtCountryCode.setEnabled(true);
+                etxtMobNo.setEnabled(true);
+                dialog.dismiss();
+            }
+        };
+        ConfirmationFragment.newInstance("Error", strMessage, "Try Again", R.layout.fragment_dialog_confirm, listener).show(getActivity().getSupportFragmentManager(), "dialog");
+    }
+
     private class GetCountriesTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -286,15 +377,12 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             return null;
         }
 
-        private void getCountryData()
-        {
+        private void getCountryData() {
             Locale[] locales = Locale.getAvailableLocales();
-            for (Locale locale : locales)
-            {
+            for (Locale locale : locales) {
                 String countryCode = locale.getCountry();
                 String country = locale.getDisplayCountry();
-                if (country.trim().length()>0 && !hmCountries.containsKey(countryCode))
-                {
+                if (country.trim().length() > 0 && !hmCountries.containsKey(countryCode)) {
                     hmCountries.put(countryCode, country);
                 }
             }
@@ -307,7 +395,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         String strMobNo;
         String strCountryCode;
 
-        SendSMSTask(String strCountryCode, String strMobNo){
+        SendSMSTask(String strCountryCode, String strMobNo) {
             this.strMobNo = strMobNo;
             this.strCountryCode = strCountryCode;
         }
@@ -321,7 +409,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         @Override
         protected MessageData doInBackground(Void... params) {
 
-            strMobNo = strCountryCode+strMobNo;
+            strMobNo = strCountryCode + strMobNo;
             MessageData retMessageData = createToken();
 
             return retMessageData;
@@ -330,13 +418,13 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         @Override
         protected void onPostExecute(MessageData messageData) {
             super.onPostExecute(messageData);
-            if(messageData == null){
+            if (messageData == null) {
                 showErrorDialog("Unable to contact the server. Please try again.");
                 enableVerification();
             }
         }
 
-        private MessageData createToken(){
+        private MessageData createToken() {
             MessageData retMessageData = new MessageData();
             MessageDataApi.Builder messageBuilder = new MessageDataApi.Builder(
                     AndroidHttp.newCompatibleTransport(), new JacksonFactory(), null);
@@ -348,7 +436,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             messageData.setCreationDate(new DateTime(new Date()));
             try {
                 retMessageData = messageEndpoint.insertMessageData(messageData).execute();
-            } catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return retMessageData;
@@ -357,11 +445,10 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
     private class RegisterTask extends AsyncTask<Void, Void, String> {
 
+        public static final String PROJECT_NUMBER = "28707109757";
+        private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
         String strMobNo;
         String strToken;
-
-        private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-        public static final String PROJECT_NUMBER = "28707109757";
         private GoogleCloudMessaging gcm;
 
         RegisterTask(String strMobNo, String strToken) {
@@ -373,7 +460,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            ((ExpenseActivity)getActivity()).setCustomTitle(R.string.done);
+            ((ExpenseActivity) getActivity()).setCustomTitle(R.string.done);
             anim.setVisibility(View.VISIBLE);
             rl.setVisibility(View.INVISIBLE);
             sc.setVisibility(View.INVISIBLE);
@@ -383,18 +470,20 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         protected String doInBackground(Void... params) {
             String strResult = null;
             try {
-                if(isTokenValid(strToken)){
+                if (isTokenValid(strToken)) {
+
                     strResult = getUserId();
+
                 } else {
                     strResult = Constants.STR_TOKEN_INVALID;
                 }
-            } catch(IOException e){
+            } catch (IOException e) {
 
             }
             return strResult;
         }
 
-        private boolean isTokenValid(String strToken){
+        private boolean isTokenValid(String strToken) {
             MessageDataApi.Builder messageBuilder = new MessageDataApi.Builder(
                     AndroidHttp.newCompatibleTransport(), new JacksonFactory(), null);
             messageBuilder = CloudEndpointUtils.updateBuilder(messageBuilder);
@@ -402,37 +491,20 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             MessageData messageData = null;
             try {
                 messageData = messageEndpoint.getMessageData(Long.parseLong(strMobNo.substring(1))).execute();
-            } catch(IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(messageData !=null){
+            if (messageData != null) {
                 return strToken.equals(messageData.getToken());
             }
             return false;
         }
 
-        private String updateLogin() throws IOException {
-            String result;
-            LocalDB localDb=new LocalDB(getActivity());
-            long lngUserId=localDb.retrieve();
-            Loginendpoint.Builder loginBuilder = new Loginendpoint.Builder(
-                    AndroidHttp.newCompatibleTransport(), new JacksonFactory(), null);
-            loginBuilder = CloudEndpointUtils.updateBuilder(loginBuilder);
-            Loginendpoint loginEndpoint = loginBuilder.build();
-            LogIn login=loginEndpoint.getLogIn(lngUserId).execute();
-            login.setUsername(strMobNo);
-            login=loginEndpoint.updateLogIn(login).execute();
-            localDb.update(login.getUsername(), login.getId());
-            localDb.updatePerson(login.getUsername(), login.getId());
-            result=Constants.STR_SUCCESS;
-            return result;
-        }
-
         private String getUserId() throws IOException {
-            String strResult=Constants.STR_FAILURE;
+            String strResult = Constants.STR_FAILURE;
             LogIn login = null;
             DeviceInfo device;
-            LocalDB localDb=new LocalDB(getActivity());
+            LocalDB localDb = new LocalDB(getActivity());
             Loginendpoint.Builder loginBuilder = new Loginendpoint.Builder(
                     AndroidHttp.newCompatibleTransport(), new JacksonFactory(), null);
             loginBuilder = CloudEndpointUtils.updateBuilder(loginBuilder);
@@ -442,8 +514,8 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             devInfoBuilder = CloudEndpointUtils.updateBuilder(devInfoBuilder);
             Deviceinfoendpoint devInfoEndpoint = devInfoBuilder.build();
             strDeviceName = getDeviceName();
-            strRegId=registerForGCM();
-            if(strRegId == null){
+            strRegId = registerForGCM();
+            if (strRegId == null) {
                 return strResult;
             }
             long id = Long.parseLong(strMobNo.substring(1));
@@ -453,52 +525,60 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
             }
             CollectionResponseDeviceInfo devInfoEntities = devInfoEndpoint.listDeviceInfo().setGcmRegId(strRegId).execute();
-            if (login == null) {
+            if (login == null || login.getDeviceIDs() == null) {
                 if (devInfoEntities == null || devInfoEntities.getItems() == null || devInfoEntities.getItems().size() < 1) {
-                    device=new DeviceInfo();
+                    device = new DeviceInfo();
                     device.setMake(strDeviceName);
                     device.setGcmRegId(strRegId);
-                    device=devInfoEndpoint.insertDeviceInfo(device).execute();
-                } else{
-                    device=devInfoEntities.getItems().get(0);
+                    device = devInfoEndpoint.insertDeviceInfo(device).execute();
+                } else {
+                    device = devInfoEntities.getItems().get(0);
                 }
-                login=new LogIn();
-                List<Long> devList=new ArrayList<Long>(1);
+
+                List<Long> devList = new ArrayList<Long>(1);
                 devList.add(device.getId());
-                login.setId(id);
+
+                if(login == null) {
+                    login = new LogIn();
+                    login.setId(id);
+                    login.setCountryCode(strCountryCode);
+                    login.setUsername(strMobNo);
+                }
+
                 login.setDeviceIDs(devList);
-                login.setUsername(strMobNo);
-                login=loginEndpoint.insertLogIn(login).execute();
-                localDb.insert(login.getId(), login.getUsername(), login.getPassword(), Constants.STR_YOU, device.getId());
-                localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU);
-                strResult=Constants.STR_SUCCESS;
-            } else{
+
+                login = loginEndpoint.insertLogIn(login).execute();
+
+                localDb.insert(login.getId(), login.getUsername(), login.getCountryCode(), Constants.STR_YOU, device.getId());
+                localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU, Constants.STR_SYNCHED);
+                strResult = Constants.STR_SUCCESS;
+            } else {
                 if (devInfoEntities == null || devInfoEntities.getItems() == null || devInfoEntities.getItems().size() < 1) {
-                    device=new DeviceInfo();
+                    device = new DeviceInfo();
                     device.setMake(strDeviceName);
                     device.setGcmRegId(strRegId);
-                    device=devInfoEndpoint.insertDeviceInfo(device).execute();
-                    if(isPurchased()){
-                        List<Long> lstDevIds=login.getDeviceIDs();
-                        if(lstDevIds==null){
-                            lstDevIds=new ArrayList<Long>();
-                        }
+                    device = devInfoEndpoint.insertDeviceInfo(device).execute();
+                } else {
+                    device = devInfoEntities.getItems().get(0);
+                }
+                List<Long> lstDevIds = login.getDeviceIDs();
+
+
+                if (lstDevIds == null) {
+                    lstDevIds = new ArrayList<Long>();
+                }
+
+                if (isPurchased() || lstDevIds.contains(device.getId())) {
+                    if (!lstDevIds.contains(device.getId())) {
                         lstDevIds.add(device.getId());
-                        login.setDeviceIDs(lstDevIds);
-                        login=loginEndpoint.updateLogIn(login).execute();
-                        localDb.insert(login.getId(), login.getUsername(), login.getPassword(), Constants.STR_YOU, device.getId());
-                        localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU);
-                        strResult=Constants.STR_SYNC_NEEDED;
-                    } else{
-                        strResult=Constants.STR_NOT_PURCHASED;
                     }
-                } else{
-                    device=devInfoEntities.getItems().get(0);
-                    localDb.insert(login.getId(), login.getUsername(), login.getPassword(), Constants.STR_YOU, device.getId());
-                    localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU);
-                    localDb.insert(login.getId(), login.getUsername(), login.getPassword(), Constants.STR_YOU, device.getId());
-                    localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU);
-                    strResult=Constants.STR_SYNC_NEEDED;
+                    login.setDeviceIDs(lstDevIds);
+                    login = loginEndpoint.updateLogIn(login).execute();
+                    localDb.insert(login.getId(), login.getUsername(), login.getCountryCode(), Constants.STR_YOU, device.getId());
+                    localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU, Constants.STR_SYNCHED);
+                    strResult = Constants.STR_SYNC_NEEDED;
+                } else {
+                    strResult = Constants.STR_NOT_PURCHASED;
                 }
 
             }
@@ -516,23 +596,23 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         }
 
         private String registerForGCM() {
-            String strRegId=null;
-            int count=5;
-            long sleepTime=100;
-            if(checkPlayServices()){
-                while(true){
-                    try{
+            String strRegId = null;
+            int count = 5;
+            long sleepTime = 100;
+            if (checkPlayServices()) {
+                while (true) {
+                    try {
                         if (gcm == null) {
                             gcm = GoogleCloudMessaging.getInstance(getActivity());
                         }
                         strRegId = gcm.register(PROJECT_NUMBER);
                         break;
                     } catch (IOException e) {
-                        if(--count==0){
+                        if (--count == 0) {
                             break;
-                        } else{
+                        } else {
                             try {
-                                Thread.sleep(sleepTime*2);
+                                Thread.sleep(sleepTime * 2);
                             } catch (InterruptedException e1) {
 
                             }
@@ -563,18 +643,17 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            ActionBarActivity context=(ActionBarActivity)getActivity();
-            LocalDB localDb=new LocalDB(context);
-            long lngUserId=localDb.retrieve();
-            if(result == null) {
+            ActionBarActivity context = (ActionBarActivity) getActivity();
+            LocalDB localDb = new LocalDB(context);
+            long lngUserId = localDb.retrieve();
 
-            } else if(result.equals(Constants.STR_FAILURE)){
+            if (result == null || result.equals(Constants.STR_FAILURE)) {
                 showRegistrationError("Oops!! Something went wrong. Please try again.");
-            } else if(result.equals(Constants.STR_NOT_PURCHASED)){
-                String strMessage=getActivity().getResources().getString(R.string.upgrade_features);
-                strMessage=Constants.STR_LOGIN_DIFF_DEV+strMessage;
+            } else if (result.equals(Constants.STR_NOT_PURCHASED)) {
+                String strMessage = getActivity().getResources().getString(R.string.upgrade_features);
+                strMessage = Constants.STR_LOGIN_DIFF_DEV + strMessage;
                 showPurchaseOrNotDialog(strMessage);
-            } else if(result.equals(Constants.STR_SYNC_NEEDED)){
+            } else if (result.equals(Constants.STR_SYNC_NEEDED)) {
 //				Intent intent=new Intent(getActivity(), ExpenseActivity.class);
 //				intent.putExtra(Constants.STR_SYNC_NEEDED, true);
 //				getActivity().startActivity(intent);
@@ -585,9 +664,9 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                 if (toolbar != null) {
                     context.setSupportActionBar(toolbar);
                 }
-                context.getSupportFragmentManager().popBackStack(null,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                context.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 context.getSupportFragmentManager().beginTransaction().replace(R.id.container, AddTripFragment.newInstance(lngUserId, true)).commit();
-            } else if(result.equals(Constants.STR_SUCCESS)){
+            } else if (result.equals(Constants.STR_SUCCESS)) {
 //				Intent intent=new Intent(getActivity(), ExpenseActivity.class);
 //				intent.putExtra(Constants.STR_SYNC_NEEDED, false);
 //				getActivity().startActivity(intent);
@@ -598,111 +677,16 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                 if (toolbar != null) {
                     context.setSupportActionBar(toolbar);
                 }
-                context.getSupportFragmentManager().popBackStack(null,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                context.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 context.getSupportFragmentManager().beginTransaction().replace(R.id.container, AddTripFragment.newInstance(lngUserId, false)).commit();
-            } else if(result.equals(Constants.STR_TOKEN_INVALID)){
-                showErrorDialog("Invalid verificstion token. Please try again!!");
+            } else if (result.equals(Constants.STR_TOKEN_INVALID)) {
+                showErrorDialog("Invalid verification token. Please try again!!");
             }
         }
 
     }
 
-    private void showPurchaseOrNotDialog(String strMessage) {
-        ThreeButtonDialogListener listener=new ThreeButtonDialogListener() {
-
-            @Override
-            public void onDialogFirstButtonClick(DialogFragment dialog) {
-                purchaseItem();
-            }
-
-            @Override
-            public void onDialogSecondButtonClick(DialogFragment dialog) {
-                new PurchaseLoginTask(strMobNo).execute(false);
-            }
-
-            @Override
-            public void onDialogThirdButtonClick(DialogFragment dialog) {
-                getActivity().finish();
-            }
-
-        };
-        ThreeButtonFragment.newInstance(strMessage, listener).show(getActivity().getSupportFragmentManager(), "dialog");
-    }
-
-    protected void purchaseItem() {
-        if(!isPurchaseReady){
-            String base64EncodedPublicKey=Constants.STR_LICENSE_1+
-                    Constants.STR_LICENSE_2+Constants.STR_LICENSE_3+
-                    Constants.STR_LICENSE_4+Constants.STR_LICENSE_5+
-                    Constants.STR_LICENSE_6+Constants.STR_LICENSE_7;
-
-            mHelper = new IabHelper(getActivity(), base64EncodedPublicKey);
-            mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-                public void onIabSetupFinished(IabResult result) {
-                    if (!result.isSuccess()) {
-                        Log.d("Akhil", "Problem setting up In-app Billing: " + result);
-                        return;
-                    }
-                    isPurchaseReady=true;
-                    continuePurchase();
-                }
-            });
-        } else{
-            continuePurchase();
-        }
-    }
-
-    private void continuePurchase(){
-        IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener
-                = new IabHelper.OnIabPurchaseFinishedListener() {
-            public void onIabPurchaseFinished(IabResult result, Purchase purchase)
-            {
-                if (result.isFailure()) {
-                    Log.d("Akhil", "Error purchasing: " + result);
-                    showMessage("There was an error in purchasing! Please try again.");
-                    return;
-                }
-                else if (purchase.getSku().equals(Constants.STR_SKU_PREMIUM)) {
-                    String strUniqueReturn=purchase.getDeveloperPayload();
-                    if(strUniqueReturn!=null && strUniqueReturn.equals(strUniqueString)){
-                        if(Global.isConnected(getActivity())){
-                            new PurchaseLoginTask(strMobNo).execute(true);
-                        }
-                    } else{
-                        showMessage("There was an error in purchasing! Please try again.");
-                    }
-                }
-            }
-        };
-        strUniqueString=Global.randomString(25);
-        if (mHelper != null) mHelper.flagEndAsync();
-        mHelper.launchPurchaseFlow(getActivity(), Constants.STR_SKU_PREMIUM, Constants.ORDER_ID,
-                mPurchaseFinishedListener, strUniqueString);
-    }
-
-    private void showRegistrationError(String strMessage) {
-        ConfirmDialogListener listener=new ConfirmDialogListener() {
-
-            @Override
-            public void onDialogPositiveClick(DialogFragment dialog) {
-                startRegistration();
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onDialogNegativeClick(DialogFragment dialog) {
-                anim.setVisibility(View.VISIBLE);
-                rl.setVisibility(View.INVISIBLE);
-                sc.setVisibility(View.INVISIBLE);
-                etxtCountryCode.setEnabled(true);
-                etxtMobNo.setEnabled(true);
-                dialog.dismiss();
-            }
-        };
-        ConfirmationFragment.newInstance("Error", strMessage, "Try Again", R.layout.fragment_dialog_confirm, listener).show(getActivity().getSupportFragmentManager(), "dialog");
-    }
-
-    private class PurchaseLoginTask extends AsyncTask<Boolean, Void, String>{
+    private class PurchaseLoginTask extends AsyncTask<Boolean, Void, String> {
 
         String strMobNo;
 
@@ -712,17 +696,17 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
         @Override
         protected String doInBackground(Boolean... params) {
-            long sleepTime=100L;
-            String result=null;
+            long sleepTime = 100L;
+            String result = null;
             while (true) {
                 try {
-                    if(!Global.isConnected(getActivity())){
+                    if (!Global.isConnected(getActivity())) {
                         break;
                     }
-                    result=updateLoginDetails(params[0]);
+                    result = updateLoginDetails(params[0]);
                 } catch (IOException e) {
                     try {
-                        Thread.sleep(sleepTime*2);
+                        Thread.sleep(sleepTime * 2);
                     } catch (InterruptedException e1) {
 
                     }
@@ -732,8 +716,8 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         }
 
         private String updateLoginDetails(boolean isPurchased) throws IOException {
-            String result=Constants.STR_FAILURE;
-            LocalDB localDb=new LocalDB(getActivity());
+            String result = Constants.STR_FAILURE;
+            LocalDB localDb = new LocalDB(getActivity());
             Loginendpoint.Builder loginBuilder = new Loginendpoint.Builder(
                     AndroidHttp.newCompatibleTransport(), new JacksonFactory(), null);
             loginBuilder = CloudEndpointUtils.updateBuilder(loginBuilder);
@@ -744,37 +728,40 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             Deviceinfoendpoint devInfoEndpoint = devInfoBuilder.build();
             CollectionResponseLogIn loginEntities = loginEndpoint.listLogIn().setUsername(strMobNo).execute();
             CollectionResponseDeviceInfo devInfoEntities = devInfoEndpoint.listDeviceInfo().setGcmRegId(strRegId).execute();
-            if(loginEntities == null || loginEntities.getItems() == null || loginEntities.getItems().size() < 1 ){
+            if (loginEntities == null || loginEntities.getItems() == null || loginEntities.getItems().size() < 1) {
                 return result;
-            } else{
+            } else {
                 LogIn login = loginEntities.getItems().get(0);
-                DeviceInfo device=null;
-                if(loginEntities.getItems().size() > 0){
+                DeviceInfo device;
+                if (devInfoEntities.getItems().size() > 0) {
                     device = devInfoEntities.getItems().get(0);
-                } else{
-                    device=new DeviceInfo();
+                } else {
+                    device = new DeviceInfo();
                     device.setMake(strDeviceName);
                     device.setGcmRegId(strRegId);
-                    device=devInfoEndpoint.insertDeviceInfo(device).execute();
+                    device = devInfoEndpoint.insertDeviceInfo(device).execute();
                 }
-                List<Long> lstDevIds=login.getDeviceIDs();
-                if(lstDevIds==null){
-                    lstDevIds=new ArrayList<Long>();
+                List<Long> lstDevIds = login.getDeviceIDs();
+                if (lstDevIds == null) {
+                    lstDevIds = new ArrayList<>();
                 }
-                if(!isPurchased){
+                if (!isPurchased) {
                     lstDevIds.removeAll(lstDevIds);
+                } else {
+                    login.setPurchaseId(strUniqueString);
                 }
-                lstDevIds.add(device.getId());
+                if (!lstDevIds.contains(device.getId())) {
+                    lstDevIds.add(device.getId());
+                }
                 login.setDeviceIDs(lstDevIds);
-                login.setPurchaseId(strUniqueString);
-                login=loginEndpoint.updateLogIn(login).execute();
-                SharedPreferences prefs = getActivity().getSharedPreferences(Constants.STR_PREFERENCE, Activity.MODE_PRIVATE);
-                prefs.edit().putBoolean(Constants.STR_PURCHASED, true).commit();
-                localDb.updatePurchaseId(strUniqueString);
-                localDb.updatePurchaseToSynced();
-                localDb.insert(login.getId(), login.getUsername(), login.getPassword(), Constants.STR_YOU, device.getId());
-                localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU);
-                result=Constants.STR_SYNC_NEEDED;
+                login = loginEndpoint.updateLogIn(login).execute();
+                if(isPurchased) {
+                    localDb.updatePurchaseId(strUniqueString);
+                    localDb.updatePurchaseToSynced();
+                }
+                localDb.insert(login.getId(), login.getUsername(), login.getCountryCode(), Constants.STR_YOU, device.getId());
+                localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU, Constants.STR_SYNCHED);
+                result = Constants.STR_SYNC_NEEDED;
             }
             return result;
         }
@@ -782,23 +769,19 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            if(result.equals(Constants.STR_SYNC_NEEDED)){
-                ActionBarActivity context=(ActionBarActivity)getActivity();
-                LocalDB localDb=new LocalDB(context);
-                long lngUserId=localDb.retrieve();
-//				Intent intent=new Intent(getActivity(), ExpenseActivity.class);
-//				intent.putExtra(Constants.STR_SYNC_NEEDED, true);
-//				getActivity().startActivity(intent);
-//				getActivity().finish();
+            if (result.equals(Constants.STR_SYNC_NEEDED)) {
+                ActionBarActivity context = (ActionBarActivity) getActivity();
+                LocalDB localDb = new LocalDB(context);
+                long lngUserId = localDb.retrieve();
                 context.setContentView(R.layout.activity_expense);
                 Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
 
                 if (toolbar != null) {
                     context.setSupportActionBar(toolbar);
                 }
-                context.getSupportFragmentManager().popBackStack(null,FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                context.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 context.getSupportFragmentManager().beginTransaction().replace(R.id.container, AddTripFragment.newInstance(lngUserId, true)).commit();
-            } else{
+            } else {
                 showRegistrationError("Oops!! Something went wrong. Please try again.");
             }
         }

@@ -153,9 +153,9 @@ class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        if (holder.getSurface() == null){
-          // preview surface does not exist
-          return;
+        if (holder.getSurface() == null) {
+            // preview surface does not exist
+            return;
         }
 
         if (mCamera != null) {

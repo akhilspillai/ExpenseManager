@@ -43,11 +43,13 @@ public class ToSyncEndpoint {
 			mgr = getEntityManager();
 			if(userId!=null){
 				if(syncType!=null){
-					query = mgr.createQuery("select from ToSync as ToSync where ToSync.userId=:userId_fk and ToSync.syncType=:syncType_fk");
+					query = mgr.createQuery("select from ToSync as ToSync where ToSync.userId=" +
+							":userId_fk and ToSync.syncType=:syncType_fk order by ToSync.creationDate");
 					query.setParameter("userId_fk", userId);
 					query.setParameter("syncType_fk", syncType);
 				} else{
-					query = mgr.createQuery("select from ToSync as ToSync where ToSync.userId=:userId_fk");
+					query = mgr.createQuery("select from ToSync as ToSync where ToSync.userId=" +
+							":userId_fk order by ToSync.creationDate");
 					query.setParameter("userId_fk", userId);
 				}
 			} else{

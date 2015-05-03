@@ -11,6 +11,7 @@ import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.logging.Logger;
 
 public class GCMUtil {
@@ -27,6 +28,7 @@ public class GCMUtil {
 		toSync.setSyncType(message);
 		toSync.setUserId(userId);
 		toSync.setChangerId(changerId);
+		toSync.setCreationDate(new Date());
 		ToSyncEndpoint toSyncEndpoint=new ToSyncEndpoint();
 		toSyncEndpoint.insertToSync(toSync);
 	}

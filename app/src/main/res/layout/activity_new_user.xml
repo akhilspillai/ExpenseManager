@@ -14,17 +14,17 @@
         android:layout_weight="1"
         android:background="?attr/colorPrimary"
         android:elevation="10dp"
-        app:theme="@style/ToolbarTheme" >
+        app:theme="@style/ToolbarTheme">
 
         <TextView
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="40sp"
+            android:text="@string/setup"
             android:textColor="@android:color/white"
-            android:text="@string/setup" />
-        
+            android:textSize="40sp" />
+
     </android.support.v7.widget.Toolbar>
 
     <FrameLayout

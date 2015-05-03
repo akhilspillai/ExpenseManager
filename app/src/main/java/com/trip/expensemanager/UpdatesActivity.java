@@ -15,74 +15,74 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.trip.expensemanager.fragments.UpdatesFragment;
 import com.trip.utils.Constants;
-import com.trip.utils.LocalDB;
+import com.trip.expensemanager.database.LocalDB;
 
 public class UpdatesActivity extends ActionBarActivity {
 
-	private BroadcastReceiver receiver;
+    private BroadcastReceiver receiver;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_expense);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_expense);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
-        
+
         receiver = new BroadcastReceiver() {
-	        @Override
-	        public void onReceive(Context context, Intent intent) {
-	            loadAd();
-	        }
-	    };
-	    
-		getSupportActionBar().setTitle(R.string.updates);
-		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction().add(R.id.container, UpdatesFragment.newInstance()).commit();
-			loadAd();
-		}
-	}
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                loadAd();
+            }
+        };
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-	}
+        getSupportActionBar().setTitle(R.string.updates);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().add(R.id.container, UpdatesFragment.newInstance()).commit();
+            loadAd();
+        }
+    }
 
-	@Override
-	public void onBackPressed() {
-		if(getSupportFragmentManager().getBackStackEntryCount()==0){
-			new LocalDB(this).deleteAllToSync();
-			finish();
-		} else{
-			super.onBackPressed();
-		}
-	}
-	
-	protected void loadAd() {
-		AdView adView = (AdView)findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().addTestDevice("07479579BCD31CAC59F426C69FC347F0").addTestDevice("CA38245079883989F4F525CCE75019B4").addTestDevice("73F2A5CA55F628C98441DA7DAFECE33C").build();
-		
-		SharedPreferences prefs = getSharedPreferences(Constants.STR_PREFERENCE, MODE_PRIVATE);
-		boolean isPurchased=prefs.getBoolean(Constants.STR_PURCHASED, false);
-		if(isPurchased){
-			adView.setVisibility(View.GONE);
-		} else{
-			adView.setVisibility(View.VISIBLE);
-			adView.loadAd(adRequest);
-		}
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		LocalBroadcastManager.getInstance(this).registerReceiver((receiver), new IntentFilter(SyncIntentService.RESULT_PURCHASE));
-	}
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-		LocalBroadcastManager.getInstance(this).unregisterReceiver((receiver));
-	}
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            new LocalDB(this).deleteAllToSync();
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    protected void loadAd() {
+        AdView adView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("07479579BCD31CAC59F426C69FC347F0").addTestDevice("CA38245079883989F4F525CCE75019B4").addTestDevice("73F2A5CA55F628C98441DA7DAFECE33C").build();
+
+        SharedPreferences prefs = getSharedPreferences(Constants.STR_PREFERENCE, MODE_PRIVATE);
+        boolean isPurchased = prefs.getBoolean(Constants.STR_PURCHASED, false);
+        if (isPurchased) {
+            adView.setVisibility(View.GONE);
+        } else {
+            adView.setVisibility(View.VISIBLE);
+            adView.loadAd(adRequest);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver((receiver), new IntentFilter(SyncIntentService.RESULT_PURCHASE));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver((receiver));
+    }
 
 }

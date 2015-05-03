@@ -9,47 +9,47 @@ import com.trip.expensemanager.fragments.TripDetailsFragment;
 import com.trip.expensemanager.fragments.TripExpenseFragment;
 import com.trip.expensemanager.fragments.TripPeopleFragment;
 
-public class CustomPagerAdapter extends FragmentStatePagerAdapter{
+public class CustomPagerAdapter extends FragmentStatePagerAdapter {
 
-	private String strTrip;
-	private long lngUserId;
-	private long lngTripId;
-	private String[] tabs;
-	
-	public CustomPagerAdapter(FragmentManager fm, String[] tabs, String strTrip, long lngUserId, long lngTripId, ActionBarActivity context) {
-		super(fm);
-		this.tabs=tabs;
-		this.strTrip=strTrip;
-		this.lngUserId=lngUserId;
-		this.lngTripId=lngTripId;
-	}
+    private String strTrip;
+    private long lngUserId;
+    private long lngTripId;
+    private String[] tabs;
 
-	@Override
-	public Fragment getItem(int position) {
-		Fragment fragment=null;
-		if(position==0){
-			fragment=TripDetailsFragment.newInstance(strTrip, lngUserId, lngTripId);
-		} else if(position==1){
-			fragment=TripExpenseFragment.newInstance(strTrip, lngUserId, lngTripId);
-		} else if(position==2){
-			fragment=TripPeopleFragment.newInstance(strTrip, lngUserId, lngTripId);
-		}
-		return fragment;
-	}
+    public CustomPagerAdapter(FragmentManager fm, String[] tabs, String strTrip, long lngUserId, long lngTripId, ActionBarActivity context) {
+        super(fm);
+        this.tabs = tabs;
+        this.strTrip = strTrip;
+        this.lngUserId = lngUserId;
+        this.lngTripId = lngTripId;
+    }
 
-	@Override
-	public int getCount() {
-		return 3;
-	}
+    @Override
+    public Fragment getItem(int position) {
+        Fragment fragment = null;
+        if (position == 0) {
+            fragment = TripDetailsFragment.newInstance(strTrip, lngUserId, lngTripId);
+        } else if (position == 1) {
+            fragment = TripExpenseFragment.newInstance(strTrip, lngUserId, lngTripId);
+        } else if (position == 2) {
+            fragment = TripPeopleFragment.newInstance(strTrip, lngUserId, lngTripId);
+        }
+        return fragment;
+    }
 
-	@Override
-	public int getItemPosition(Object object){
-		return POSITION_NONE;
-	}
-	
-	@Override
-	public CharSequence getPageTitle(int position) {
-		return tabs[position];
-	}
+    @Override
+    public int getCount() {
+        return 3;
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return tabs[position];
+    }
 
 }
