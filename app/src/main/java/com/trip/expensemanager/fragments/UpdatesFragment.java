@@ -16,10 +16,10 @@ import com.trip.expensemanager.ExpenseActivity;
 import com.trip.expensemanager.R;
 import com.trip.expensemanager.TripDetailsActivity;
 import com.trip.expensemanager.adapters.CustomUpdatesAdapter;
-import com.trip.utils.Constants;
-import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.beans.TripBean;
 import com.trip.expensemanager.beans.UpdateBean;
+import com.trip.expensemanager.database.LocalDB;
+import com.trip.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;

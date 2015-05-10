@@ -13,7 +13,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -39,6 +38,8 @@ import com.trip.expensemanager.R;
 import com.trip.expensemanager.SyncIntentService;
 import com.trip.expensemanager.TripDetailsActivity;
 import com.trip.expensemanager.adapters.CustomTripListAdapter;
+import com.trip.expensemanager.beans.TripBean;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.distributionendpoint.Distributionendpoint;
 import com.trip.expensemanager.distributionendpoint.model.CollectionResponseDistribution;
 import com.trip.expensemanager.distributionendpoint.model.Distribution;
@@ -56,8 +57,6 @@ import com.trip.expensemanager.tripendpoint.Tripendpoint;
 import com.trip.expensemanager.tripendpoint.model.Trip;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
-import com.trip.expensemanager.database.LocalDB;
-import com.trip.expensemanager.beans.TripBean;
 
 import net.sourceforge.zbar.Symbol;
 
@@ -66,7 +65,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class AddTripFragment extends CustomFragment implements OnItemClickListener, OnClickListener {
 

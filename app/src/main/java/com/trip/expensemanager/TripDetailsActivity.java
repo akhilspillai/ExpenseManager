@@ -21,17 +21,17 @@ import android.view.View;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.trip.expensemanager.adapters.CustomPagerAdapter;
+import com.trip.expensemanager.beans.DistributionBean1;
+import com.trip.expensemanager.beans.ExpenseBean;
+import com.trip.expensemanager.beans.TripBean;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
 import com.trip.expensemanager.fragments.dialogs.InfoDialogListener;
 import com.trip.expensemanager.fragments.dialogs.InformationFragment;
 import com.trip.expensemanager.views.SlidingTabLayout;
 import com.trip.utils.Constants;
-import com.trip.expensemanager.beans.DistributionBean1;
-import com.trip.expensemanager.beans.ExpenseBean;
 import com.trip.utils.Global;
-import com.trip.expensemanager.database.LocalDB;
-import com.trip.expensemanager.beans.TripBean;
 
 import java.util.List;
 

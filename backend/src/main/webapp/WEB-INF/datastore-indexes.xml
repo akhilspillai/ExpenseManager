@@ -12,6 +12,7 @@
 	</datastore-index>
 	<datastore-index kind="ToSync" ancestor="false"
 		source="manual">
+		<property name="userId" direction="asc"/>
 		<property name="creationDate" direction="asc" />
 	</datastore-index>
 </datastore-indexes>

@@ -13,13 +13,13 @@ import android.widget.EditText;
 
 import com.trip.expensemanager.R;
 import com.trip.expensemanager.UpdateLoginTask;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
 import com.trip.expensemanager.fragments.dialogs.InfoDialogListener;
 import com.trip.expensemanager.fragments.dialogs.InformationFragment;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
-import com.trip.expensemanager.database.LocalDB;
 import com.trip.utils.billing.IabHelper;
 import com.trip.utils.billing.IabResult;
 import com.trip.utils.billing.Purchase;

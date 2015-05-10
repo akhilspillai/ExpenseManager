@@ -174,8 +174,8 @@ public class TripEndpoint {
 			LogIn login;
 			LogInEndpoint endpoint=new LogInEndpoint();
 			DeviceInfoEndpoint devInfoendpoint=new DeviceInfoEndpoint();
-			DeviceInfo devInfo=null;
-			List<Long> lstTrips=null;
+			DeviceInfo devInfo;
+			List<Long> lstTrips;
 			long lngChangerId=0L;
 			if(userRemoved){
 				for (Long userIdTemp:userIdsTemp) {
@@ -194,7 +194,7 @@ public class TripEndpoint {
 				userIdsToSync=userIdsTemp;
 			}
 			long changerId=trip.getChangerId();
-			List<Long> deviceIds=null;
+			List<Long> deviceIds;
 			JSONArray jsonArr=new JSONArray();
 			if(!userRemoved){
 				for (Long userId:userIds) {

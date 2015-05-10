@@ -124,6 +124,23 @@ public class DistributionEndpoint {
 		if(trip!=null){
 			List<Long> tripUserIds=trip.getUserIDs();
 			LogInEndpoint endpoint=new LogInEndpoint();
+
+			long changer = retDestribution.getToId();
+
+			for (Long userId:tripUserIds) {
+				login = endpoint.getLogIn(userId);
+				if (login != null) {
+					deviceIds = login.getDeviceIDs();
+					if (deviceIds != null) {
+						for (long deviceId : deviceIds) {
+							if (deviceId == changerId) {
+								changer = login.getId();
+							}
+						}
+					}
+				}
+			}
+
 			for (Long userId:tripUserIds) {
 				login=endpoint.getLogIn(userId);
 				if(login!=null){
@@ -133,7 +150,7 @@ public class DistributionEndpoint {
 							if(deviceId!=changerId){
 								devInfo=devInfoendpoint.getDeviceInfo(deviceId);
 								if(devInfo!=null){
-									objGCMUtil.addToToSync("DA", retDestribution.getId(), deviceId, retDestribution.getToId());
+									objGCMUtil.addToToSync("DA", retDestribution.getId(), deviceId, changer);
 									jsonArr.put(devInfo.getGcmRegId());
 								}
 							}

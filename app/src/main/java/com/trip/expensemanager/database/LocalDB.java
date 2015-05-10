@@ -20,17 +20,24 @@ public class LocalDB {
     private final String[] COLUMNS_TRIP = {SQLiteHelper.COLUMN_TRIP_ID, SQLiteHelper.COLUMN_TRIP_NAME,
             SQLiteHelper.COLUMN_ADMIN, SQLiteHelper.COLUMN_USERS, SQLiteHelper.COLUMN_CREATION_TIME,
             SQLiteHelper.COLUMN_TRIP_STATUS, SQLiteHelper.COLUMN_IS_SYNCHED, SQLiteHelper.ROW_ID};
+
     private final String[] COLUMNS_EXPENSE = {SQLiteHelper.COLUMN_EXPENSE_ID,
             SQLiteHelper.COLUMN_EXPENSE_NAME, SQLiteHelper.COLUMN_EXPENSE_DESC,
             SQLiteHelper.COLUMN_EXPENSE_AMOUNT, SQLiteHelper.COLUMN_EXPENSE_CURRENCY,
             SQLiteHelper.COLUMN_TRIP_ID, SQLiteHelper.COLUMN_USER_ID, SQLiteHelper.COLUMN_USERS,
             SQLiteHelper.COLUMN_AMOUNTS, SQLiteHelper.COLUMN_EXPENSE_CREATION_TIME,
             SQLiteHelper.COLUMN_IS_SYNCHED, SQLiteHelper.ROW_ID};
+
     private final String[] COLUMNS_TO_SYNC = {SQLiteHelper.ROW_ID, SQLiteHelper.COLUMN_ACTION,
             SQLiteHelper.COLUMN_UPDATE, SQLiteHelper.COLUMN_ITEM_ID};
+
     private final String[] COLUMNS_DISTRIBUTION = {SQLiteHelper.COLUMN_DISTRIBUTION_ID,
             SQLiteHelper.COLUMN_FROM_ID, SQLiteHelper.COLUMN_TO_ID, SQLiteHelper.COLUMN_EXPENSE_AMOUNT,
             SQLiteHelper.COLUMN_TRIP_ID, SQLiteHelper.COLUMN_PAID, SQLiteHelper.COLUMN_CREATION_TIME};
+
+    private final String[] COLUMNS_USERS = {SQLiteHelper.COLUMN_USER_ID, SQLiteHelper.COLUMN_USERNAME
+            ,SQLiteHelper.COLUMN_PREFFERED_NAME, SQLiteHelper.COLUMN_IS_SYNCHED};
+
     Cursor cursor = null;
     private Context context = null;
     private SQLiteHelper dbHelper;
@@ -63,7 +70,7 @@ public class LocalDB {
         }
     }
 
-    public boolean insert(long lngUserId, String strUsername, String strPassword,
+    public boolean insert(long lngUserId, String strUsername, String strCountryCode,
                           String strPrefferedName, long lngDeviceId) {
         boolean done = false;
         try {
@@ -74,7 +81,7 @@ public class LocalDB {
                 ContentValues values = new ContentValues();
                 values.put(SQLiteHelper.COLUMN_USER_ID, lngUserId);
                 values.put(SQLiteHelper.COLUMN_USERNAME, strUsername);
-                values.put(SQLiteHelper.COLUMN_COUNTRY_CODE, strPassword);
+                values.put(SQLiteHelper.COLUMN_COUNTRY_CODE, strCountryCode);
                 values.put(SQLiteHelper.COLUMN_DEVICE_ID, lngDeviceId);
                 values.put(SQLiteHelper.COLUMN_PREFFERED_NAME, strPrefferedName);
                 database.insert(SQLiteHelper.TABLE_LOGIN, null, values);
@@ -926,15 +933,15 @@ public class LocalDB {
         UserBean userBean = null;
         try {
             SQLiteDatabase database = open();
-            cursor = database.query(SQLiteHelper.TABLE_DISTRIBUTION, COLUMNS_DISTRIBUTION,
-                    SQLiteHelper.COLUMN_PAID + "=?", new String[]{Constants.STR_NOT_SYNCHED}, null, null, null);
+            cursor = database.query(SQLiteHelper.TABLE_USERS, COLUMNS_USERS,
+                    SQLiteHelper.COLUMN_IS_SYNCHED + "= ?", new String[]{Constants.STR_NOT_SYNCHED}, null, null, null);
             if (cursor.moveToFirst()) {
                 do {
                     userBean = new UserBean();
-                    userBean.setDistributionId(cursor.getLong(0));
-                    userBean.setFromId(cursor.getLong(1));
-                    userBean.setToId(cursor.getLong(2));
-                    userBean.setAmount(cursor.getString(3));
+                    userBean.setId(cursor.getLong(0));
+                    userBean.setUsername(cursor.getString(1));
+                    userBean.setPrefferedName(cursor.getString(2));
+                    userBean.setSynced(cursor.getString(3));
                     strArrUsers.add(userBean);
                 } while (cursor.moveToNext());
             }
@@ -947,6 +954,30 @@ public class LocalDB {
             close();
         }
         return strArrUsers;
+    }
+
+    public UserBean retrieveUser(long userId) {
+        UserBean userBean = null;
+        try {
+            SQLiteDatabase database = open();
+            cursor = database.query(SQLiteHelper.TABLE_USERS, COLUMNS_USERS,
+                    SQLiteHelper.COLUMN_USER_ID + "= ?", new String[]{String.valueOf(userId)}, null, null, null);
+            if (cursor.moveToFirst()) {
+                userBean = new UserBean();
+                userBean.setId(cursor.getLong(0));
+                userBean.setUsername(cursor.getString(1));
+                userBean.setPrefferedName(cursor.getString(2));
+                userBean.setSynced(cursor.getString(3));
+            }
+        } catch (Exception e) {
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            close();
+        }
+        return userBean;
     }
 
     public boolean updateUserSyncStatus(long lngUserId) {
@@ -1228,13 +1259,15 @@ public class LocalDB {
     }
 
     public boolean updateExpense(String strExpenseName, String strExpenseAmount, String strExpenseDetail,
-                                 String strUsers, String strAmounts, String strUpdated, long lngExpenseId) {
+                                 long lngExpAdminId, String strUsers, String strAmounts, String strUpdated,
+                                 long lngExpenseId) {
         try {
             SQLiteDatabase database = open();
             ContentValues args = new ContentValues();
             args.put(SQLiteHelper.COLUMN_EXPENSE_NAME, strExpenseName);
             args.put(SQLiteHelper.COLUMN_EXPENSE_AMOUNT, strExpenseAmount);
             args.put(SQLiteHelper.COLUMN_EXPENSE_DESC, strExpenseDetail);
+            args.put(SQLiteHelper.COLUMN_USER_ID, lngExpAdminId);
             args.put(SQLiteHelper.COLUMN_USERS, strUsers);
             args.put(SQLiteHelper.COLUMN_AMOUNTS, strAmounts);
 

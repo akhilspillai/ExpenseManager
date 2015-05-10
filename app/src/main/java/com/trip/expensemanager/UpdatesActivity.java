@@ -13,9 +13,9 @@ import android.view.View;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.UpdatesFragment;
 import com.trip.utils.Constants;
-import com.trip.expensemanager.database.LocalDB;
 
 public class UpdatesActivity extends ActionBarActivity {
 

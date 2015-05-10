@@ -180,35 +180,37 @@ public class LogInEndpoint {
 			if (!containsLogIn(login)) {
 				throw new EntityNotFoundException("Object does not exist");
 			}
-			//			LogIn tempLogin=mgr.find(LogIn.class, login.getId());
-			//			tempLogin.setTripIDs(login.getTripIDs());
-			//			tempLogin.setRegId(login.getRegId());
+
 			LogInEndpoint endpoint=new LogInEndpoint();
 			LogIn oldLogin=endpoint.getLogIn(login.getId());
 			List<Long> oldDevIds=oldLogin.getDeviceIDs();
 			List<Long> newDevIds=login.getDeviceIDs();
-			if(newDevIds.containsAll(oldDevIds)){
+			if(newDevIds!= null && newDevIds.containsAll(oldDevIds)){
 				if(oldLogin.getPurchaseId()==null && login.getPurchaseId()!=null){
 					DeviceInfoEndpoint devInfoendpoint=new DeviceInfoEndpoint();
-					DeviceInfo devInfo=null;
+					DeviceInfo devInfo;
 					List<Long> devIds=login.getDeviceIDs();
 					JSONArray jsonArr=new JSONArray();
 					for(long devId:devIds){
 						devInfo=devInfoendpoint.getDeviceInfo(devId);
-						objGCMUtil.addToToSync("IP", login.getId(), devId, login.getId());
-						jsonArr.put(devInfo.getGcmRegId());
+						if (devInfo != null) {
+							objGCMUtil.addToToSync("IP", login.getId(), devId, login.getId());
+							jsonArr.put(devInfo.getGcmRegId());
+						}
 					}
 					objGCMUtil.doSendViaGcm(jsonArr);
 				}
-			} else{
+			} else if (newDevIds != null){
 				JSONArray jsonArr=new JSONArray();
 				DeviceInfoEndpoint devInfoendpoint=new DeviceInfoEndpoint();
-				DeviceInfo devInfo=null;
+				DeviceInfo devInfo;
 				for(long devId:oldDevIds){
 					if(!newDevIds.contains(devId)){
 						devInfo=devInfoendpoint.getDeviceInfo(devId);
-						objGCMUtil.addToToSync("LO", login.getId(), devId, login.getId());
-						jsonArr.put(devInfo.getGcmRegId());
+						if (devInfo != null) {
+							objGCMUtil.addToToSync("LO", login.getId(), devId, login.getId());
+							jsonArr.put(devInfo.getGcmRegId());
+						}
 					}
 				}
 				objGCMUtil.doSendViaGcm(jsonArr);

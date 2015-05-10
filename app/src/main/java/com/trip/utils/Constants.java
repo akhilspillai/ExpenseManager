@@ -80,7 +80,7 @@ public class Constants {
     public static final String STR_CLICK = "Click to view.";
     public static final String STR_APP_NOTIFICATION = "New notification from expense manager!!";
     public static final String STR_TRIP_ADDED = "TA";
-    public static final String STR_NO = "N";
+    public static final String STR_NO = "NO";
     public static final String STR_YES = "Y";
     public static final String STR_YOU = "You";
     public static final String STR_ERROR_AMT = "Amount and total doesn't match!!";

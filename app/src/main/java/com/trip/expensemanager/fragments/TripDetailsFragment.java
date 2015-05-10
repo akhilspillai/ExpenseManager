@@ -31,17 +31,17 @@ import com.trip.expensemanager.R;
 import com.trip.expensemanager.SyncIntentService;
 import com.trip.expensemanager.TripDetailsActivity;
 import com.trip.expensemanager.adapters.CustomDistributionAdapter;
+import com.trip.expensemanager.beans.DistributionBean;
+import com.trip.expensemanager.beans.DistributionBean1;
+import com.trip.expensemanager.beans.ExpenseBean;
+import com.trip.expensemanager.beans.TripBean;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.dialogs.AddTripDialogFragment;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.SettleDebtDialogFragment;
 import com.trip.utils.Constants;
-import com.trip.expensemanager.beans.DistributionBean;
-import com.trip.expensemanager.beans.DistributionBean1;
-import com.trip.expensemanager.beans.ExpenseBean;
 import com.trip.utils.Global;
 import com.trip.utils.Heap;
-import com.trip.expensemanager.database.LocalDB;
-import com.trip.expensemanager.beans.TripBean;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -51,7 +51,6 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -73,6 +72,7 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
     private String strTotalSpent = "0";
     private List<String> arrDistribution = new ArrayList<String>();
     private List<Boolean> arrPossibletoSettle = new ArrayList<Boolean>();
+    private ArrayList<Long> arrToUsrIds = new ArrayList<Long>();
     private ArrayList<Long> arrFromUsrIds = new ArrayList<Long>();
     private ArrayList<String> arrAmountToPay = new ArrayList<String>();
     private ListView lvDistributionList;
@@ -208,6 +208,8 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
         arrDistribution.removeAll(arrDistribution);
         arrPossibletoSettle.removeAll(arrPossibletoSettle);
         arrFromUsrIds.removeAll(arrFromUsrIds);
+        arrToUsrIds.removeAll(arrToUsrIds);
+        arrAmountToPay.removeAll(arrAmountToPay);
         toGetSparseArr.clear();
         //		TripBean trip=localDb.retrieveTripDetails(lngTripId);
         List<Long> expUserIds;
@@ -306,6 +308,7 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
         arrDistribution.add("Own expense: " + strOwnExpense);
         arrPossibletoSettle.add(false);
         arrFromUsrIds.add(lngUserId);
+        arrToUsrIds.add(lngUserId);
         arrAmountToPay.add(strOwnExpense);
 
         DistributionBean[] adArrToGet = new DistributionBean[lstToGet.size()];
@@ -333,6 +336,7 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
                 dbTempToGet = heapToGet.removeMax();
                 dbTempToPay = heapToPay.removeMax();
                 arrFromUsrIds.add(dbTempToPay.getUserId());
+                arrToUsrIds.add(dbTempToGet.getUserId());
                 userFrom = localDb.retrievePrefferedName(dbTempToPay.getUserId());
                 userTo = localDb.retrievePrefferedName(dbTempToGet.getUserId());
                 String strBalance = Global.subtract(dbTempToPay.getAmount(), dbTempToGet.getAmount());
@@ -361,20 +365,9 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
                     }
                 }
                 arrAmountToPay.add(dbTempToPay.getAmount());
-                if (userTo.equalsIgnoreCase(Constants.STR_YOU)) {
-                    arrPossibletoSettle.add(true);
-                } else {
-                    arrPossibletoSettle.add(false);
-                }
+
+                arrPossibletoSettle.add(true);
             }
-            /*TripBean trip=localDb.retrieveTripDetails(lngTripId);
-			for(DistributionBean tempBean:adArrNotOwed){
-				userFrom=localDb.retrievePrefferedName(tempBean.getUserId());
-				arrDistribution.add(userFrom+" doesn't owe anybody anything!");
-				arrFromUsrIds.add(tempBean.getUserId());
-				arrPossibletoSettle.add(false);
-				arrAmountToPay.add(tempBean.getAmount());
-			}*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -425,23 +418,6 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
             defaultRenderer.setFitLegend(true);
 
             defaultRenderer.setInScroll(true);
-			/*mChart.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					SeriesSelection seriesSelection = mChart.getCurrentSeriesAndPoint();
-					if (seriesSelection != null) {
-						// Getting the name of the clicked slice
-						int seriesIndex = seriesSelection.getPointIndex();
-						String selectedSeries="";
-						selectedSeries = arrUsers.get(seriesIndex);
-						// Getting the value of the clicked slice
-						double value = seriesSelection.getXValue();
-						DecimalFormat dFormat = new DecimalFormat("#.#");
-						// Displaying the message
-						Toast.makeText(getActivity(), selectedSeries + " : "  + Double.valueOf(dFormat.format(value)) + " % ", Toast.LENGTH_SHORT).show();
-					}
-				}
-			});*/
 
             int sizeOfChart = Integer.parseInt(getActivity().getResources().getString(R.string.chart_size));
             llChartContainer.setVisibility(View.VISIBLE);
@@ -453,77 +429,6 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
         }
     }
 
-	/*@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		menu.clear();
-		super.onCreateOptionsMenu(menu, inflater);
-		if(lngUserId==lngAdminId){
-			inflater.inflate(R.menu.trip_detail_action, menu);
-		}
-	}*/
-
-	/*@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_delete_trip:
-			showDeleteTripDialog(strTripName, lngTripId);
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}*/
-
-
-	/*
-	protected void showDeleteTripDialog(final String tripName, final long tripId) {
-		try{
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			View view = getActivity().getLayoutInflater().inflate(R.layout.delete_expensegroup_dialog, null);
-			builder.setCancelable(true);
-			TextView textView = (TextView)view.findViewById(R.id.tv_message);
-			Button btnYes = (Button) view.findViewById(R.id.btn_yes);
-			Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-			btnYes.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					deleteTrip(tripId);
-					alert.cancel();
-				}
-			});
-			btnCancel.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					alert.cancel();
-				}
-			});
-
-			textView.setText("Are you sure you want to delete the expense-group "+tripName+"?");
-
-			alert = builder.create();
-			alert.setView(view, 0, 0, 0, 0);
-			alert.show();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
-
-	/*protected void deleteTrip(long tripId) {
-		LocalDB localDb=new LocalDB(getActivity());
-		try{
-			if(localDb.isTripSynced(tripId)){
-				localDb.updateTripStatusToDeleted(tripId);
-			} else{
-				localDb.deleteTrip(tripId);
-			}
-			Context context=getActivity();
-			context.startService(new Intent(context, SyncIntentService.class));
-			((Activity) context).finish();
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-	}*/
 
     @Override
     public void onClick(View v) {
@@ -564,32 +469,16 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
     }
 
     protected void markDistributionAsSettled(String strAmount, int position) {
-        long userId = arrFromUsrIds.get(position);
+        long fromUserId = arrFromUsrIds.get(position);
+        long toUserId = arrToUsrIds.get(position);
         String strSettledAmount = strAmount;
-//		String strAmountToPay=arrAmountToPay.get(position);
-		/*if(strAmountToPay.equals(strSettledAmount)){
-			arrDistribution.remove(position);
-			arrPossibletoSettle.remove(position);
-			arrDistribution.remove(position);
-			arrPossibletoSettle.remove(position);
-			arrFromUsrIds.remove(position);
-		} else{
-			strAmountToPay=Global.subtract(strAmountToPay, strSettledAmount);
-			if(strAmountToPay.startsWith("-")){
-				arrDistribution
-			} else{
-
-			}
-			arrAmountToPay.remove(position);
-		}*/
         Context context = getActivity();
         LocalDB localDb = new LocalDB(context);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         String date = sdf.format(new Date());
-        long rowId = localDb.insertDistribution(userId, lngUserId, strSettledAmount, lngTripId, Constants.STR_NOT_SYNCHED, date);
+        long rowId = localDb.insertDistribution(fromUserId, toUserId, strSettledAmount, lngTripId, Constants.STR_NOT_SYNCHED, date);
         localDb.updateDistributionId(rowId, rowId);
-        //		buildDistribution();
-        //		listAdapter.notifyDataSetChanged();
+
         ((TripDetailsActivity) context).updateViews();
         context.startService(new Intent(context, SyncIntentService.class));
     }
@@ -685,9 +574,8 @@ public class TripDetailsFragment extends CustomFragment implements OnClickListen
             }
         }
 
-        tempUser = null;
         if (arrDistribution.size() == 0) {
-            arrDistribution.add("Nobody owes anybody anything!!");
+            arrDistribution.add("No settled debts!!");
         }
         listAdapter.notifyDataSetChanged();
     }

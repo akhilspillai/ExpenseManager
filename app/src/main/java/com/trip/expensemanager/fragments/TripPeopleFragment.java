@@ -26,14 +26,16 @@ import android.widget.TextView;
 
 import com.trip.expensemanager.AllDetailsActivity;
 import com.trip.expensemanager.R;
+import com.trip.expensemanager.SyncIntentService;
 import com.trip.expensemanager.adapters.CustomPeopleListAdapter;
+import com.trip.expensemanager.beans.ExpenseBean;
+import com.trip.expensemanager.beans.TripBean;
+import com.trip.expensemanager.beans.UserBean;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
 import com.trip.utils.Constants;
-import com.trip.expensemanager.beans.ExpenseBean;
 import com.trip.utils.Global;
-import com.trip.expensemanager.database.LocalDB;
-import com.trip.expensemanager.beans.TripBean;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -119,11 +121,18 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
             lngAdminId = trip.getAdminId();
             strDate = trip.getCreationDate();
             List<Long> lstPeopleIdTemp = Global.longToList(trip.getUserIds());
+            UserBean user;
+
             for (long userIdTemp : lstPeopleIdTemp) {
                 arrPeople.add(localDb.retrievePrefferedName(userIdTemp));
                 arrPeopleIds.add(userIdTemp);
                 arrAmount.add("0");
-                arrSynced.add(true);
+                user = localDb.retrieveUser(userIdTemp);
+                if (user.getSynced().equals(Constants.STR_SYNCHED)) {
+                    arrSynced.add(true);
+                } else {
+                    arrSynced.add(false);
+                }
             }
             arrExpenses = localDb.retrieveExpenses(lngTripId);
 
@@ -136,10 +145,6 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
                     if (position >= 0) {
                         amount = arrAmount.get(position);
                         arrAmount.set(position, add(expense.getAmount(), amount));
-                        synced = !expense.getSyncStatus().equals(Constants.STR_NOT_SYNCHED);
-                        if (!synced) {
-                            arrSynced.set(position, false);
-                        }
                     }
                 }
             }
@@ -348,6 +353,8 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
 
         LocalDB localDb = new LocalDB(getActivity());
 
+        strNumber  = removeSpaces(strNumber);
+
         long lngNumber = 0L;
 
         if(!strNumber.startsWith("+")) {
@@ -380,6 +387,25 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
 
         localDb.updateTripUsers(lngTripId, sbUsers.toString(), Constants.STR_QR_ADDED);
 
+
+        Intent serviceIntent = new Intent(getActivity(), SyncIntentService.class);
+        getActivity().startService(serviceIntent);
+
+    }
+
+    private String removeSpaces(String strNumber) {
+
+        int length = strNumber.length();
+        StringBuilder sbNumber = new StringBuilder(strNumber);
+
+        for(int i = 0 ; i < length ; i++) {
+            if(sbNumber.charAt(i) == ' ') {
+                sbNumber.deleteCharAt(i);
+                length--;
+            }
+        }
+
+        return sbNumber.toString();
     }
 
 }

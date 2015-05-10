@@ -127,6 +127,23 @@ public class ExpenseEndpoint {
 			LogIn login;
 			LogInEndpoint loginEndpoint=new LogInEndpoint();
 			JSONArray jsonArr=new JSONArray();
+
+			long changer = retExpense.getUserId();
+
+			for (Long userId:userIds) {
+				login = loginEndpoint.getLogIn(userId);
+				if (login != null) {
+					deviceIds = login.getDeviceIDs();
+					if (deviceIds != null) {
+						for (long deviceId : deviceIds) {
+							if (deviceId == changerId) {
+								changer = login.getId();
+							}
+						}
+					}
+				}
+			}
+
 			for (Long userId:userIds) {
 				login=loginEndpoint.getLogIn(userId);
 				if(login!=null){
@@ -136,7 +153,7 @@ public class ExpenseEndpoint {
 							if(deviceId!=changerId){
 								devInfo=devInfoendpoint.getDeviceInfo(deviceId);
 								if(devInfo!=null){
-									objGCMUtil.addToToSync("EA", retExpense.getId(), deviceId, retExpense.getUserId());
+									objGCMUtil.addToToSync("EA", retExpense.getId(), deviceId, changer);
 									jsonArr.put(devInfo.getGcmRegId());
 								}
 							}
@@ -198,6 +215,23 @@ public class ExpenseEndpoint {
 				LogIn login;
 				LogInEndpoint endpoint=new LogInEndpoint();
 				JSONArray jsonArr=new JSONArray();
+
+				long changer = expense.getUserId();
+
+				for (Long userId:userIds) {
+					login = endpoint.getLogIn(userId);
+					if (login != null) {
+						deviceIds = login.getDeviceIDs();
+						if (deviceIds != null) {
+							for (long deviceId : deviceIds) {
+								if (deviceId == changerId) {
+									changer = login.getId();
+								}
+							}
+						}
+					}
+				}
+
 				for (Long userId:tripUserIds) {
 					login=endpoint.getLogIn(userId);
 					if(login!=null){
@@ -207,7 +241,7 @@ public class ExpenseEndpoint {
 								if(deviceId!=changerId){
 									devInfo=devInfoendpoint.getDeviceInfo(deviceId);
 									if(devInfo!=null){
-										objGCMUtil.addToToSync("EU", expense.getId(), deviceId, expense.getUserId());
+										objGCMUtil.addToToSync("EU", expense.getId(), deviceId, changer);
 										jsonArr.put(devInfo.getGcmRegId());
 									}
 								}
@@ -250,6 +284,7 @@ public class ExpenseEndpoint {
 				DeviceInfoEndpoint devInfoendpoint=new DeviceInfoEndpoint();
 				DeviceInfo devInfo=null;
 				List<Long> deviceIds=null;
+
 				for (Long userId:userIds) {
 					login=endpoint.getLogIn(userId);
 					if(login!=null){

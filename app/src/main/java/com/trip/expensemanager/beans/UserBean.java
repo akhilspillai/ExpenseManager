@@ -1,11 +1,14 @@
 package com.trip.expensemanager.beans;
 
 public class UserBean {
+
     private long id;
 
-    private long username;
+    private String username;
 
-    private String userId;
+    private String prefferedName;
+
+    private String synced;
 
     public long getId() {
         return id;
@@ -15,19 +18,29 @@ public class UserBean {
         this.id = id;
     }
 
-    public long getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(long username) {
+    public void setUsername(String username) {
         this.username = username;
     }
-    public String getUserId() {
-        return userId;
+
+    public String getPrefferedName() {
+        return prefferedName;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setPrefferedName(String prefferedName) {
+        this.prefferedName = prefferedName;
+    }
+
+
+    public String getSynced() {
+        return synced;
+    }
+
+    public void setSynced(String synced) {
+        this.synced = synced;
     }
 
 }

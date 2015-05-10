@@ -18,45 +18,64 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.trip.expensemanager.R;
 import com.trip.expensemanager.adapters.CustomAddExpenseAdapter;
+import com.trip.expensemanager.beans.ExpenseBean;
+import com.trip.expensemanager.beans.TripBean;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
 import com.trip.utils.Constants;
-import com.trip.expensemanager.beans.ExpenseBean;
 import com.trip.utils.Global;
-import com.trip.expensemanager.database.LocalDB;
-import com.trip.expensemanager.beans.TripBean;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class AddExpenseFragment extends CustomFragment implements OnClickListener {
 
     private long lngTripId;
     private long lngUserId;
-    private EditText eTxtExpenseName;
-    private EditText eTxtExpenseDetail;
-    private EditText eTxtExpenseAmount;
-    private AutoCompleteTextView eTxtExpenseAdmin;
-    private EditText eTxtExpenseCreationDate;
+
+    @InjectView(R.id.etxt_expense_name)
+    EditText eTxtExpenseName;
+
+    @InjectView(R.id.etxt_expense_detail)
+    EditText eTxtExpenseDetail;
+
+    @InjectView(R.id.etxt_expense_amount)
+    EditText eTxtExpenseAmount;
+
+    @InjectView(R.id.txt_all)
+    TextView txtSelectAll;
+
+    @InjectView(R.id.txt_none)
+    TextView txtSelectNone;
+
+    ListView lvUsersList;
+
+    @InjectView(R.id.spr_expense_admin)
+    Spinner sprExpenseAdmin;
+
+    @InjectView(R.id.etxt_expense_creation_date)
+    EditText eTxtExpenseCreationDate;
+
     private long lngAdminId;
     private String strDate;
     private int opcode;
     private long lngExpenseId;
     private int iPosition;
-    private String strName;
-    private String strDetail;
-    private String strAmount;
-    private ListView lvUsersList;
+    private String strName, strDetail, strAmount, strAdmin;
+
     private CustomAddExpenseAdapter listAdapter;
     private List<String> strLstUsers = new ArrayList<String>();
     private List<Long> strLstUserIds = new ArrayList<Long>();
@@ -65,8 +84,6 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
     private List<Boolean> bLstEnabled = new ArrayList<Boolean>();
     private List<String> strLstPrevAmounts;
     private boolean isAutoChanged;
-    private TextView txtSelectAll;
-    private TextView txtSelectNone;
 
     public static Fragment newInstance(long lngTripId, long lngUserId, int iOpcode) {
         Fragment fragment = new AddExpenseFragment();
@@ -126,13 +143,11 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
             View header = View.inflate(getActivity(), R.layout.fragment_add_expense, null);
 
             lvUsersList.addHeaderView(header);
+
+            ButterKnife.inject(this, header);
+
             listAdapter = new CustomAddExpenseAdapter(getActivity(), strLstUsers, strLstAmounts, bLstChecked, bLstEnabled, this);
             lvUsersList.setAdapter(listAdapter);
-            eTxtExpenseName = (EditText) rootView.findViewById(R.id.etxt_expense_name);
-            eTxtExpenseDetail = (EditText) rootView.findViewById(R.id.etxt_expense_detail);
-            eTxtExpenseAmount = (EditText) rootView.findViewById(R.id.etxt_expense_amount);
-            txtSelectAll = (TextView) rootView.findViewById(R.id.txt_all);
-            txtSelectNone = (TextView) rootView.findViewById(R.id.txt_none);
             txtSelectAll.setOnClickListener(this);
             txtSelectNone.setOnClickListener(this);
 
@@ -200,10 +215,8 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
                     }).start();
                 }
             });
-            eTxtExpenseAdmin = (AutoCompleteTextView) rootView.findViewById(R.id.etxt_expense_admin);
             eTxtExpenseCreationDate = (EditText) rootView.findViewById(R.id.etxt_expense_creation_date);
             LocalDB localDb = new LocalDB(getActivity());
-            String username;
             Date date;
             TripBean trip = localDb.retrieveTripDetails(lngTripId);
             if (trip == null) {
@@ -212,46 +225,39 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
             }
             ExpenseBean expense = null;
             if (opcode == Constants.I_OPCODE_ADD_EXPENSE) {
-                username = localDb.retrievePrefferedName(lngUserId);
                 date = new Date();
-                lngAdminId = lngUserId;
                 loadUsers(trip);
             } else {
                 expense = localDb.retrieveExpense(lngExpenseId);
                 ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(expense.getName());
                 lngAdminId = expense.getUserId();
-                username = localDb.retrievePrefferedName(lngAdminId);
                 date = sdf.parse(expense.getCreationDate());
                 strName = expense.getName();
                 strDetail = expense.getDesc();
                 strAmount = expense.getAmount();
-                strAdmin = localDb.retrievePrefferedName()expense.getUserId()
+                strAdmin = localDb.retrievePrefferedName();
                 eTxtExpenseName.setText(strName);
                 eTxtExpenseDetail.setText(strDetail);
                 isAutoChanged = true;
                 eTxtExpenseAmount.setText(strAmount);
-//                if (lngAdminId != lngUserId) {
-//                    eTxtExpenseName.setEnabled(false);
-//                    eTxtExpenseDetail.setEnabled(false);
-//                    eTxtExpenseAmount.setEnabled(false);
-//                    eTxtExpenseAdmin.setEnabled(false);
-//                }
 
                 loadUsersnAmounts(trip, expense);
             }
 
             ArrayAdapter<String> autocompletetextAdapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_dropdown_item_1line, strLstUsers);
-            eTxtExpenseAdmin.setAdapter(autocompletetextAdapter);
-            eTxtExpenseAdmin.setText(username);
+                    android.R.layout.simple_spinner_dropdown_item, strLstUsers);
+
+            sprExpenseAdmin.setAdapter(autocompletetextAdapter);
+
             String strDateTemp = sdfTemp.format(date);
             eTxtExpenseCreationDate.setText(strDateTemp);
             strDate = sdf.format(date);
-            if (lngAdminId == lngUserId) {
-                setHasOptionsMenu(true);
-            } else {
-                setHasOptionsMenu(true);
+
+            if (opcode == Constants.I_OPCODE_UPDATE_EXPENSE) {
+                sprExpenseAdmin.setSelection(strLstUserIds.indexOf(lngAdminId), true);
             }
+
+            setHasOptionsMenu(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -264,7 +270,7 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
         LocalDB localDb = new LocalDB(getActivity());
         List<Long> lstUsers = Global.longToList(expense.getUserIds());
         List<String> lstAmounts = Global.stringToList(expense.getAmounts());
-        int i = 0;
+        int i;
         for (long userId : userIds) {
             i = lstUsers.indexOf(userId);
             if (i > -1) {
@@ -274,11 +280,8 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
                 strLstAmounts.add("0");
                 bLstChecked.add(false);
             }
-            if (lngAdminId != lngUserId) {
-                bLstEnabled.add(false);
-            } else {
-                bLstEnabled.add(true);
-            }
+
+            bLstEnabled.add(true);
             strLstUserIds.add(userId);
             strLstUsers.add(localDb.retrievePrefferedName(userId));
         }
@@ -288,11 +291,7 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
                 if (!strLstUserIds.contains(userId)) {
                     strLstAmounts.add(lstAmounts.get(i));
                     bLstChecked.add(true);
-                    if (lngAdminId != lngUserId) {
-                        bLstEnabled.add(false);
-                    } else {
-                        bLstEnabled.add(true);
-                    }
+                    bLstEnabled.add(true);
                     strLstUserIds.add(userId);
                     strLstUsers.add(localDb.retrievePrefferedName(userId));
                 }
@@ -314,7 +313,6 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
             strLstUserIds.add(userId);
             strLstUsers.add(localDb.retrievePrefferedName(userId));
         }
-        eTxtExpenseAdmin
         listAdapter.notifyDataSetChanged();
     }
 
@@ -325,9 +323,7 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
         if (opcode == Constants.I_OPCODE_ADD_EXPENSE) {
             inflater.inflate(R.menu.add_expense_fragment_action, menu);
         } else if (opcode == Constants.I_OPCODE_UPDATE_EXPENSE) {
-            if (lngAdminId == lngUserId) {
-                inflater.inflate(R.menu.update_expense_fragment_action, menu);
-            }
+            inflater.inflate(R.menu.update_expense_fragment_action, menu);
 
         }
     }
@@ -353,24 +349,25 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
                     }
 
                 }
-                if (Global.validate(eTxtExpenseName, eTxtExpenseDetail, eTxtExpenseAmount, eTxtExpenseAdmin)) {
+                if (Global.validate(eTxtExpenseName, eTxtExpenseDetail, eTxtExpenseAmount)) {
                     String strExpenseName = eTxtExpenseName.getText().toString();
                     String strExpenseDetail = eTxtExpenseDetail.getText().toString();
                     String strExpenseAmount = eTxtExpenseAmount.getText().toString();
-                    String strAdmin = eTxtExpenseAdmin.getText().toString();
+                    long lngExpAdminId = strLstUserIds.get(sprExpenseAdmin.getSelectedItemPosition());
                     boolean blNameChanged = !strExpenseName.equals(strName);
                     boolean blDetailChanged = !strExpenseDetail.equals(strDetail);
                     boolean blAmountChanged = !strExpenseAmount.equals(strAmount);
-                    boolean blUserChanged = !strLstAmounts.equals(strLstPrevAmounts);
+                    boolean blDistributionChanged = !strLstAmounts.equals(strLstPrevAmounts);
+                    boolean blUserChanged = lngAdminId != lngExpAdminId;
 
-                    if (!blNameChanged && !blDetailChanged && !blAmountChanged && !blUserChanged) {
+                    if (!blNameChanged && !blDetailChanged && !blAmountChanged && !blDistributionChanged && !blUserChanged) {
                         showMessage("No values were changed!!");
                         return true;
                     }
                     if (opcode == Constants.I_OPCODE_ADD_EXPENSE) {
-                        retArr = new String[6];
-                    } else {
                         retArr = new String[7];
+                    } else {
+                        retArr = new String[8];
                     }
                     float fAmount = Float.parseFloat(strExpenseAmount);
                     if (fAmount != 0L) {
@@ -407,19 +404,18 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
 
                         sbAmounts.deleteCharAt(sbAmounts.length() - 1);
                         sbUsers.deleteCharAt(sbUsers.length() - 1);
-                        //					if(strAmount!=null){
-                        //						return false;
-                        //					}
+
                         retArr[0] = strExpenseName;
                         retArr[1] = strExpenseDetail;
                         retArr[2] = strExpenseAmount;
+                        retArr[4] = String.valueOf(lngExpAdminId);
+
                         if (opcode == Constants.I_OPCODE_ADD_EXPENSE) {
                             retArr[3] = strDate;
-                            retArr[4] = sbUsers.toString();
-                            retArr[5] = sbAmounts.toString();
+                            retArr[5] = sbUsers.toString();
+                            retArr[6] = sbAmounts.toString();
                         } else {
                             retArr[3] = String.valueOf(lngExpenseId);
-                            retArr[4] = String.valueOf(iPosition);
                             retArr[5] = sbUsers.toString();
                             retArr[6] = sbAmounts.toString();
                         }
@@ -531,17 +527,15 @@ public class AddExpenseFragment extends CustomFragment implements OnClickListene
 
     @Override
     public void onClick(View v) {
-        if (lngAdminId == lngUserId) {
-            int size = bLstChecked.size();
-            for (int i = 0; i < size; i++) {
-                if (v.equals(txtSelectAll)) {
-                    bLstChecked.set(i, true);
-                } else if (v.equals(txtSelectNone)) {
-                    bLstChecked.set(i, false);
-                }
+        int size = bLstChecked.size();
+        for (int i = 0; i < size; i++) {
+            if (v.equals(txtSelectAll)) {
+                bLstChecked.set(i, true);
+            } else if (v.equals(txtSelectNone)) {
+                bLstChecked.set(i, false);
             }
-            changeData(true);
         }
+        changeData(true);
     }
 
 }

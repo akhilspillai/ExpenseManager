@@ -113,8 +113,8 @@
             android:textSize="15sp"
             android:textStyle="bold" />
 
-        <AutoCompleteTextView
-            android:id="@+id/etxt_expense_admin"
+        <Spinner
+            android:id="@+id/spr_expense_admin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_expense_admin"
@@ -123,9 +123,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginStart="5dp"
-            android:completionThreshold="0"
-            android:inputType="textCapWords"
-            android:hint="@string/select_user"
+            android:spinnerMode="dropdown"
             android:textColor="@drawable/disable_color"
             android:textSize="15sp" />
 
@@ -133,7 +131,7 @@
             android:id="@+id/txt_expense_creation_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/etxt_expense_admin"
+            android:layout_below="@+id/spr_expense_admin"
             android:layout_marginEnd="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"

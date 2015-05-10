@@ -31,16 +31,15 @@ import com.trip.expensemanager.R;
 import com.trip.expensemanager.SyncIntentService;
 import com.trip.expensemanager.TripDetailsActivity;
 import com.trip.expensemanager.adapters.CustomExpenseListAdapter;
+import com.trip.expensemanager.beans.ExpenseBean;
+import com.trip.expensemanager.beans.TripBean;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
 import com.trip.utils.Constants;
-import com.trip.expensemanager.beans.ExpenseBean;
 import com.trip.utils.Global;
-import com.trip.expensemanager.database.LocalDB;
-import com.trip.expensemanager.beans.TripBean;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -178,16 +177,16 @@ public class TripExpenseFragment extends CustomFragment implements OnItemClickLi
                     if (usernameTemp == null) {
                         usernameTemp = String.valueOf(usrIdTemp);
                     }
-                    arrExpenseNames.add(expense.getName() + "(Added by " + usernameTemp + ")");
+                    arrExpenseNames.add(expense.getName() + "(Spend by " + usernameTemp + ")");
                     strDate = expense.getCreationDate();
                     strDate = strDate.substring(0, strDate.indexOf(' '));
                     arrExpenseAmount.add(expense.getAmount());
                     if (expense.getSyncStatus().equals(Constants.STR_ERROR_STATUS)) {
                         arrSynced.add(2);
-                    } else if (!expense.getSyncStatus().equals(Constants.STR_NOT_SYNCHED)) {
-                        arrSynced.add(2);
-                    } else {
+                    } else if (!expense.getSyncStatus().equals(Constants.STR_SYNCHED)) {
                         arrSynced.add(0);
+                    } else {
+                        arrSynced.add(2);
                     }
                     arrIds.add(expense.getId());
                     arrUserIds.add(expense.getUserId());
@@ -258,18 +257,18 @@ public class TripExpenseFragment extends CustomFragment implements OnItemClickLi
                 showInfoMessage(Constants.STR_NO_DELETE);
                 return true;
             }
-            showDeleteExpenseDialog(arrExpenseNames.get(info.position), lngExpenseId, info.position);
+            showDeleteExpenseDialog(arrExpenseNames.get(info.position), lngExpenseId);
         }
         return true;
     }
 
 
-    protected void showDeleteExpenseDialog(final String expenseName, final long expenseId, final int position) {
+    protected void showDeleteExpenseDialog(final String expenseName, final long expenseId) {
         ConfirmDialogListener listener = new ConfirmDialogListener() {
 
             @Override
             public void onDialogPositiveClick(DialogFragment dialog) {
-                deleteExpense(expenseId, position);
+                deleteExpense(expenseId);
                 dialog.dismiss();
             }
 
@@ -302,8 +301,8 @@ public class TripExpenseFragment extends CustomFragment implements OnItemClickLi
                 if (requestCode == REQUEST_CODE_ADD) {
                     try {
                         String[] arrStrData = data.getStringArrayExtra(Constants.STR_EXPENSE_DETAIL_ARR);
-                        if (arrStrData.length == 6) {
-                            addExpense(arrStrData[0], arrStrData[1], arrStrData[2], arrStrData[3], arrStrData[4], arrStrData[5]);
+                        if (arrStrData.length == 7) {
+                            addExpense(arrStrData[0], arrStrData[1], arrStrData[2], Long.parseLong(arrStrData[4]), arrStrData[3], arrStrData[5], arrStrData[6]);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -311,10 +310,10 @@ public class TripExpenseFragment extends CustomFragment implements OnItemClickLi
                 } else if (requestCode == REQUEST_CODE_UPDATE) {
                     try {
                         String[] arrStrData = data.getStringArrayExtra(Constants.STR_EXPENSE_DETAIL_ARR);
-                        if (arrStrData.length == 7) {
-                            updateExpense(arrStrData[0], arrStrData[1], arrStrData[2], Long.parseLong(arrStrData[3]), Integer.parseInt(arrStrData[4]), arrStrData[5], arrStrData[6]);
+                        if (arrStrData.length == 8) {
+                            updateExpense(arrStrData[0], arrStrData[1], arrStrData[2], Long.parseLong(arrStrData[3]), Long.parseLong(arrStrData[4]), arrStrData[5], arrStrData[6]);
                         } else if (arrStrData.length == 2) {
-                            deleteExpense(Long.parseLong(arrStrData[0]), Integer.parseInt(arrStrData[1]));
+                            deleteExpense(Long.parseLong(arrStrData[0]));
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -326,7 +325,7 @@ public class TripExpenseFragment extends CustomFragment implements OnItemClickLi
         }
     }
 
-    private void deleteExpense(long expenseId, int position) {
+    private void deleteExpense(long expenseId) {
         try {
             Context context = getActivity();
             LocalDB localDb = new LocalDB(context);
@@ -359,12 +358,12 @@ public class TripExpenseFragment extends CustomFragment implements OnItemClickLi
         return lstTripUsrIds.containsAll(lstExpUsrIds);
     }
 
-    protected void addExpense(String expenseName, String expenseDetail, String expenseAmount, String strDate, String strUserIds, String strAmounts) {
+    protected void addExpense(String expenseName, String expenseDetail, String expenseAmount, long lngExpAdminId, String strDate, String strUserIds, String strAmounts) {
         try {
             Context context = getActivity();
             LocalDB localDb = new LocalDB(context);
             long lngExpenseId = 0L;
-            lngExpenseId = localDb.insertExpense(expenseName, lngExpenseId, strDate, "INR", expenseAmount, expenseDetail, lngTripId, lngUserId, strUserIds, strAmounts, Constants.STR_NOT_SYNCHED);
+            lngExpenseId = localDb.insertExpense(expenseName, lngExpenseId, strDate, "INR", expenseAmount, expenseDetail, lngTripId, lngExpAdminId, strUserIds, strAmounts, Constants.STR_NOT_SYNCHED);
             localDb.updateExpenseId(lngExpenseId, lngExpenseId);
             ((TripDetailsActivity) context).updateViews();
             context.startService(new Intent(context, SyncIntentService.class));
@@ -373,7 +372,7 @@ public class TripExpenseFragment extends CustomFragment implements OnItemClickLi
         }
     }
 
-    protected void updateExpense(String expenseName, String expenseDetail, String expenseAmount, long expenseId, int position, String strUserIds, String strAmounts) {
+    protected void updateExpense(String expenseName, String expenseDetail, String expenseAmount, long expenseId, long lngExpAdminId, String strUserIds, String strAmounts) {
         try {
             Context context = getActivity();
             LocalDB localDb = new LocalDB(context);
@@ -383,11 +382,11 @@ public class TripExpenseFragment extends CustomFragment implements OnItemClickLi
             boolean areAllUsersPresent = areAllUsersPresent(trip, expense);
             if (areAllUsersPresent) {
                 if (Constants.STR_NOT_SYNCHED.equals(expense.getSyncStatus())) {
-                    localDb.updateExpense(expenseName, expenseAmount, expenseDetail, strUserIds, strAmounts, expense.getSyncStatus(), expenseId);
+                    localDb.updateExpense(expenseName, expenseAmount, expenseDetail, lngExpAdminId, strUserIds, strAmounts, expense.getSyncStatus(), expenseId);
                 } else if (Constants.STR_ERROR_STATUS.equals(expense.getSyncStatus())) {
-                    localDb.updateExpense(expenseName, expenseAmount, expenseDetail, strUserIds, strAmounts, Constants.STR_NOT_SYNCHED, expenseId);
+                    localDb.updateExpense(expenseName, expenseAmount, expenseDetail, lngExpAdminId, strUserIds, strAmounts, Constants.STR_NOT_SYNCHED, expenseId);
                 } else {
-                    localDb.updateExpense(expenseName, expenseAmount, expenseDetail, strUserIds, strAmounts, Constants.STR_UPDATED, expenseId);
+                    localDb.updateExpense(expenseName, expenseAmount, expenseDetail, lngExpAdminId, strUserIds, strAmounts, Constants.STR_UPDATED, expenseId);
                 }
                 ((TripDetailsActivity) context).updateViews();
                 context.startService(new Intent(context, SyncIntentService.class));

@@ -38,6 +38,7 @@ import com.google.api.client.util.DateTime;
 import com.trip.expensemanager.CloudEndpointUtils;
 import com.trip.expensemanager.ExpenseActivity;
 import com.trip.expensemanager.R;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.deviceinfoendpoint.Deviceinfoendpoint;
 import com.trip.expensemanager.deviceinfoendpoint.model.CollectionResponseDeviceInfo;
 import com.trip.expensemanager.deviceinfoendpoint.model.DeviceInfo;
@@ -54,7 +55,6 @@ import com.trip.expensemanager.messageDataApi.MessageDataApi;
 import com.trip.expensemanager.messageDataApi.model.MessageData;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
-import com.trip.expensemanager.database.LocalDB;
 import com.trip.utils.billing.IabHelper;
 import com.trip.utils.billing.IabResult;
 import com.trip.utils.billing.Purchase;
@@ -72,7 +72,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
     public String strRegId;
     public String strDeviceName;
     IntentFilter filter;
-    private String strMobNo, strCountryCode, strToken;
+    private String strMobNo, strCountryCode, strToken, strScreenName;
     private EditText etxtMobNo, etxtToken;
     private AutoCompleteTextView etxtCountryCode;
     private ScrollView sc;
@@ -89,6 +89,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
     private SendSMSTask sendSMSTask;
     private List<String> lstCountryCodes;
     private HashMap<String, String> hmCountries = new HashMap<>();
+    private EditText etxtName;
 
     public static NewUserFragment newInstance() {
         NewUserFragment fragment = null;
@@ -115,6 +116,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         etxtCountryCode = (AutoCompleteTextView) rootView.findViewById(R.id.etxt_country);
         btnVerify = (Button) rootView.findViewById(R.id.btn_verify);
         etxtToken = (EditText) rootView.findViewById(R.id.etxt_token);
+        etxtName = (EditText) rootView.findViewById(R.id.etxt_name);
 
         lstCountryCodes = Arrays.asList(getResources().getStringArray(R.array.country_codes));
 
@@ -154,10 +156,11 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         if (v.equals(llExit)) {
             getActivity().finish();
         } else if (v.equals(llNext)) {
-            if (Global.validate(etxtToken)) {
+            if (Global.validate(etxtCountryCode, etxtMobNo, etxtToken, etxtName)) {
                 strCountryCode = etxtCountryCode.getText().toString();
                 strMobNo = etxtMobNo.getText().toString();
                 strToken = etxtToken.getText().toString();
+                strScreenName = etxtName.getText().toString();
 
                 strMobNo = strCountryCode + strMobNo;
 
@@ -165,8 +168,11 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             }
         } else if (v.equals(btnVerify)) {
             if (Global.validate(etxtCountryCode, etxtMobNo)) {
+
                 strCountryCode = etxtCountryCode.getText().toString();
                 strMobNo = etxtMobNo.getText().toString();
+                strScreenName = etxtName.getText().toString();
+
                 if (lstCountryCodes.contains(strCountryCode)) {
                     smsReceiver = new BroadcastReceiver() {
                         @Override
@@ -475,7 +481,9 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                     strResult = getUserId();
 
                 } else {
+
                     strResult = Constants.STR_TOKEN_INVALID;
+
                 }
             } catch (IOException e) {
 
@@ -520,7 +528,9 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             }
             long id = Long.parseLong(strMobNo.substring(1));
             try {
+
                 login = loginEndpoint.getLogIn(id).execute();
+
             } catch (IOException e) {
 
             }
@@ -545,13 +555,16 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                     login.setUsername(strMobNo);
                 }
 
+                login.setPrefferedName(strScreenName);
                 login.setDeviceIDs(devList);
 
                 login = loginEndpoint.insertLogIn(login).execute();
 
                 localDb.insert(login.getId(), login.getUsername(), login.getCountryCode(), Constants.STR_YOU, device.getId());
                 localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU, Constants.STR_SYNCHED);
+
                 strResult = Constants.STR_SUCCESS;
+
             } else {
                 if (devInfoEntities == null || devInfoEntities.getItems() == null || devInfoEntities.getItems().size() < 1) {
                     device = new DeviceInfo();
@@ -572,13 +585,17 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                     if (!lstDevIds.contains(device.getId())) {
                         lstDevIds.add(device.getId());
                     }
+
                     login.setDeviceIDs(lstDevIds);
                     login = loginEndpoint.updateLogIn(login).execute();
                     localDb.insert(login.getId(), login.getUsername(), login.getCountryCode(), Constants.STR_YOU, device.getId());
                     localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU, Constants.STR_SYNCHED);
                     strResult = Constants.STR_SYNC_NEEDED;
+
                 } else {
+
                     strResult = Constants.STR_NOT_PURCHASED;
+
                 }
 
             }

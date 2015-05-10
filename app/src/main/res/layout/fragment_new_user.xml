@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5dp"
+        android:padding="10dp"
         android:layout_above="@+id/footer">
 
         <RelativeLayout
@@ -54,7 +55,8 @@
                     android:completionThreshold="1"
                     android:hint="@string/country_code"
                     android:inputType="phone"
-                    android:textColor="@drawable/disable_color" />
+                    android:textColor="@drawable/disable_color"
+                    android:textSize="15sp"/>
 
                 <EditText
                     android:id="@+id/etxt_mob_no"
@@ -67,7 +69,8 @@
                     android:layout_weight="11"
                     android:hint="@string/mob_no"
                     android:inputType="phone"
-                    android:textColor="@drawable/disable_color" />
+                    android:textColor="@drawable/disable_color"
+                    android:textSize="15sp"/>
 
                 <Button
                     android:id="@+id/btn_verify"
@@ -77,7 +80,8 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="3"
                     android:background="@drawable/custom_button_settled"
-                    android:text="Verify" />
+                    android:text="Verify"
+                    android:textSize="15sp"/>
 
             </LinearLayout>
 
@@ -87,7 +91,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ll"
                 android:layout_marginTop="10dp"
-                android:text="@string/verification_info" />
+                android:text="@string/verification_info"
+                android:textSize="15sp"/>
 
             <TextView
                 android:id="@+id/txt_token"
@@ -95,7 +100,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txt_info"
                 android:layout_marginTop="10dp"
-                android:text="@string/verification_token" />
+                android:text="@string/verification_token"
+                android:textSize="15sp"/>
 
             <EditText
                 android:id="@+id/etxt_token"
@@ -106,7 +112,29 @@
                 android:ems="10"
                 android:hint="@string/token"
                 android:inputType="number"
-                android:textColor="@drawable/disable_color" />
+                android:textColor="@drawable/disable_color"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/txt_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etxt_token"
+                android:layout_marginTop="10dp"
+                android:text="@string/screen_name"
+                android:textSize="15sp"/>
+
+            <EditText
+                android:id="@+id/etxt_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_name"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="@string/preffered_name"
+                android:inputType="textCapWords"
+                android:textColor="@drawable/disable_color"
+                android:textSize="15sp"/>
 
         </RelativeLayout>
     </ScrollView>
