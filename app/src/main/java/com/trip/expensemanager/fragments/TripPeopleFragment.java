@@ -2,6 +2,7 @@ package com.trip.expensemanager.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -322,6 +323,7 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
                         }
 
                         final String contactName = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        final Context context = getActivity();
 
                         if(allNumbers.size() > 1) {
 
@@ -332,14 +334,14 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
                                 public void onClick(DialogInterface dialog, int item) {
                                     String selectedNumber = items[item].toString();
                                     selectedNumber = selectedNumber.replace("-", "");
-                                    addPerson(contactName, selectedNumber);
+                                    addPerson(contactName, selectedNumber, context);
                                 }
                             });
                             AlertDialog alert = builder.create();
                             alert.show();
                         } else {
 
-                            addPerson(contactName, allNumbers.get(0));
+                            addPerson(contactName, allNumbers.get(0), context);
 
                         }
                     }
@@ -349,9 +351,9 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
         }
     }
 
-    private void addPerson(String strName, String strNumber) {
+    private void addPerson(String strName, String strNumber, Context context) {
 
-        LocalDB localDb = new LocalDB(getActivity());
+        LocalDB localDb = new LocalDB(context);
 
         strNumber  = removeSpaces(strNumber);
 
@@ -388,8 +390,8 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
         localDb.updateTripUsers(lngTripId, sbUsers.toString(), Constants.STR_QR_ADDED);
 
 
-        Intent serviceIntent = new Intent(getActivity(), SyncIntentService.class);
-        getActivity().startService(serviceIntent);
+        Intent serviceIntent = new Intent(context, SyncIntentService.class);
+        context.startService(serviceIntent);
 
     }
 

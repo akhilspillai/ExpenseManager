@@ -3,7 +3,7 @@
     package="com.trip.expensemanager"
     android:installLocation="auto"
     android:versionCode="7"
-    android:versionName="1.0">
+    android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -38,11 +38,11 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".ExpenseActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -55,7 +55,7 @@
 
         <receiver
             android:name=".GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
@@ -65,7 +65,7 @@
 
         <activity
             android:name=".TripDetailsActivity"
-            android:parentActivityName=".ExpenseActivity">
+            android:parentActivityName=".ExpenseActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
@@ -73,19 +73,11 @@
                 android:value=".ExpenseActivity" />
         </activity>
 
-        <!--
-        <receiver android:name="ConnectivityChangeListener" >
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-        -->
-
-        <service android:name=".SyncIntentService"></service>
+        <service android:name=".SyncIntentService" />
 
         <activity
             android:name=".AllDetailsActivity"
-            android:parentActivityName=".TripDetailsActivity">
+            android:parentActivityName=".TripDetailsActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
@@ -103,7 +95,18 @@
         <activity
             android:name=".UpdatesActivity"
             android:excludeFromRecents="true"
-            android:taskAffinity=""></activity>
+            android:taskAffinity="" />
+
+        <receiver
+            android:name=".ConnectivityChangeListener"
+            android:enabled="true"
+            android:exported="true" >
+
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+
+        </receiver>
     </application>
 
 </manifest>

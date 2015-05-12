@@ -533,17 +533,18 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
             Trip retTrip;
             TripBean trip;
             LogIn retLogin;
-            int i = 0;
-            while (listTripIds != null && i < listTripIds.size()) {
+            int i = listTripIds.size();
+            while (listTripIds != null && i != 0) {
                 if (isCancelled()) {
                     break;
                 }
-                tripId = listTripIds.get(i);
+                i--;
+                tripId = listTripIds.get(i+1);
                 trip = localDb.retrieveTripDetails(tripId);
                 if (trip != null) {
-                    continue;
+                    break;
                 }
-                retTrip = tripEndpoint.getTrip(listTripIds.get(i++)).execute();
+                retTrip = tripEndpoint.getTrip(listTripIds.get(i+1)).execute();
                 if (retTrip != null) {
                     date = sdf.format(new Date(retTrip.getCreationDate().getValue()));
                     listUserIdsTemp = retTrip.getUserIDs();

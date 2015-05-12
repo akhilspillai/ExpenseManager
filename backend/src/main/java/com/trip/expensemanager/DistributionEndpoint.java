@@ -117,7 +117,6 @@ public class DistributionEndpoint {
 		List<Long> deviceIds=null;
 		DeviceInfoEndpoint devInfoendpoint=new DeviceInfoEndpoint();
 		DeviceInfo devInfo=null;
-		login=loginEndpoint.getLogIn(retDestribution.getToId());
 		long changerId=retDestribution.getChangerId();
 		TripEndpoint tripEndpoint=new TripEndpoint();
 		Trip trip=tripEndpoint.getTrip(distribution.getTripId());

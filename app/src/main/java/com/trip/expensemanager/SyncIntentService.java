@@ -66,10 +66,17 @@ public class SyncIntentService extends IntentService {
         super("ExpenseSyncService");
     }
 
+    private static SyncIntentService instance = null;
+
+    public static boolean isInstanceCreated() {
+        return instance != null;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
 
+        instance = this;
         broadcaster = LocalBroadcastManager.getInstance(this);
     }
 
@@ -248,6 +255,7 @@ public class SyncIntentService extends IntentService {
 
     @Override
     public void onDestroy() {
+        instance = null;
         super.onDestroy();
     }
 
@@ -342,7 +350,7 @@ public class SyncIntentService extends IntentService {
                                 localDb.updatePurchaseId(strPurchaseId);
                                 localDb.updatePurchaseToSynced();
                                 SharedPreferences prefs = getSharedPreferences(Constants.STR_PREFERENCE, MODE_PRIVATE);
-                                prefs.edit().putBoolean(Constants.STR_PURCHASED, true).commit();
+                                prefs.edit().putBoolean(Constants.STR_PURCHASED, true).apply();
                             }
                         }
                     } else if (toSyncTemp.getSyncType().equals(Constants.STR_TRIP_UPDATED)) {
@@ -869,7 +877,7 @@ public class SyncIntentService extends IntentService {
                             if (strAmount.startsWith("-")) {
                                 strAmount = strAmount.substring(1);
                             }
-                            if (toSyncTemp.getUserId() != devId) {
+                            if (toSyncTemp.getChangerId() != lngUserId) {
                                 rowId = localDb.insertDistribution(fromId, toId, strAmount, tripId, Constants.STR_YES, date);
                                 localDb.updateDistributionId(rowId, distTemp.getId());
                                 Intent intentToCall = new Intent(this, UpdatesActivity.class);
@@ -884,7 +892,7 @@ public class SyncIntentService extends IntentService {
                                 TripBean tripBean = localDb.retrieveTripDetails(distTemp.getTripId());
                                 if (toUser != null && fromUser != null && changer != null) {
                                     sendNotification(toSyncTemp.getSyncType(), "Debt Settled", changer + " marked "
-                                            + fromUser + "'s debt to "+toUser+" of " + strAmount + " in the expense-group "
+                                            + fromUser + " debt to "+toUser+" of " + strAmount + " in the expense-group "
                                             + tripBean.getName() + " as paid!!", intentToCall, Constants.NOTIFICATION_ID_TRIP,
                                             Constants.STR_GROUP, tripBean.getId());
                                 } else {

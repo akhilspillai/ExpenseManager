@@ -562,8 +562,11 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
                 localDb.insert(login.getId(), login.getUsername(), login.getCountryCode(), Constants.STR_YOU, device.getId());
                 localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU, Constants.STR_SYNCHED);
-
-                strResult = Constants.STR_SUCCESS;
+                if(login == null) {
+                    strResult = Constants.STR_SUCCESS;
+                } else {
+                    strResult = Constants.STR_SYNC_NEEDED;
+                }
 
             } else {
                 if (devInfoEntities == null || devInfoEntities.getItems() == null || devInfoEntities.getItems().size() < 1) {

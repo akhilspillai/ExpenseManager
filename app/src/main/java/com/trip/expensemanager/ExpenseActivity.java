@@ -14,10 +14,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.AddTripFragment;
 import com.trip.expensemanager.fragments.NewUserFragment;
 import com.trip.utils.Constants;
-import com.trip.expensemanager.database.LocalDB;
 
 public class ExpenseActivity extends ActionBarActivity {
 
