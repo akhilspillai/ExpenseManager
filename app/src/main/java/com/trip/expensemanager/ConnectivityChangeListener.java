@@ -11,10 +11,10 @@ public class ConnectivityChangeListener extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
-        if(Global.isConnected(context)){
-            long lngUserId=new LocalDB(context).retrieve();
-            if(lngUserId!=0L && !SyncIntentService.isInstanceCreated()){
-                Intent serviceIntent=new Intent(context, SyncIntentService.class);
+        if (Global.isConnected(context)) {
+            long lngUserId = new LocalDB(context).retrieve();
+            if (lngUserId != 0L && !SyncIntentService.isInstanceCreated()) {
+                Intent serviceIntent = new Intent(context, SyncIntentService.class);
                 context.startService(serviceIntent);
             }
         }
