@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
-    tools:context="com.trip.expensemanager.AllDetailsActivity"
+    tools:context="com.trip.expensemanager.activities.AllDetailsActivity"
     tools:ignore="MergeRootFrame">
 
     <include

@@ -11,15 +11,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -36,8 +36,9 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.trip.expensemanager.CloudEndpointUtils;
-import com.trip.expensemanager.ExpenseActivity;
 import com.trip.expensemanager.R;
+import com.trip.expensemanager.activities.ExpenseActivity;
+import com.trip.expensemanager.activities.TripsActivity;
 import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.deviceinfoendpoint.Deviceinfoendpoint;
 import com.trip.expensemanager.deviceinfoendpoint.model.CollectionResponseDeviceInfo;
@@ -49,7 +50,6 @@ import com.trip.expensemanager.fragments.dialogs.InformationFragment;
 import com.trip.expensemanager.fragments.dialogs.ThreeButtonDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ThreeButtonFragment;
 import com.trip.expensemanager.loginendpoint.Loginendpoint;
-import com.trip.expensemanager.loginendpoint.model.CollectionResponseLogIn;
 import com.trip.expensemanager.loginendpoint.model.LogIn;
 import com.trip.expensemanager.messageDataApi.MessageDataApi;
 import com.trip.expensemanager.messageDataApi.model.MessageData;
@@ -124,6 +124,28 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                 android.R.layout.simple_dropdown_item_1line, lstCountryCodes);
 
         etxtCountryCode.setAdapter(autocompletetextAdapter);
+        etxtCountryCode.setText("+");
+
+        etxtCountryCode.setSelection(1);
+
+        etxtCountryCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (etxtCountryCode.getText().equals("")) {
+                        etxtCountryCode.setText("+");
+                    }
+                    etxtCountryCode.showDropDown();
+                }
+            }
+        });
+
+        etxtCountryCode.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                etxtMobNo.requestFocus();
+            }
+        });
 
         btnVerify.setOnClickListener(this);
         llExit.setOnClickListener(this);
@@ -133,7 +155,6 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
         return rootView;
     }
-
 
     private void showErrorDialog(String strMessage) {
         InfoDialogListener listener = new InfoDialogListener() {
@@ -147,12 +168,14 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                 dialog.dismiss();
             }
         };
-        InformationFragment.newInstance("Error", strMessage, "OK", R.layout.fragment_dialog_info, listener).show(getActivity().getSupportFragmentManager(), "dialog");
+        InformationFragment.newInstance("Error", strMessage, "OK", R.layout.fragment_dialog_info,
+                listener).show(getActivity().getSupportFragmentManager(), "dialog");
     }
 
 
     @Override
     public void onClick(View v) {
+        hideKeyboard();
         if (v.equals(llExit)) {
             getActivity().finish();
         } else if (v.equals(llNext)) {
@@ -233,6 +256,8 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
             sendSMSTask = new SendSMSTask(strCountryCode, strMobNo);
             sendSMSTask.execute();
+
+            showInfoMessage(Constants.SMS_DELIVERY_PROBLEM);
         } else {
             showErrorDialog("Please connect to internet to continue.");
         }
@@ -247,6 +272,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+
 
         if (smsReceiver != null && filter != null) {
             getActivity().registerReceiver(smsReceiver, filter);
@@ -334,7 +360,8 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                 } else if (purchase.getSku().equals(Constants.STR_SKU_PREMIUM)) {
                     String strUniqueReturn = purchase.getDeveloperPayload();
                     if (strUniqueReturn != null && strUniqueReturn.equals(strUniqueString)) {
-                        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.STR_PREFERENCE, Activity.MODE_PRIVATE);
+                        SharedPreferences prefs = getActivity().getSharedPreferences(
+                                Constants.STR_PREFERENCE, Activity.MODE_PRIVATE);
                         prefs.edit().putBoolean(Constants.STR_PURCHASED, true).apply();
                         if (Global.isConnected(getActivity())) {
                             new PurchaseLoginTask(strMobNo).execute(true);
@@ -372,7 +399,8 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                 dialog.dismiss();
             }
         };
-        ConfirmationFragment.newInstance("Error", strMessage, "Try Again", R.layout.fragment_dialog_confirm, listener).show(getActivity().getSupportFragmentManager(), "dialog");
+        ConfirmationFragment.newInstance("Error", strMessage, "Try Again", R.layout.fragment_dialog_confirm,
+                listener).show(getActivity().getSupportFragmentManager(), "dialog");
     }
 
     private class GetCountriesTask extends AsyncTask<Void, Void, Void> {
@@ -396,6 +424,15 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
     }
 
+    private void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
     private class SendSMSTask extends AsyncTask<Void, Void, MessageData> {
 
         String strMobNo;
@@ -416,9 +453,8 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         protected MessageData doInBackground(Void... params) {
 
             strMobNo = strCountryCode + strMobNo;
-            MessageData retMessageData = createToken();
 
-            return retMessageData;
+            return createToken();
         }
 
         @Override
@@ -498,14 +534,13 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             MessageDataApi messageEndpoint = messageBuilder.build();
             MessageData messageData = null;
             try {
-                messageData = messageEndpoint.getMessageData(Long.parseLong(strMobNo.substring(1))).execute();
+                messageData = messageEndpoint.getMessageData(Long.parseLong(strMobNo.substring(1)))
+                        .execute();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (messageData != null) {
-                return strToken.equals(messageData.getToken());
-            }
-            return false;
+
+            return messageData != null && strToken.equals(messageData.getToken());
         }
 
         private String getUserId() throws IOException {
@@ -534,9 +569,13 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             } catch (IOException e) {
 
             }
-            CollectionResponseDeviceInfo devInfoEntities = devInfoEndpoint.listDeviceInfo().setGcmRegId(strRegId).execute();
+            CollectionResponseDeviceInfo devInfoEntities = devInfoEndpoint.listDeviceInfo()
+                    .setGcmRegId(strRegId).execute();
+
             if (login == null || login.getDeviceIDs() == null) {
-                if (devInfoEntities == null || devInfoEntities.getItems() == null || devInfoEntities.getItems().size() < 1) {
+                boolean isUserPresent = true;
+                if (devInfoEntities == null || devInfoEntities.getItems() == null || devInfoEntities
+                        .getItems().size() < 1) {
                     device = new DeviceInfo();
                     device.setMake(strDeviceName);
                     device.setGcmRegId(strRegId);
@@ -545,7 +584,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                     device = devInfoEntities.getItems().get(0);
                 }
 
-                List<Long> devList = new ArrayList<Long>(1);
+                List<Long> devList = new ArrayList<>(1);
                 devList.add(device.getId());
 
                 if(login == null) {
@@ -553,6 +592,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                     login.setId(id);
                     login.setCountryCode(strCountryCode);
                     login.setUsername(strMobNo);
+                    isUserPresent = false;
                 }
 
                 login.setPrefferedName(strScreenName);
@@ -560,16 +600,18 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
                 login = loginEndpoint.insertLogIn(login).execute();
 
-                localDb.insert(login.getId(), login.getUsername(), login.getCountryCode(), Constants.STR_YOU, device.getId());
+                localDb.insert(login.getId(), login.getUsername(), login.getCountryCode(), Constants.STR_YOU,
+                        device.getId());
                 localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU, Constants.STR_SYNCHED);
-                if(login == null) {
+                if(!isUserPresent) {
                     strResult = Constants.STR_SUCCESS;
                 } else {
                     strResult = Constants.STR_SYNC_NEEDED;
                 }
 
             } else {
-                if (devInfoEntities == null || devInfoEntities.getItems() == null || devInfoEntities.getItems().size() < 1) {
+                if (devInfoEntities == null || devInfoEntities.getItems() == null || devInfoEntities
+                        .getItems().size() < 1) {
                     device = new DeviceInfo();
                     device.setMake(strDeviceName);
                     device.setGcmRegId(strRegId);
@@ -581,7 +623,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
 
                 if (lstDevIds == null) {
-                    lstDevIds = new ArrayList<Long>();
+                    lstDevIds = new ArrayList<>();
                 }
 
                 if (isPurchased() || lstDevIds.contains(device.getId())) {
@@ -591,8 +633,10 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
                     login.setDeviceIDs(lstDevIds);
                     login = loginEndpoint.updateLogIn(login).execute();
-                    localDb.insert(login.getId(), login.getUsername(), login.getCountryCode(), Constants.STR_YOU, device.getId());
-                    localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU, Constants.STR_SYNCHED);
+                    localDb.insert(login.getId(), login.getUsername(), login.getCountryCode(),
+                            Constants.STR_YOU, device.getId());
+                    localDb.insertPerson(login.getId(), login.getUsername(), Constants.STR_YOU,
+                            Constants.STR_SYNCHED);
                     strResult = Constants.STR_SYNC_NEEDED;
 
                 } else {
@@ -620,7 +664,10 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             int count = 5;
             long sleepTime = 100;
             if (checkPlayServices()) {
-                while (true) {
+                while (!isCancelled()) {
+                    if (!Global.isConnected(getActivity())) {
+                        break;
+                    }
                     try {
                         if (gcm == null) {
                             gcm = GoogleCloudMessaging.getInstance(getActivity());
@@ -634,7 +681,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                             try {
                                 Thread.sleep(sleepTime * 2);
                             } catch (InterruptedException e1) {
-
+                                break;
                             }
                         }
                     }
@@ -648,7 +695,8 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             if (resultCode != ConnectionResult.SUCCESS) {
                 try {
                     if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                        GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), PLAY_SERVICES_RESOLUTION_REQUEST).show();
+                        GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(),
+                                PLAY_SERVICES_RESOLUTION_REQUEST).show();
                     } else {
                         Log.i("Expense", "This device is not supported.");
                     }
@@ -664,8 +712,6 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             ActionBarActivity context = (ActionBarActivity) getActivity();
-            LocalDB localDb = new LocalDB(context);
-            long lngUserId = localDb.retrieve();
 
             if (result == null || result.equals(Constants.STR_FAILURE)) {
                 showRegistrationError("Oops!! Something went wrong. Please try again.");
@@ -674,31 +720,15 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                 strMessage = Constants.STR_LOGIN_DIFF_DEV + strMessage;
                 showPurchaseOrNotDialog(strMessage);
             } else if (result.equals(Constants.STR_SYNC_NEEDED)) {
-//				Intent intent=new Intent(getActivity(), ExpenseActivity.class);
-//				intent.putExtra(Constants.STR_SYNC_NEEDED, true);
-//				getActivity().startActivity(intent);
-//				getActivity().finish();
-                context.setContentView(R.layout.activity_expense);
-                Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
-
-                if (toolbar != null) {
-                    context.setSupportActionBar(toolbar);
-                }
-                context.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                context.getSupportFragmentManager().beginTransaction().replace(R.id.container, AddTripFragment.newInstance(lngUserId, true)).commit();
+                Intent activityIntent = new Intent(context, TripsActivity.class);
+                activityIntent.putExtra(Constants.STR_SYNC_NEEDED, true);
+                startActivity(activityIntent);
+                context.finish();
             } else if (result.equals(Constants.STR_SUCCESS)) {
-//				Intent intent=new Intent(getActivity(), ExpenseActivity.class);
-//				intent.putExtra(Constants.STR_SYNC_NEEDED, false);
-//				getActivity().startActivity(intent);
-//				getActivity().finish();
-                context.setContentView(R.layout.activity_expense);
-                Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
-
-                if (toolbar != null) {
-                    context.setSupportActionBar(toolbar);
-                }
-                context.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                context.getSupportFragmentManager().beginTransaction().replace(R.id.container, AddTripFragment.newInstance(lngUserId, false)).commit();
+                Intent activityIntent = new Intent(context, TripsActivity.class);
+                activityIntent.putExtra(Constants.STR_SYNC_NEEDED, false);
+                startActivity(activityIntent);
+                context.finish();
             } else if (result.equals(Constants.STR_TOKEN_INVALID)) {
                 showErrorDialog("Invalid verification token. Please try again!!");
             }
@@ -716,19 +746,25 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
         @Override
         protected String doInBackground(Boolean... params) {
+            int count = 5;
             long sleepTime = 100L;
             String result = null;
-            while (true) {
+            while (!isCancelled()) {
+                if (!Global.isConnected(getActivity())) {
+                    break;
+                }
                 try {
-                    if (!Global.isConnected(getActivity())) {
-                        break;
-                    }
                     result = updateLoginDetails(params[0]);
+                    break;
                 } catch (IOException e) {
                     try {
-                        Thread.sleep(sleepTime * 2);
+                        if (--count == 0) {
+                            break;
+                        } else {
+                            Thread.sleep(sleepTime * 2);
+                        }
                     } catch (InterruptedException e1) {
-
+                        break;
                     }
                 }
             }
@@ -746,12 +782,9 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                     AndroidHttp.newCompatibleTransport(), new JacksonFactory(), null);
             devInfoBuilder = CloudEndpointUtils.updateBuilder(devInfoBuilder);
             Deviceinfoendpoint devInfoEndpoint = devInfoBuilder.build();
-            CollectionResponseLogIn loginEntities = loginEndpoint.listLogIn().setUsername(strMobNo).execute();
             CollectionResponseDeviceInfo devInfoEntities = devInfoEndpoint.listDeviceInfo().setGcmRegId(strRegId).execute();
-            if (loginEntities == null || loginEntities.getItems() == null || loginEntities.getItems().size() < 1) {
-                return result;
-            } else {
-                LogIn login = loginEntities.getItems().get(0);
+            LogIn login = loginEndpoint.getLogIn(Long.parseLong(strMobNo.substring(1))).execute();
+            if  (login != null) {
                 DeviceInfo device;
                 if (devInfoEntities.getItems().size() > 0) {
                     device = devInfoEntities.getItems().get(0);
@@ -773,9 +806,10 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                 if (!lstDevIds.contains(device.getId())) {
                     lstDevIds.add(device.getId());
                 }
+                login.setPrefferedName(strScreenName);
                 login.setDeviceIDs(lstDevIds);
                 login = loginEndpoint.updateLogIn(login).execute();
-                if(isPurchased) {
+                if (isPurchased) {
                     localDb.updatePurchaseId(strUniqueString);
                     localDb.updatePurchaseToSynced();
                 }
@@ -791,16 +825,10 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
             super.onPostExecute(result);
             if (result.equals(Constants.STR_SYNC_NEEDED)) {
                 ActionBarActivity context = (ActionBarActivity) getActivity();
-                LocalDB localDb = new LocalDB(context);
-                long lngUserId = localDb.retrieve();
-                context.setContentView(R.layout.activity_expense);
-                Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
-
-                if (toolbar != null) {
-                    context.setSupportActionBar(toolbar);
-                }
-                context.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                context.getSupportFragmentManager().beginTransaction().replace(R.id.container, AddTripFragment.newInstance(lngUserId, true)).commit();
+                Intent activityIntent = new Intent(context, TripsActivity.class);
+                activityIntent.putExtra(Constants.STR_SYNC_NEEDED, true);
+                startActivity(activityIntent);
+                context.finish();
             } else {
                 showRegistrationError("Oops!! Something went wrong. Please try again.");
             }

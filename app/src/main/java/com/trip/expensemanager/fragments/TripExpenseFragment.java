@@ -26,16 +26,16 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.trip.expensemanager.AllDetailsActivity;
 import com.trip.expensemanager.R;
-import com.trip.expensemanager.SyncIntentService;
-import com.trip.expensemanager.TripDetailsActivity;
+import com.trip.expensemanager.activities.AllDetailsActivity;
+import com.trip.expensemanager.activities.TripDetailsActivity;
 import com.trip.expensemanager.adapters.CustomExpenseListAdapter;
 import com.trip.expensemanager.beans.ExpenseBean;
 import com.trip.expensemanager.beans.TripBean;
 import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
+import com.trip.expensemanager.services.SyncIntentService;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
 

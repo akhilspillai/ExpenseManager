@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.trip.expensemanager"
     android:installLocation="auto"
-    android:versionCode="7"
+    android:versionCode="8"
     android:versionName="1.0" >
 
     <uses-sdk
@@ -20,8 +20,6 @@
     <permission
         android:name="com.trip.expensemanager.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-
-    <uses-permission android:name="com.trip.expensemanager.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -40,21 +38,20 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ExpenseActivity"
+            android:name=".activities.ExpenseActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".scanner.ZBarScannerActivity"
-            android:screenOrientation="landscape" />
 
         <receiver
-            android:name=".GcmBroadcastReceiver"
+            android:name=".listeners.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -64,25 +61,25 @@
         </receiver>
 
         <activity
-            android:name=".TripDetailsActivity"
-            android:parentActivityName=".ExpenseActivity" >
+            android:name=".activities.TripDetailsActivity"
+            android:parentActivityName=".activities.TripsActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ExpenseActivity" />
+                android:value=".activities.TripsActivity" />
         </activity>
 
-        <service android:name=".SyncIntentService" />
+        <service android:name=".services.SyncIntentService" />
 
         <activity
-            android:name=".AllDetailsActivity"
-            android:parentActivityName=".TripDetailsActivity" >
+            android:name=".activities.AllDetailsActivity"
+            android:parentActivityName=".activities.TripDetailsActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TripDetailsActivity" />
+                android:value=".activities.TripDetailsActivity" />
         </activity>
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
@@ -93,20 +90,24 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".UpdatesActivity"
+            android:name=".activities.UpdatesActivity"
             android:excludeFromRecents="true"
             android:taskAffinity="" />
 
         <receiver
-            android:name=".ConnectivityChangeListener"
+            android:name=".listeners.ConnectivityChangeListener"
             android:enabled="true"
             android:exported="true" >
-
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
-
         </receiver>
+
+        <activity
+            android:name=".activities.TripsActivity"
+            android:label="@string/title_activity_trips"
+            android:launchMode="singleTask">
+        </activity>
     </application>
 
 </manifest>

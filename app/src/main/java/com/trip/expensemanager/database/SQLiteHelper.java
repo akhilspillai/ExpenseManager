@@ -102,7 +102,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             + COLUMN_EXPENSE_AMOUNT + " text,"
             + COLUMN_CREATION_TIME + " date,"
             + COLUMN_PAID + " text);";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
 
     public SQLiteHelper(Context context) {
@@ -111,22 +111,17 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        try {
-            database.execSQL(LOGIN_TABLE_CREATE);
-            database.execSQL(TRIP_TABLE_CREATE);
-            database.execSQL(EXPENSE_TABLE_CREATE);
-            database.execSQL(USERS_TABLE_CREATE);
-            database.execSQL(TO_SYNC_TABLE_CREATE);
-            database.execSQL(DISTRIBUTION_TABLE_CREATE);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
+        database.execSQL(LOGIN_TABLE_CREATE);
+        database.execSQL(TRIP_TABLE_CREATE);
+        database.execSQL(EXPENSE_TABLE_CREATE);
+        database.execSQL(USERS_TABLE_CREATE);
+        database.execSQL(TO_SYNC_TABLE_CREATE);
+        database.execSQL(DISTRIBUTION_TABLE_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        try {
+        if(oldVersion < 6) {
             db.execSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_LOGIN);
             db.execSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_TRIP);
             db.execSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_EXPENSE);
@@ -134,9 +129,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_TO_SYNC);
             db.execSQL("DROP TABLE IF EXISTS " + SQLiteHelper.TABLE_DISTRIBUTION);
             onCreate(db);
-        } catch (Exception e) {
-            e.printStackTrace();
-
         }
     }
 

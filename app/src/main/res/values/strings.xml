@@ -504,5 +504,6 @@
         <item>ZM</item>
         <item>ZW</item>
     </string-array>
+    <string name="title_activity_trips">TripsActivity</string>
 
 </resources>

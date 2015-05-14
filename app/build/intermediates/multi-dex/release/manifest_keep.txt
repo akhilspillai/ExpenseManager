@@ -1,0 +1,19 @@
+-keep class null {
+    <init>();
+    void attachBaseContext(android.content.Context);
+}
+-keep class com.trip.expensemanager.activities.ExpenseActivity { <init>(); }
+-keep class com.trip.expensemanager.listeners.GcmBroadcastReceiver { <init>(); }
+-keep class com.trip.expensemanager.activities.TripDetailsActivity { <init>(); }
+-keep class com.trip.expensemanager.services.SyncIntentService { <init>(); }
+-keep class com.trip.expensemanager.activities.AllDetailsActivity { <init>(); }
+-keep class com.google.android.gms.ads.AdActivity { <init>(); }
+-keep class com.trip.expensemanager.activities.UpdatesActivity { <init>(); }
+-keep class com.trip.expensemanager.listeners.ConnectivityChangeListener { <init>(); }
+-keep class com.trip.expensemanager.activities.TripsActivity { <init>(); }
+-keep public class * extends android.app.backup.BackupAgent {
+    <init>();
+}
+-keep public class * extends java.lang.annotation.Annotation {
+    *;
+}

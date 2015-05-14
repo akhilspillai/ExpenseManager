@@ -12,9 +12,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.trip.expensemanager.ExpenseActivity;
 import com.trip.expensemanager.R;
-import com.trip.expensemanager.TripDetailsActivity;
+import com.trip.expensemanager.activities.TripDetailsActivity;
+import com.trip.expensemanager.activities.TripsActivity;
 import com.trip.expensemanager.adapters.CustomUpdatesAdapter;
 import com.trip.expensemanager.beans.TripBean;
 import com.trip.expensemanager.beans.UpdateBean;
@@ -109,9 +109,9 @@ public class UpdatesFragment extends CustomFragment implements OnItemClickListen
                 intentToCall.putExtra(Constants.STR_TRIP_ID, tripBean.getId());
                 intentToCall.putExtra(Constants.STR_ADMIN_ID, tripBean.getAdminId());
             } else if (listActions.get(position).equals(Constants.STR_TRIP_DELETED)) {
-                intentToCall = new Intent(getActivity(), ExpenseActivity.class);
+                intentToCall = new Intent(getActivity(), TripsActivity.class);
             } else if (listActions.get(position).equals(Constants.STR_TRIP_UPDATED)) {
-                intentToCall = new Intent(getActivity(), ExpenseActivity.class);
+                intentToCall = new Intent(getActivity(), TripsActivity.class);
             } else if (listActions.get(position).equals(Constants.STR_EXPENSE_ADDED)) {
                 intentToCall = new Intent(getActivity(), TripDetailsActivity.class);
                 intentToCall.putExtra(Constants.STR_SHOW_TAB, 2);
@@ -141,7 +141,7 @@ public class UpdatesFragment extends CustomFragment implements OnItemClickListen
                 intentToCall.putExtra(Constants.STR_TRIP_ID, tripBean.getId());
                 intentToCall.putExtra(Constants.STR_ADMIN_ID, tripBean.getAdminId());
             } else if (listActions.get(position).equals(Constants.STR_NOT_EXITED)) {
-                intentToCall = new Intent(getActivity(), ExpenseActivity.class);
+                intentToCall = new Intent(getActivity(), TripsActivity.class);
             } else if (listActions.get(position).equals(Constants.STR_NOT_UPDATED)) {
                 intentToCall = new Intent(getActivity(), TripDetailsActivity.class);
                 intentToCall.putExtra(Constants.STR_SHOW_TAB, 2);

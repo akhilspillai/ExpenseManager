@@ -1,6 +1,5 @@
 package com.trip.expensemanager.fragments;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,19 +23,16 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.trip.expensemanager.CloudEndpointUtils;
 import com.trip.expensemanager.R;
-import com.trip.expensemanager.SyncIntentService;
-import com.trip.expensemanager.TripDetailsActivity;
+import com.trip.expensemanager.activities.TripDetailsActivity;
 import com.trip.expensemanager.adapters.CustomTripListAdapter;
 import com.trip.expensemanager.beans.TripBean;
 import com.trip.expensemanager.database.LocalDB;
@@ -51,14 +47,11 @@ import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
 import com.trip.expensemanager.loginendpoint.Loginendpoint;
 import com.trip.expensemanager.loginendpoint.model.LogIn;
-import com.trip.expensemanager.scanner.ZBarConstants;
-import com.trip.expensemanager.scanner.ZBarScannerActivity;
+import com.trip.expensemanager.services.SyncIntentService;
 import com.trip.expensemanager.tripendpoint.Tripendpoint;
 import com.trip.expensemanager.tripendpoint.model.Trip;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
-
-import net.sourceforge.zbar.Symbol;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -68,23 +61,21 @@ import java.util.List;
 
 public class AddTripFragment extends CustomFragment implements OnItemClickListener, OnClickListener {
 
-    private static final int ZBAR_SCANNER_REQUEST = 1;
-    public Button btnOk;
     protected String strTripName;
     private ListView listTrip;
     private long lngUserId;
     private CustomTripListAdapter listAdapter;
-    private ArrayList<TripBean> arrTrips = new ArrayList<TripBean>();
+    private ArrayList<TripBean> arrTrips = new ArrayList<>();
     private TextView txtNoTrip;
-    private List<String> arrTripNames = new ArrayList<String>();
-    private List<Long> arrIds = new ArrayList<Long>();
-    private List<Long> arrAdminIds = new ArrayList<Long>();
-    private List<String> arrCreationDates = new ArrayList<String>();
-    private List<Boolean> arrClosed = new ArrayList<Boolean>();
-    private List<Integer> arrSynched = new ArrayList<Integer>();
+    private List<String> arrTripNames = new ArrayList<>();
+    private List<Long> arrIds = new ArrayList<>();
+    private List<Long> arrAdminIds = new ArrayList<>();
+    private List<String> arrCreationDates = new ArrayList<>();
+    private List<Boolean> arrClosed = new ArrayList<>();
+    private List<Integer> arrSynched = new ArrayList<>();
     private BroadcastReceiver receiver;
     private ImageButton btnAddTrip;
-    private List<Integer> arrColors = new ArrayList<Integer>();
+    private List<Integer> arrColors = new ArrayList<>();
     private SwipeRefreshLayout sl;
     private SyncTask syncTask;
     private boolean isSyncNeeded;
@@ -117,37 +108,33 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = null;
-        try {
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(R.string.trips);
-            rootView = inflater.inflate(R.layout.fragment_trips, container, false);
-            sl = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
-            listTrip = (ListView) rootView.findViewById(R.id.li_trips);
-            txtNoTrip = (TextView) rootView.findViewById(R.id.txt_no_trips);
-            btnAddTrip = (ImageButton) rootView.findViewById(R.id.btn_add_trip);
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(R.string.trips);
+        rootView = inflater.inflate(R.layout.fragment_trips, container, false);
+        sl = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout);
+        listTrip = (ListView) rootView.findViewById(R.id.li_trips);
+        txtNoTrip = (TextView) rootView.findViewById(R.id.txt_no_trips);
+        btnAddTrip = (ImageButton) rootView.findViewById(R.id.btn_add_trip);
 
-            lngUserId = getArguments().getLong(Constants.STR_USER_ID);
-            isSyncNeeded = getArguments().getBoolean(Constants.STR_NEEDS_SYNC, false);
+        lngUserId = getArguments().getLong(Constants.STR_USER_ID);
+        isSyncNeeded = getArguments().getBoolean(Constants.STR_NEEDS_SYNC, false);
 
-            listAdapter = new CustomTripListAdapter(getActivity(), arrTripNames, arrCreationDates, arrClosed, arrSynched, arrColors);
-            listTrip.setAdapter(listAdapter);
-            sl.setOnRefreshListener(new OnRefreshListener() {
+        listAdapter = new CustomTripListAdapter(getActivity(), arrTripNames, arrCreationDates, arrClosed, arrSynched, arrColors);
+        listTrip.setAdapter(listAdapter);
+        sl.setOnRefreshListener(new OnRefreshListener() {
 
-                @Override
-                public void onRefresh() {
-                    if (syncTask != null) {
-                        syncTask.cancel(true);
-                    }
-                    syncTask = new SyncTask();
-                    syncTask.execute(lngUserId);
+            @Override
+            public void onRefresh() {
+                if (syncTask != null) {
+                    syncTask.cancel(true);
                 }
-            });
-            listTrip.setOnItemClickListener(this);
-            btnAddTrip.setOnClickListener(this);
-            setHasOptionsMenu(true);
-            registerForContextMenu(listTrip);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                syncTask = new SyncTask();
+                syncTask.execute(lngUserId);
+            }
+        });
+        listTrip.setOnItemClickListener(this);
+        btnAddTrip.setOnClickListener(this);
+        setHasOptionsMenu(true);
+        registerForContextMenu(listTrip);
         return rootView;
     }
 
@@ -174,34 +161,6 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver((receiver));
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        super.onCreateOptionsMenu(menu, inflater);
-        if (isPurchased()) {
-            inflater.inflate(R.menu.add_trip_fragment_action, menu);
-        } else {
-            inflater.inflate(R.menu.add_trip_fragment_action_upgrade, menu);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.action_scan_qr:
-                scanQRCode();
-                return true;
-
-            case R.id.action_upgrade:
-                showUpgradeDialog(getActivity().getResources().getString(R.string.upgrade_features));
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
@@ -285,6 +244,28 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        super.onCreateOptionsMenu(menu, inflater);
+        if (!isPurchased()) {
+            inflater.inflate(R.menu.add_trip_fragment_action_upgrade, menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_upgrade:
+                showUpgradeDialog(getActivity().getResources().getString(R.string.upgrade_features));
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int menuItemIndex = item.getItemId();
@@ -326,25 +307,14 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
     protected void deleteTrip(long tripId) {
         Context context = getActivity();
         LocalDB localDb = new LocalDB(context);
-        try {
-            if (localDb.isTripSynced(tripId)) {
-                localDb.updateTripStatusToDeleted(tripId);
-                Intent serviceIntent = new Intent(context, SyncIntentService.class);
-                context.startService(serviceIntent);
-            } else {
-                localDb.deleteTrip(tripId);
-            }
-            loadData();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (localDb.isTripSynced(tripId)) {
+            localDb.updateTripStatusToDeleted(tripId);
+            Intent serviceIntent = new Intent(context, SyncIntentService.class);
+            context.startService(serviceIntent);
+        } else {
+            localDb.deleteTrip(tripId);
         }
-    }
-
-
-    private void scanQRCode() {
-        Intent intent = new Intent(getActivity(), ZBarScannerActivity.class);
-        intent.putExtra(ZBarConstants.SCAN_MODES, new int[]{Symbol.QRCODE});
-        startActivityForResult(intent, ZBAR_SCANNER_REQUEST);
+        loadData();
     }
 
     private void showAddTripDialog() {
@@ -405,56 +375,15 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
         Context context = getActivity();
         LocalDB localDB = new LocalDB(context);
         long tripId = (long) (arrTripNames.size());
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-            String strDate = sdf.format(new Date());
-            long rowId = localDB.insertTrip(strTripName, tripId, strDate, String.valueOf(lngUserId), lngUserId, Constants.STR_NOT_SYNCHED);
-            localDB.updateTripId(rowId, rowId);
-            loadData();
-            Intent serviceIntent = new Intent(context, SyncIntentService.class);
-            context.startService(serviceIntent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        String strDate = sdf.format(new Date());
+        long rowId = localDB.insertTrip(strTripName, tripId, strDate, String.valueOf(lngUserId), lngUserId, Constants.STR_NOT_SYNCHED);
+        localDB.updateTripId(rowId, rowId);
+        loadData();
+        Intent serviceIntent = new Intent(context, SyncIntentService.class);
+        context.startService(serviceIntent);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Context context = getActivity();
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
-            LocalDB localDB = new LocalDB(context);
-            if (requestCode == ZBAR_SCANNER_REQUEST) {
-                if (resultCode == Activity.RESULT_OK) {
-                    try {
-                        String strData = data.getStringExtra(ZBarConstants.SCAN_RESULT);
-                        String[] arrStrData = strData.split(",");
-                        if (arrStrData.length == 4) {
-                            long lngTripId = Long.parseLong(arrStrData[0]);
-                            if (localDB.isTripPresent(lngTripId)) {
-                                Toast.makeText(getActivity(), "Trip already exists!!", Toast.LENGTH_LONG).show();
-                            } else {
-                                strTripName = arrStrData[1];
-                                String strDate = arrStrData[2];
-                                long lngAdminId = Long.parseLong(arrStrData[3]);
-                                String strUserId = String.valueOf(lngUserId);
-                                localDB.insertTrip(strTripName, lngTripId, strDate, strUserId, lngAdminId, Constants.STR_QR_ADDED);
-                                loadData();
-                                Intent serviceIntent = new Intent(context, SyncIntentService.class);
-                                context.startService(serviceIntent);
-                            }
-                        } else {
-                            Toast.makeText(getActivity(), "Invalid QR!!", Toast.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -483,12 +412,13 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
         @Override
         protected Boolean doInBackground(Long... params) {
             long sleepTime = 100L;
-            boolean completedSyncing = false;
+            boolean completedSyncing = true;
             try {
                 if (Global.isConnected(getActivity())) {
                     syncAllTrips(params[0]);
                 }
             } catch (IOException e) {
+                completedSyncing = false;
                 try {
                     Thread.sleep(sleepTime * 2);
                 } catch (InterruptedException e1) {
@@ -496,7 +426,6 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
                 }
 
             }
-            completedSyncing = true;
             return completedSyncing;
         }
 
@@ -533,23 +462,23 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
             Trip retTrip;
             TripBean trip;
             LogIn retLogin;
-            int i = listTripIds.size();
-            while (listTripIds != null && i != 0) {
+            int i = listTripIds != null?listTripIds.size():0;
+            while (i != 0) {
                 if (isCancelled()) {
                     break;
                 }
                 i--;
-                tripId = listTripIds.get(i+1);
+                tripId = listTripIds.get(i);
                 trip = localDb.retrieveTripDetails(tripId);
                 if (trip != null) {
                     break;
                 }
-                retTrip = tripEndpoint.getTrip(listTripIds.get(i+1)).execute();
+                retTrip = tripEndpoint.getTrip(listTripIds.get(i)).execute();
                 if (retTrip != null) {
                     date = sdf.format(new Date(retTrip.getCreationDate().getValue()));
                     listUserIdsTemp = retTrip.getUserIDs();
                     long lngAdmin = retTrip.getAdmin();
-                    StringBuffer sbUsers = new StringBuffer();
+                    StringBuilder sbUsers = new StringBuilder();
                     String username;
                     for (long userId : listUserIdsTemp) {
                         username = localDb.retrieveUsername(userId);

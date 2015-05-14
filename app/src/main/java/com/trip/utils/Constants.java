@@ -85,8 +85,10 @@ public class Constants {
     public static final String STR_YOU = "You";
     public static final String STR_ERROR_AMT = "Amount and total doesn't match!!";
     public static final Object STR_DISTRIBUTION_ADDED = "DA";
-    public static final String STR_NO_EDIT = "This expense cannot be edited as a user in this expense has exited this expense group!!";
-    public static final String STR_NO_DELETE = "This expense cannot be deleted as a user in this expense has exited this expense group!!";
+    public static final String STR_NO_EDIT = "This expense cannot be edited as a user in this expense has exited " +
+            "this expense group!!";
+    public static final String STR_NO_DELETE = "This expense cannot be deleted as a user in this expense has exited" +
+            " this expense group!!";
     public static final String STR_SETTLE_FIRST = "There are debts that you have to settle or debts others "
             + "have to pay you. Settle them before exiting this EG!!";
     public static final String STR_NOT_EXITED = "NE";
@@ -135,5 +137,11 @@ public class Constants {
 
     public static final int ORDER_ID = 1001;
     public static final String PROJECT_NUMBER = "28707109757";
+    public static final String STR_LOGOUT_MSG = "You have logged in from another device. As you have not purchased" +
+            " the app you have been logged out.";
+    public static final String SMS_DELIVERY_PROBLEM = "The verification SMS delivery is sometimes delayed in some of the countries" +
+            " because of government restrictions for promotional messages at night time. Please be patient and if the SMS is not " +
+            "delivered for the next 12 hours please try again.";
+    public static final String STR_USER_PRESENT = "User is already present in this expense group.";
 
 }

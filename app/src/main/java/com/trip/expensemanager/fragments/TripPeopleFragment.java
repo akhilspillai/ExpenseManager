@@ -25,9 +25,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.trip.expensemanager.AllDetailsActivity;
 import com.trip.expensemanager.R;
-import com.trip.expensemanager.SyncIntentService;
+import com.trip.expensemanager.activities.AllDetailsActivity;
 import com.trip.expensemanager.adapters.CustomPeopleListAdapter;
 import com.trip.expensemanager.beans.ExpenseBean;
 import com.trip.expensemanager.beans.TripBean;
@@ -35,6 +34,7 @@ import com.trip.expensemanager.beans.UserBean;
 import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
+import com.trip.expensemanager.services.SyncIntentService;
 import com.trip.utils.Constants;
 import com.trip.utils.Global;
 
@@ -322,6 +322,8 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
                             } while (cursor.moveToNext());
                         }
 
+                        cursor.close();
+
                         final String contactName = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                         final Context context = getActivity();
 
@@ -345,8 +347,8 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
 
                         }
                     }
-
                 }
+                c.close();
             }
         }
     }
@@ -360,38 +362,36 @@ public class TripPeopleFragment extends CustomFragment implements OnItemClickLis
         long lngNumber = 0L;
 
         if(!strNumber.startsWith("+")) {
-            try {
-                lngNumber = Long.parseLong(strNumber);
-            } catch (NumberFormatException e) {
-                showInfoMessage("The phone number doesn't appear to be proper. Please Check.");
-                return;
-            }
 
             strNumber = String.valueOf(lngNumber);
 
             strNumber = localDb.getCountryCode() + strNumber;
-        } else {
-            try {
-                lngNumber = Long.parseLong(strNumber.substring(1));
-            } catch (NumberFormatException e) {
-                showInfoMessage("The phone number doesn't appear to be proper. Please Check.");
-                return;
-            }
+
+        }
+        try {
+            lngNumber = Long.parseLong(strNumber.substring(1));
+        } catch (NumberFormatException e) {
+            showInfoMessage("The phone number doesn't appear to be proper. Please Check.");
+            return;
         }
 
         localDb.insertPerson(lngNumber, strNumber, strName, Constants.STR_NOT_SYNCHED);
         TripBean trip = localDb.retrieveTripDetails(lngTripId);
         String tripUsers = trip.getUserIds();
+        List<Long> lstTripUsers = Global.longToList(trip.getUserIds());
+        if (lstTripUsers.contains(lngNumber)) {
+            showInfoMessage(Constants.STR_USER_PRESENT);
+        } else {
 
-        StringBuffer sbUsers = new StringBuffer(tripUsers);
+            StringBuilder sbUsers = new StringBuilder(tripUsers);
 
-        sbUsers.append(",").append(String.valueOf(lngNumber));
+            sbUsers.append(",").append(String.valueOf(lngNumber));
 
-        localDb.updateTripUsers(lngTripId, sbUsers.toString(), Constants.STR_QR_ADDED);
+            localDb.updateTripUsers(lngTripId, sbUsers.toString(), Constants.STR_QR_ADDED);
 
-
-        Intent serviceIntent = new Intent(context, SyncIntentService.class);
-        context.startService(serviceIntent);
+            Intent serviceIntent = new Intent(context, SyncIntentService.class);
+            context.startService(serviceIntent);
+        }
 
     }
 

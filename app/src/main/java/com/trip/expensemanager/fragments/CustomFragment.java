@@ -12,7 +12,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.trip.expensemanager.R;
-import com.trip.expensemanager.UpdateLoginTask;
+import com.trip.expensemanager.activities.asynctasks.UpdateLoginTask;
 import com.trip.expensemanager.database.LocalDB;
 import com.trip.expensemanager.fragments.dialogs.ConfirmDialogListener;
 import com.trip.expensemanager.fragments.dialogs.ConfirmationFragment;
