@@ -143,5 +143,6 @@ public class Constants {
             " because of government restrictions for promotional messages at night time. Please be patient and if the SMS is not " +
             "delivered for the next 12 hours please try again.";
     public static final String STR_USER_PRESENT = "User is already present in this expense group.";
+    public static final String STR_WRONG_TOKEN = "wrong_token";
 
 }

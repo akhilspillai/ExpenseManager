@@ -189,7 +189,6 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
         arrClosed.removeAll(arrClosed);
         arrSynched.removeAll(arrSynched);
         arrAdminIds.removeAll(arrAdminIds);
-        arrColors.removeAll(arrColors);
         try {
             long lngUserId = localDb.retrieve();
             if (lngUserId == 0L) {
@@ -235,7 +234,16 @@ public class AddTripFragment extends CustomFragment implements OnItemClickListen
                 listTrip.setVisibility(View.VISIBLE);
                 txtNoTrip.setVisibility(View.INVISIBLE);
             }
-            arrColors.addAll(Global.generateColor(arrTripNames.size()));
+
+            int iColorLstSize = arrColors.size(), iTripsLstSize = arrTripNames.size();
+
+            if (iColorLstSize < iTripsLstSize) {
+                arrColors.addAll(Global.generateColor(iTripsLstSize - iColorLstSize));
+            } else if (iColorLstSize > iTripsLstSize) {
+                while (iColorLstSize != iTripsLstSize) {
+                    arrColors.remove(--iTripsLstSize);
+                }
+            }
             listAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();

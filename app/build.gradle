@@ -9,15 +9,21 @@ android {
             storePassword 'Nov@1988'
         }
     }
-    compileSdkVersion 21
+
+    compileSdkVersion 22
     buildToolsVersion '22.0.1'
     defaultConfig {
         applicationId "com.trip.expensemanager"
         minSdkVersion 9
-        targetSdkVersion 21
+        targetSdkVersion 22
         multiDexEnabled = true
         signingConfig signingConfigs.config
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -25,9 +31,6 @@ android {
         }
     }
     productFlavors {
-    }
-    lintOptions {
-        abortOnError false
     }
 }
 

@@ -80,7 +80,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_weight="3"
                     android:background="@drawable/custom_button_settled"
-                    android:text="Verify"
+                    android:text="@string/verify"
                     android:textSize="15sp"/>
 
             </LinearLayout>
@@ -115,11 +115,27 @@
                 android:textColor="@drawable/disable_color"
                 android:textSize="15sp"/>
 
+        </RelativeLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/sc_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        android:layout_above="@+id/footer"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/rl_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/txt_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/etxt_token"
                 android:layout_marginTop="10dp"
                 android:text="@string/screen_name"
                 android:textSize="15sp"/>

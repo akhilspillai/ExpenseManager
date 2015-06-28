@@ -45,3 +45,8 @@
 -dontwarn butterknife.internal.**
 -keep class **$$ViewInjector { *; }
 -keepnames class * { @butterknife.InjectView *;}
+
+-keep class !android.support.v7.internal.view.menu.**,** {*;}
+-dontwarn
+-ignorewarnings
+-dontshrink

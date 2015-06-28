@@ -75,7 +75,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
     private String strMobNo, strCountryCode, strToken, strScreenName;
     private EditText etxtMobNo, etxtToken;
     private AutoCompleteTextView etxtCountryCode;
-    private ScrollView sc;
+    private ScrollView sc, scName;
     private RelativeLayout rl;
     private LinearLayout llExit;
     private LinearLayout llNext;
@@ -86,10 +86,12 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
     private Button btnVerify;
     private BroadcastReceiver smsReceiver;
     private RegisterTask registerTask;
+    private ValidateTokenTask tokenTask;
     private SendSMSTask sendSMSTask;
     private List<String> lstCountryCodes;
     private HashMap<String, String> hmCountries = new HashMap<>();
     private EditText etxtName;
+    private boolean blIsNameEntry;
 
     public static NewUserFragment newInstance() {
         NewUserFragment fragment = null;
@@ -109,6 +111,7 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
         anim = rootView.findViewById(R.id.anim_line);
         sc = (ScrollView) rootView.findViewById(R.id.sc);
+        scName = (ScrollView) rootView.findViewById(R.id.sc_name);
         rl = (RelativeLayout) rootView.findViewById(R.id.footer);
         llExit = (LinearLayout) rootView.findViewById(R.id.ll_exit);
         llNext = (LinearLayout) rootView.findViewById(R.id.ll_next);
@@ -179,15 +182,23 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         if (v.equals(llExit)) {
             getActivity().finish();
         } else if (v.equals(llNext)) {
-            if (Global.validate(etxtCountryCode, etxtMobNo, etxtToken, etxtName)) {
-                strCountryCode = etxtCountryCode.getText().toString();
-                strMobNo = etxtMobNo.getText().toString();
-                strToken = etxtToken.getText().toString();
-                strScreenName = etxtName.getText().toString();
+            if(blIsNameEntry) {
+                if (Global.validate(etxtName)) {
 
-                strMobNo = strCountryCode + strMobNo;
+                    strScreenName = etxtName.getText().toString();
 
-                startRegistration();
+                    startRegistration();
+                }
+            } else {
+                if (Global.validate(etxtCountryCode, etxtMobNo, etxtToken)) {
+                    strCountryCode = etxtCountryCode.getText().toString();
+                    strMobNo = etxtMobNo.getText().toString();
+                    strToken = etxtToken.getText().toString();
+
+                    strMobNo = strCountryCode + strMobNo;
+
+                    startTokenCheck();
+                }
             }
         } else if (v.equals(btnVerify)) {
             if (Global.validate(etxtCountryCode, etxtMobNo)) {
@@ -295,8 +306,22 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
                 registerTask = null;
             }
 
-            registerTask = new RegisterTask(strMobNo, strToken);
+            registerTask = new RegisterTask(strMobNo, strScreenName);
             registerTask.execute();
+        } else {
+            showErrorDialog("Please connect to internet to continue.");
+        }
+    }
+
+    private void startTokenCheck() {
+        if (Global.isConnected(getActivity())) {
+            if (tokenTask != null && !tokenTask.isCancelled()) {
+                tokenTask.cancel(true);
+                tokenTask = null;
+            }
+
+            tokenTask = new ValidateTokenTask(strMobNo, strToken);
+            tokenTask.execute();
         } else {
             showErrorDialog("Please connect to internet to continue.");
         }
@@ -485,15 +510,12 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
         }
     }
 
-    private class RegisterTask extends AsyncTask<Void, Void, String> {
+    private class ValidateTokenTask extends AsyncTask<Void, Void, String> {
 
-        public static final String PROJECT_NUMBER = "28707109757";
-        private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
         String strMobNo;
         String strToken;
-        private GoogleCloudMessaging gcm;
 
-        RegisterTask(String strMobNo, String strToken) {
+        ValidateTokenTask(String strMobNo, String strToken) {
             this.strMobNo = strMobNo;
             this.strToken = strToken;
         }
@@ -510,38 +532,87 @@ public class NewUserFragment extends CustomFragment implements OnClickListener {
 
         @Override
         protected String doInBackground(Void... params) {
+            String result = Constants.STR_FAILURE;
+            try {
+                result = isTokenValid(strToken);
+            } catch (IOException e) {
+
+            }
+            return result;
+
+        }
+
+        private String isTokenValid(String strToken) throws IOException{
+            MessageDataApi.Builder messageBuilder = new MessageDataApi.Builder(
+                    AndroidHttp.newCompatibleTransport(), new JacksonFactory(), null);
+            messageBuilder = CloudEndpointUtils.updateBuilder(messageBuilder);
+            MessageDataApi messageEndpoint = messageBuilder.build();
+            MessageData messageData;
+            messageData = messageEndpoint.getMessageData(Long.parseLong(strMobNo.substring(1)))
+                        .execute();
+            if(messageData != null && strToken.equals(messageData.getToken())) {
+                return Constants.STR_SUCCESS;
+            }
+            return Constants.STR_WRONG_TOKEN;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result == null || result.equals(Constants.STR_FAILURE)) {
+                showRegistrationError("Oops!! Something went wrong. Please try again.");
+                anim.setVisibility(View.INVISIBLE);
+                rl.setVisibility(View.VISIBLE);
+                sc.setVisibility(View.VISIBLE);
+            } else if (result.equals(Constants.STR_WRONG_TOKEN)) {
+                showRegistrationError("The token you entered is wrong Please try again.");
+                anim.setVisibility(View.INVISIBLE);
+                rl.setVisibility(View.VISIBLE);
+                sc.setVisibility(View.VISIBLE);
+            } else if (result.equals(Constants.STR_SUCCESS)) {
+                scName.setVisibility(View.VISIBLE);
+                anim.setVisibility(View.INVISIBLE);
+                rl.setVisibility(View.VISIBLE);
+                blIsNameEntry = true;
+
+            }
+        }
+    }
+
+    private class RegisterTask extends AsyncTask<Void, Void, String> {
+
+        public static final String PROJECT_NUMBER = "28707109757";
+        private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+        String strMobNo;
+        String strScreenName;
+        private GoogleCloudMessaging gcm;
+
+        RegisterTask(String strMobNo, String strScreenName) {
+            this.strMobNo = strMobNo;
+            this.strScreenName = strScreenName;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            ((ExpenseActivity) getActivity()).setCustomTitle(R.string.done);
+            anim.setVisibility(View.VISIBLE);
+            rl.setVisibility(View.INVISIBLE);
+            sc.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
             String strResult = null;
             try {
-                if (isTokenValid(strToken)) {
-
-                    strResult = getUserId();
-
-                } else {
-
-                    strResult = Constants.STR_TOKEN_INVALID;
-
-                }
+                strResult = getUserId();
             } catch (IOException e) {
 
             }
             return strResult;
         }
 
-        private boolean isTokenValid(String strToken) {
-            MessageDataApi.Builder messageBuilder = new MessageDataApi.Builder(
-                    AndroidHttp.newCompatibleTransport(), new JacksonFactory(), null);
-            messageBuilder = CloudEndpointUtils.updateBuilder(messageBuilder);
-            MessageDataApi messageEndpoint = messageBuilder.build();
-            MessageData messageData = null;
-            try {
-                messageData = messageEndpoint.getMessageData(Long.parseLong(strMobNo.substring(1)))
-                        .execute();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return messageData != null && strToken.equals(messageData.getToken());
-        }
 
         private String getUserId() throws IOException {
             String strResult = Constants.STR_FAILURE;
